@@ -4,6 +4,8 @@
       "allowSyntheticDefaultImports": true,
       "esModuleInterop": true,
       "isolatedModules": true,
+      "module": "commonjs",
+      "resolveJsonModule": true,
       "jsx": "react",
       "lib": ["es6"],
       "moduleResolution": "node",
