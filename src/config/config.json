@@ -1,0 +1,11 @@
+{
+    "prod":{
+        "baseURL":""
+    },
+    "test":{
+        "baseURL":""
+    },
+    "dev":{
+        "baseURL":""
+    }
+}
