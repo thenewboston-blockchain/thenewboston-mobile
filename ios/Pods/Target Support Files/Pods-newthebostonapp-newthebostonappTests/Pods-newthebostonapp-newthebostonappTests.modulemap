@@ -1,0 +1,6 @@
+module Pods_newthebostonapp_newthebostonappTests {
+  umbrella header "Pods-newthebostonapp-newthebostonappTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
