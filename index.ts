@@ -1,5 +1,10 @@
 import App from './App';
 import {AppRegistry} from 'react-native';
 import {name as appName} from './app.json';
+import { typography } from './src/utils/typography'
 
-AppRegistry.registerComponent(appName, () => App);
+
+typography()
+
+
+AppRegistry.registerComponent(appName, () => App); 
