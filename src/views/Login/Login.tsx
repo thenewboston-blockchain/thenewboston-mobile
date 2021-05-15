@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
-import Style from "./Style";
-import { View, Text, ScrollView } from "react-native";
-import { Custom, Typography, Colors } from "styles";
+import { Colors, Custom, Typography } from "styles";
+import React, { useEffect, useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 
 // components
 import CustomButton from "../../components/CustomButton";
-
 // svgs
 import FingerPrint from "../../assets/svg/FingerPrint.svg";
+import Style from "./Style";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const LoginScreen = ({ navigation }) => {
+interface login {
+  navigation: any
+}
+
+const LoginScreen = ({ navigation }:login) => {
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
 
@@ -19,7 +22,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
-    navigation.navigate("loginPassword");
+    navigation.navigate("createAccount");
   };
 
   return (

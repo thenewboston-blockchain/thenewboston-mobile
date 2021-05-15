@@ -1,6 +1,6 @@
-import * as config from './../config/config.json';
-
 import axios, { AxiosResponse, Method } from 'axios';
+
+import  config from './../config/config.json';
 
 const api = axios.create({
   baseURL: config.dev.baseURL,
