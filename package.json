@@ -30,6 +30,7 @@
     "react-native-screens": "^3.2.0",
     "react-native-svg": "^12.1.1",
     "react-native-svg-transformer": "^0.14.3",
+    "react-native-vector-icons": "^8.1.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {

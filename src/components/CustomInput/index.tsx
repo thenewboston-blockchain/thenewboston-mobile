@@ -1,15 +1,16 @@
-import React from "react";
+import React, { ReactElement } from "react";
+
 import { FloatingLabelInput } from "react-native-floating-label-input";
 import Style from './Style'
 
 type InputProps = {
   staticLabel?: boolean;
-  labelText?: any;
+  labelText: string;
   onChangeText: any;
   autoCapitalize: string;
   value: any;
   name: any;
-  isPassword:boolean;
+  isPassword?:boolean;
 };
 
 const CustomInput = ({

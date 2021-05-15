@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Custom, Typography, Colors } from "styles";
+import { Typography } from "styles";
 
 const Styles = StyleSheet.create({
   container: {
@@ -13,6 +13,7 @@ const Styles = StyleSheet.create({
   heading: {
     fontSize: Typography.FONT_SIZE_28,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
+    textAlign: "center",
   },
   labelStyle: {
     textTransform: "uppercase",
