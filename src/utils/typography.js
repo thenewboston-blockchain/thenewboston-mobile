@@ -1,5 +1,6 @@
+import { Platform, StyleSheet, Text } from "react-native";
+
 import React from "react";
-import { Text, Platform, StyleSheet } from "react-native";
 
 export const typography = () => {
   const oldTextRender = Text.render;

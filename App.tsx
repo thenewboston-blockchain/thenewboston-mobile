@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import "react-native-gesture-handler";
 
 import * as React from "react";
@@ -29,10 +30,15 @@ const MainTheme = {
     background: "transparent",
   },
 };
+=======
+import * as React from "react";
+
+import Navigator from './Navigator';
+>>>>>>> master
 
 const App = () => {
-  const Stack = createStackNavigator();
   return (
+<<<<<<< HEAD
     <LinearGradient
       colors={["#62737E", "#040505"]}
       style={{ flex: 1, padding: 10 }}
@@ -89,3 +95,10 @@ const authOptions = {
 export default App;
 
 // No need for redux since we are not managing any global state
+=======
+    <Navigator />
+  );
+};
+
+export default App;
+>>>>>>> master

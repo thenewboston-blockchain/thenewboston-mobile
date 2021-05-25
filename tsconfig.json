@@ -19,6 +19,7 @@
         "@components/*": ["src/components/*"],
      },
     },
+    "include": ["src/utils/custom.d.ts"],
     "exclude": [
       "node_modules",
       "babel.config.js",

@@ -1,18 +1,18 @@
-import React from "react";
 import { Button } from "react-native-elements";
-import { View } from "react-native";
-import Style from "./Style";
 import { Colors } from "../../styles";
+import React from "react";
+import Style from "./Style";
+import { View } from "react-native";
 
 type SelectProps = {
   title: any;
-  buttonType: any;
-  buttonColor: any;
-  buttonStyle: any;
-  customStyle: any;
-  containerStyle: any;
+  buttonType?: any;
+  buttonColor?: any;
+  buttonStyle?: any;
+  customStyle?: any;
+  containerStyle?: any;
   onPress: Function;
-  disabled: boolean;
+  disabled?: boolean;
   loading: boolean;
 };
 
