@@ -5,6 +5,7 @@ com/newthebostonapp/MainApplication.java
  com.newthebostonapp.MainApplication$1
 com/newthebostonapp/MainActivity.java
  com.newthebostonapp.MainActivity
+ com.newthebostonapp.MainActivity$1
 com/facebook/react/PackageList.java
  com.facebook.react.PackageList
 com/newthebostonapp/ReactNativeFlipper.java

@@ -1,9 +1,9 @@
 import { StyleSheet } from "react-native";
-import { Typography } from "styles";
+import { Typography } from "../../styles";
 
 const Styles = StyleSheet.create({
   container: {
-    paddingVertical: "10%",
+    padding: 10,
   },
   formView: {
     marginTop: "10%",

@@ -1,9 +1,10 @@
+import { Colors, Custom, Typography } from "../../styles";
+
 import { StyleSheet } from "react-native";
-import { Custom, Typography, Colors } from "styles";
 
 const Styles = StyleSheet.create({
   container: {
-    paddingVertical: "10%",
+    padding: 10,
   },
   formView: {
     marginTop: "10%",

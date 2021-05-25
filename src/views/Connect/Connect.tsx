@@ -1,10 +1,9 @@
-import { Colors, Custom, Typography } from "styles";
-import React, { useEffect, useState } from "react";
+import { Colors, Custom, Typography } from "../../styles";
+import React, { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 import CustomButton from "../../components/CustomButton";
-// components
-import CustomInput from "../../components/CustomInput";
+import CustomInput from "../../components/CreateAccountWIdget/CustomInput";
 import CustomSelect from "../../components/CustomSelect";
 import Style from "./Style";
 

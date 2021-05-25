@@ -1,8 +1,8 @@
-import { Colors, Typography } from 'styles';
+import { Colors, Typography } from '../../styles';
 import { Text, View } from 'react-native';
 
-import CustomButton from 'components/CustomButton';
-import CustomInput from 'components/CustomInput';
+import CustomButton from '../CustomButton';
+import CustomInput from './CustomInput';
 import React from 'react';
 import Style from './Style'
 import { useState } from 'react';
@@ -30,7 +30,7 @@ const CreateAccountWidget = (props: createAccount) => {
     const [loading, setLoading] = useState<boolean>(false)
 
     const handleCreateAccount=()=>{
-        props.navigation.navigate('overview')
+        props.navigation.navigate('tab')
     }
 
     const handleCancel=()=>{

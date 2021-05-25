@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
-import Style from "./Style";
-import { View, Text, ScrollView } from "react-native";
-import { Custom, Typography, Colors } from "styles";
+import { Colors, Custom, Typography } from "../../styles";
+import React, { useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 
-// components
-import CustomInput from "../../components/CustomInput";
-import CustomSelect from "../../components/CustomSelect";
 import CustomButton from "../../components/CustomButton";
+import CustomInput from "../../components/CreateAccountWIdget/CustomInput";
+import Style from "./Style";
 
 const LoginPasswordScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
