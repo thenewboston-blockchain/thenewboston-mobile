@@ -177,3 +177,7 @@ export const col = {
 export const bgPrimary = {
     backgroundColor:'#FFCC00'
 }
+
+export const textCenter = {
+    textAlign:'center'
+}

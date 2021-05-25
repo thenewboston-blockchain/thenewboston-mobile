@@ -30,7 +30,7 @@ const CreateAccountWidget = (props: createAccount) => {
     const [loading, setLoading] = useState<boolean>(false)
 
     const handleCreateAccount=()=>{
-        props.navigation.navigate('overview')
+        props.navigation.navigate('tab')
     }
 
     const handleCancel=()=>{

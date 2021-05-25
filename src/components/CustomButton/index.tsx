@@ -12,7 +12,7 @@ type SelectProps = {
   customStyle?: any;
   containerStyle?: any;
   onPress: Function;
-  disabled: boolean;
+  disabled?: boolean;
   loading: boolean;
 };
 

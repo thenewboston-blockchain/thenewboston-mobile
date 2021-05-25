@@ -2,11 +2,9 @@ import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
-import CreateAccountWidget from "components/CreateAccountWIdget/CreateAccountWidget";
-import CustomButton from "../../components/CustomButton";
 // components
-import CustomInput from "../../components/CustomInput";
-import CustomSelect from "../../components/CustomSelect";
+import CreateAccountWidget from "components/CreateAccountWIdget/CreateAccountWidget";
+
 import Style from "./Style";
 
 interface createAccount {
