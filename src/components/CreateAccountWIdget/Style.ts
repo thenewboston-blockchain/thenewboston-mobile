@@ -42,7 +42,7 @@ const Styles = StyleSheet.create({
         padding: 10,
         borderRadius: 9,
         width: "50%",
-        textAlign: "center"
+        textAlign: "center",
     },
     inactive: {
         color: "#62737E",

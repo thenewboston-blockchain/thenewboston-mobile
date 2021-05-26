@@ -15,11 +15,11 @@ const LoginPasswordScreen = ({ navigation }) => {
   const [isValid, setValid] = useState(false);
 
   const login = () => {
-    navigation.navigate("login");
+    navigation.navigate("tab");
   };
 
   const handleSubmit = () => {
-    navigation.navigate("login");
+    navigation.navigate("createAccount");
   };
 
   return (

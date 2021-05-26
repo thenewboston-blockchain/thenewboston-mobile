@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newthebostonapp.iml" filepath="$PROJECT_DIR$/.idea/modules/newthebostonapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/newthebostonapp.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/newthebostonapp.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/2098602453/newthebostonapp.react-native-community_masked-view.iml" filepath="$PROJECT_DIR$/.idea/modules/2098602453/newthebostonapp.react-native-community_masked-view.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1152591710/newthebostonapp.react-native-gesture-handler.iml" filepath="$PROJECT_DIR$/.idea/modules/-1152591710/newthebostonapp.react-native-gesture-handler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-532640588/newthebostonapp.react-native-linear-gradient.iml" filepath="$PROJECT_DIR$/.idea/modules/-532640588/newthebostonapp.react-native-linear-gradient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1456513923/newthebostonapp.react-native-picker_picker.iml" filepath="$PROJECT_DIR$/.idea/modules/1456513923/newthebostonapp.react-native-picker_picker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/127363130/newthebostonapp.react-native-reanimated.iml" filepath="$PROJECT_DIR$/.idea/modules/127363130/newthebostonapp.react-native-reanimated.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1112297611/newthebostonapp.react-native-safe-area-context.iml" filepath="$PROJECT_DIR$/.idea/modules/1112297611/newthebostonapp.react-native-safe-area-context.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1083321757/newthebostonapp.react-native-screens.iml" filepath="$PROJECT_DIR$/.idea/modules/-1083321757/newthebostonapp.react-native-screens.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/938521664/newthebostonapp.react-native-svg.iml" filepath="$PROJECT_DIR$/.idea/modules/938521664/newthebostonapp.react-native-svg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/534172276/newthebostonapp.react-native-vector-icons.iml" filepath="$PROJECT_DIR$/.idea/modules/534172276/newthebostonapp.react-native-vector-icons.iml" />
+    </modules>
+  </component>
+</project>

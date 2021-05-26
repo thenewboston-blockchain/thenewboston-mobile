@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/developer_ocansey/code/react/mobile/thenewboston-mobile/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v26/values-v26.xml",
+            "outputFile": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v26/values-v26.xml",
             "map": [
                 {
-                    "source": "/Users/developer_ocansey/.gradle/caches/transforms-2/files-2.1/d14dbad7340cad958a2e361a440b498d/appcompat-1.1.0/res/values-v26/values-v26.xml",
+                    "source": "/Users/sam/.gradle/caches/transforms-2/files-2.1/d14dbad7340cad958a2e361a440b498d/appcompat-1.1.0/res/values-v26/values-v26.xml",
                     "from": {
                         "startLines": "2,3,4,8,12,16",
                         "startColumns": "4,4,4,4,4,4",
