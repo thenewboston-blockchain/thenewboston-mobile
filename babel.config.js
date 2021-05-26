@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 module.exports = {
   presets: ["module:metro-react-native-babel-preset"],
   plugins: [
@@ -25,3 +26,20 @@ module.exports = {
     ]
   ],
 };
+=======
+{
+  plugins: [
+    [
+       'module-resolver',
+       {
+         root: ['./src'],
+         extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
+         alias: {
+           tests: ['./tests/'],
+           "@components": "./src/components",
+         }
+       }
+    ]
+  ]
+}
+>>>>>>> 1a59eb69a7e75d2dfa30ce768aa106582408fef1
