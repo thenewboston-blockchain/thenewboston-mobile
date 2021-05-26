@@ -4,11 +4,8 @@
       "allowSyntheticDefaultImports": true,
       "esModuleInterop": true,
       "isolatedModules": true,
-<<<<<<< HEAD
       "module": "commonjs",
       "resolveJsonModule": true,
-=======
->>>>>>> 1a59eb69a7e75d2dfa30ce768aa106582408fef1
       "jsx": "react",
       "lib": ["es6"],
       "moduleResolution": "node",
@@ -22,10 +19,7 @@
         "@components/*": ["src/components/*"],
      },
     },
-<<<<<<< HEAD
     "include": ["src/utils/custom.d.ts"],
-=======
->>>>>>> 1a59eb69a7e75d2dfa30ce768aa106582408fef1
     "exclude": [
       "node_modules",
       "babel.config.js",
