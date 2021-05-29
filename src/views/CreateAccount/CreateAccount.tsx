@@ -8,20 +8,21 @@ import CreateAccountWidget from "components/CreateAccountWIdget/CreateAccountWid
 import Style from "./Style";
 
 interface createAccount {
-  navigation: any // TODO use navigation props type
+  navigation: any; // TODO use navigation props type
 }
 
-const CreateAccountScreen = ({navigation}: createAccount) => {
-    return (
-      <View style={Style.container}>
+const CreateAccountScreen = ({ navigation }: createAccount) => {
+  return (
+    <View style={Style.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-          <CreateAccountWidget
-            title={"Create or Add Account"}
-            navigation={navigation}
-          />
+        <CreateAccountWidget
+          title={"Create or Add Account"}
+          navigation={navigation}
+          handleCancel={()=>navigation.goBack(null)}
+        />
       </ScrollView>
     </View>
-    );
+  );
 };
 
 export default CreateAccountScreen;
