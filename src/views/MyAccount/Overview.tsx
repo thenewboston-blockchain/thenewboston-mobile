@@ -1,6 +1,9 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+
+import { ScrollView, Text, TouchableOpacity, View, Modal } from "react-native";
+import Style from "./Style";
+
 
 // components
 import Accounts from "../../components/Accounts/Accounts";
@@ -8,12 +11,18 @@ import CustomButton from "../../components/CustomButton";
 import AccountNumber from "../../components/AccountNumber/AccountNumber";
 import SignKey from "../../components/SignKey/SignKey";
 
+import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
+import BottomDrawer from "react-native-bottom-drawer-view";
+
 // svg
 import Refresh from "../../assets/svg/Refresh.svg";
 
-import Style from "./Style";
 
-const OverviewScreen = () => {
+const TAB_BAR_HEIGHT = 20;
+const DOWN_DISPLAY = 50;
+
+const OverviewScreen = (props) => {
+
   const [accounts, setAccoiunts] = useState([
     { active: true, name: "John Doe" },
     { active: false, name: "Rob Tin" },
@@ -21,6 +30,8 @@ const OverviewScreen = () => {
     { active: false, name: "Brad Scott" },
   ]);
   const [loading, setLoading] = useState(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleSendCoins = () => {
     console.log("send coins");
@@ -30,7 +41,11 @@ const OverviewScreen = () => {
     <View style={Style.container}>
       <View style={{ alignItems: "center" }}>
         <Text style={Style.heading}>John Doe</Text>
-        <Accounts accounts={accounts} />
+        <Accounts
+          accounts={accounts}
+          addAccount={() => setModalVisible(true)}
+        />
+
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -50,7 +65,8 @@ const OverviewScreen = () => {
         {/* send coins  */}
         <CustomButton
           title="Send Coins"
-          onPress={handleSendCoins}
+
+          onPress={()=>props.navigation.navigate('sendcoins1')}
           buttonColor={Colors.WHITE}
           loading={loading}
           customStyle={{ width: "35%" }}
@@ -75,6 +91,24 @@ const OverviewScreen = () => {
           customStyle={Style.deleteButton}
         />
       </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          // this.closeButtonFunction()
+        }}
+      >
+        <View style={Style.modalContainer}>
+          <CreateAccountWidget title={"Create or Add Account"}
+            navigation={props.navigation}
+            handleCancel={() => {
+              setModalVisible(false);
+            }}
+            />
+        </View>
+      </Modal>
+
     </View>
   );
 };

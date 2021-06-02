@@ -16,6 +16,7 @@ interface Account {
 
 interface Accounts {
   accounts: Account[];
+  addAccount:Function
 }
 
 const ACCOUNTS_ICON_WIDTH = 44;
@@ -90,7 +91,8 @@ const Accounts = (props: Accounts) => {
             { width: animatedWidth, maxWidth: ACCOUNTS_BUTTON_WIDTH },
           ]}
         > */}
-          <StickyItemButton onPress={() => null} />
+
+          <StickyItemButton onPress={() => props.addAccount()} />
         {/* </Animated.View> */}
       </View>
     </View>

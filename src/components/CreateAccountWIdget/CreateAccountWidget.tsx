@@ -9,7 +9,8 @@ import { useState } from 'react';
 
 interface createAccount {
     title: string,
-    navigation: any
+    navigation: any,
+    handleCancel:Function
 }
 
 interface createAccountPayload {
@@ -33,9 +34,9 @@ const CreateAccountWidget = (props: createAccount) => {
         props.navigation.navigate('tab')
     }
 
-    const handleCancel=()=>{
-        props.navigation.goBack(null)
-    }
+    // const handleCancel=()=>{
+    //     props.navigation.goBack(null)
+    // }
     
     return (
         <View style={Style.container}>
@@ -57,7 +58,7 @@ const CreateAccountWidget = (props: createAccount) => {
                         ...data,
                         nickname: value
                     });
-                }}
+                }} 
                 autoCapitalize="none"
             />
             {activity === EXISTING_ACCOUNT &&
@@ -84,7 +85,7 @@ const CreateAccountWidget = (props: createAccount) => {
                 />
                 <CustomButton
                     title="Cancel"
-                    onPress={handleCancel}
+                    onPress={props.handleCancel}
                     disabled={false}
                     buttonColor={Colors.WHITE}
                     loading={false}

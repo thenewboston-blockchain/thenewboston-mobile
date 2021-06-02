@@ -1,11 +1,10 @@
 import * as React from "react";
+import { View } from "react-native";
 
-import Navigator from './Navigator';
+import Navigator from "./Navigator";
 
-const App = () => {
-  return (
-    <Navigator />
-  );
+const App = (props) => {
+  return <Navigator />;
 };
 
 export default App;

@@ -14,17 +14,22 @@ import LoginScreen from "./src/views/Login/Login";
 import OverviewScreen from "./src/views/MyAccount/Overview";
 import ScanCode from "./src/assets/svg/ScanCode.svg";
 import SettingsScreen from "./src/views/Settings/Settings";
+import SendCoins1Screen from "./src/views/SendCoins1/SendCoins1";
+import SendCoins2Screen from "./src/views/SendCoins2/SendCoins2";
 import TNBLogo from "./src/assets/svg/TNBLogo.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import TransactionsScreen from "./src/views/Transactions/Transactions";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Colors, Custom, Typography } from "styles";
 
 // svg
 import Home from "./src/assets/svg/Home.svg";
 import Transactions from "./src/assets/svg/Transactions.svg";
 import Friends from "./src/assets/svg/Friends.svg";
 import Settings from "./src/assets/svg/Settings.svg";
+import ArrowBack from "./src/assets/svg/ArrowBack.svg";
+
 
 const Navigator = () => {
   const Stack = createStackNavigator();
@@ -79,15 +84,6 @@ const Navigator = () => {
 const TabIcon = ({ icon, text, focused }) => {
   return (
     <View style={{ alignItems: "center", justifyContent: "center", top: 10 }}>
-      {/* <Image
-        source={require("./src/assets/imgs/home.png")}
-        resizeMode="contain"
-        style={{
-          width: 25,
-          height: 25,
-          tintColor: focused ? "#FFF" : "#62737E",
-        }}
-      /> */}
       {icon}
       <Text
         style={{
@@ -120,7 +116,7 @@ const TabNavigator = () => {
             />
           ),
         }}
-        component={OverviewScreen}
+        component={OverviewStackScreen}
       />
       <Tab.Screen
         name="transactions"
@@ -165,6 +161,34 @@ const TabNavigator = () => {
   );
 };
 
+const OverviewStackScreen = () => {
+  const OverviewStack = createStackNavigator();
+
+  return (
+    <OverviewStack.Navigator>
+      <OverviewStack.Screen
+        options={{ headerShown: false }}
+        name="overview"
+        component={OverviewScreen}
+      />
+      <OverviewStack.Screen
+        options={({ navigation }) =>
+          stackheaderOptions("Send Coins", navigation)
+        }
+        name="sendcoins1"
+        component={SendCoins1Screen}
+      />
+      <OverviewStack.Screen
+        options={({ navigation }) =>
+          stackheaderOptions("Send Coins", navigation)
+        }
+        name="sendcoins2"
+        component={SendCoins2Screen}
+      />
+    </OverviewStack.Navigator>
+  );
+};
+
 const MainTheme = {
   ...DefaultTheme,
   colors: {
@@ -193,6 +217,21 @@ const headerOptions = {
   headerLeft: () => null,
 };
 
+
+const stackheaderOptions = (title, navigation) => {
+  return {
+    headerStyle: {
+      backgroundColor: "transparent",
+    },
+    headerLeft: () => (
+      <TouchableOpacity onPress={() => navigation.goBack(null)}>
+        <ArrowBack />
+      </TouchableOpacity>
+    ),
+    headerTitle: () => <Text style={headingStyle}>{title}</Text>,
+  };
+};
+
 const tabStyle = {
   position: "absolute",
   bottom: 25,
@@ -204,6 +243,12 @@ const tabStyle = {
   backgroundColor: "#2B4150",
   borderWidth: 0,
   borderColor: "#62737E",
+};
+
+const headingStyle = {
+  fontSize: Typography.FONT_SIZE_28,
+  fontWeight: Typography.FONT_WEIGHT_BOLD,
+  color: Colors.WHITE,
 };
 
 export default Navigator;

@@ -25,7 +25,7 @@ const Styles = StyleSheet.create({
     },
     switch: {
         width: "100%",
-        flex: 1,
+        // flex: 1,
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,

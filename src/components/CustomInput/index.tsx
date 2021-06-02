@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 
 import { FloatingLabelInput } from "react-native-floating-label-input";
-import Style from './Style'
+import Style from "./Style";
 
 type InputProps = {
   staticLabel?: boolean;
@@ -10,7 +10,10 @@ type InputProps = {
   autoCapitalize: string;
   value: any;
   name: any;
-  isPassword?:boolean;
+  isPassword?: boolean;
+  customStyles?: any;
+  customInputStyle?: any;
+  keyboardType?:any
 };
 
 const CustomInput = ({
@@ -18,7 +21,10 @@ const CustomInput = ({
   labelText,
   onChangeText,
   value,
-  isPassword
+  isPassword,
+  customStyles,
+  customInputStyle,
+  keyboardType
 }: InputProps) => {
   return (
     <FloatingLabelInput
@@ -26,14 +32,15 @@ const CustomInput = ({
       value={value}
       staticLabel={staticLabel}
       labelStyles={Style.labelStyles}
-      containerStyles={Style.containerStyles}
+      containerStyles={customStyles ? customStyles : Style.containerStyles}
       customLabelStyles={{
         colorFocused: "#62737E",
         fontSizeFocused: 10,
       }}
-      inputStyles={Style.inputStyles}
+      inputStyles={customInputStyle ? customInputStyle : Style.inputStyles}
       onChangeText={onChangeText}
       isPassword={isPassword}
+      keyboardType={keyboardType}
     />
   );
 };
