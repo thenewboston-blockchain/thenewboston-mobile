@@ -1,23 +1,28 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
+
 import { ScrollView, Text, TouchableOpacity, View, Modal } from "react-native";
 import Style from "./Style";
+
 
 // components
 import Accounts from "../../components/Accounts/Accounts";
 import CustomButton from "../../components/CustomButton";
 import AccountNumber from "../../components/AccountNumber/AccountNumber";
 import SignKey from "../../components/SignKey/SignKey";
+
 import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
 import BottomDrawer from "react-native-bottom-drawer-view";
 
 // svg
 import Refresh from "../../assets/svg/Refresh.svg";
 
+
 const TAB_BAR_HEIGHT = 20;
 const DOWN_DISPLAY = 50;
 
 const OverviewScreen = (props) => {
+
   const [accounts, setAccoiunts] = useState([
     { active: true, name: "John Doe" },
     { active: false, name: "Rob Tin" },
@@ -25,6 +30,7 @@ const OverviewScreen = (props) => {
     { active: false, name: "Brad Scott" },
   ]);
   const [loading, setLoading] = useState(false);
+
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleSendCoins = () => {
@@ -39,6 +45,7 @@ const OverviewScreen = (props) => {
           accounts={accounts}
           addAccount={() => setModalVisible(true)}
         />
+
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -58,6 +65,7 @@ const OverviewScreen = (props) => {
         {/* send coins  */}
         <CustomButton
           title="Send Coins"
+
           onPress={()=>props.navigation.navigate('sendcoins1')}
           buttonColor={Colors.WHITE}
           loading={loading}
@@ -83,8 +91,6 @@ const OverviewScreen = (props) => {
           customStyle={Style.deleteButton}
         />
       </ScrollView>
-
-
       <Modal
         animationType="slide"
         transparent={true}
@@ -102,6 +108,7 @@ const OverviewScreen = (props) => {
             />
         </View>
       </Modal>
+
     </View>
   );
 };

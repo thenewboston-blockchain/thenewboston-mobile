@@ -91,6 +91,7 @@ const Accounts = (props: Accounts) => {
             { width: animatedWidth, maxWidth: ACCOUNTS_BUTTON_WIDTH },
           ]}
         > */}
+
           <StickyItemButton onPress={() => props.addAccount()} />
         {/* </Animated.View> */}
       </View>

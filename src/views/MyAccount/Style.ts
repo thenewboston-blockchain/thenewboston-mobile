@@ -6,6 +6,7 @@ const Styles = StyleSheet.create({
   container: {
     // paddingVertical: "10%",
     flex:1
+
   },
   balanceContainer: {
     marginTop: 10,
@@ -86,6 +87,7 @@ const Styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
   },
+
 });
 
 export default Styles;

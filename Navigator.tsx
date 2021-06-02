@@ -30,6 +30,7 @@ import Friends from "./src/assets/svg/Friends.svg";
 import Settings from "./src/assets/svg/Settings.svg";
 import ArrowBack from "./src/assets/svg/ArrowBack.svg";
 
+
 const Navigator = () => {
   const Stack = createStackNavigator();
   return (
@@ -215,6 +216,7 @@ const headerOptions = {
   headerTitle: "",
   headerLeft: () => null,
 };
+
 
 const stackheaderOptions = (title, navigation) => {
   return {
