@@ -1,7 +1,7 @@
 import {
-    StyleSheet,
     Dimensions,
-  } from "react-native";
+    StyleSheet,
+} from "react-native";
 const ACCOUNTS_ICON_WIDTH = 44;
 const ACCOUNTS_BUTTON_WIDTH = 130;
 const SCREEN_WIDTH = Dimensions.get("screen").width;

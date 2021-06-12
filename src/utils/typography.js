@@ -14,6 +14,6 @@ export const typography = () => {
 
 const styles = StyleSheet.create({
   defaultText: {
-    fontFamily: "Inter-Regular",
+    // fontFamily: "Inter-Regular",
   },
 });

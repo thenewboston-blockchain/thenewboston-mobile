@@ -5,6 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "build:ios": " react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
@@ -51,5 +52,10 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "rnpm":{
+    "assets":[
+        "./assests/fonts/"
+    ]
+}
 }

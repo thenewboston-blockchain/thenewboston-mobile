@@ -1,7 +1,6 @@
 import { Colors, Custom, Typography } from "styles";
 
 import { StyleSheet } from "react-native";
-import { padding } from "styles/mixins";
 
 const Styles = StyleSheet.create({
   container: {

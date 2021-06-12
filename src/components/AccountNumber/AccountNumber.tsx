@@ -1,36 +1,39 @@
-// @flow
-import React from "react";
 import {
-  Text,
-  View,
-  TouchableOpacity,
-  TouchableHighlight,
   Platform,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
 import { Avatar } from "react-native-elements";
 import { Custom } from "../../styles";
+import React from "react";
 import Style from "./Style";
-
-// svg
-import Share from "../../assets/svg/Share.svg";
-import Copy from "../../assets/svg/Copy.svg";
 
 interface AccountNumberProps {
   accountNumber: string;
+  title: string
+  icons: any
 }
 
-const AccountNumber = ({ accountNumber }: AccountNumberProps) => {
+const AccountNumber = ({ accountNumber, title, icons }: AccountNumberProps) => {
+  const Icons = () => {
+    //TODO specify action via props
+    return icons.map((icon: any, index: number) => {
+      return (
+        <TouchableOpacity style={{ marginRight: 10 }} key={index}>
+        {icon}
+        </TouchableOpacity>)
+      
+    })
+  }
   return (
     <View style={Style.container}>
       <View style={[Custom.row,Style.actionContainer]}>
-        <Text style={Style.subHeading}>MY ACCOUNT NUMBER</Text>
+        <Text style={Style.subHeading}>{ title}</Text>
         <View style={[Custom.row, Style.actions]}>
-          <TouchableOpacity style={{ marginRight: 10 }}>
-            <Share />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Copy />
-          </TouchableOpacity>
+          <Icons/>
         </View>
       </View>
       <Text style={[Custom.mt10,Style.numberText]}>{accountNumber}</Text>
@@ -39,3 +42,5 @@ const AccountNumber = ({ accountNumber }: AccountNumberProps) => {
 };
 
 export default AccountNumber;
+
+//TODO: rename to panel

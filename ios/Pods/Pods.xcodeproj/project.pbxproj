@@ -14111,7 +14111,7 @@
 			buildConfigurationList = F43790D2AB78740B6E4BBEC90830CEE7 /* Build configuration list for PBXNativeTarget "FBReactNativeSpec" */;
 			buildPhases = (
 				A5EBAD59DAAF973C623E3FD1C005D6EE /* Headers */,
-				430F95D3D1E72F7E549E5F5E1C98A928 /* [CP-User] Generate Specs */,
+				B2B6B6A3C305EE1BA7BB1337A1A9F81C /* [CP-User] Generate Specs */,
 				8A6E5F7CEA29A13F97BF4410EEC1A502 /* Sources */,
 				6409125DAD2EC91B94CA76B552AC98BA /* Frameworks */,
 			);
@@ -14556,23 +14556,23 @@
 			shellPath = /bin/sh;
 			shellScript = "COMPATIBILITY_HEADER_PATH=\"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h\"\nMODULE_MAP_PATH=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap\"\n\nditto \"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h\" \"${COMPATIBILITY_HEADER_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/YogaKit/YogaKit.modulemap\" \"${MODULE_MAP_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/YogaKit/YogaKit-umbrella.h\" \"${BUILT_PRODUCTS_DIR}\"\nprintf \"\\n\\nmodule ${PRODUCT_MODULE_NAME}.Swift {\\n  header \\\"${COMPATIBILITY_HEADER_PATH}\\\"\\n  requires objc\\n}\\n\" >> \"${MODULE_MAP_PATH}\"\n";
 		};
-		430F95D3D1E72F7E549E5F5E1C98A928 /* [CP-User] Generate Specs */ = {
+		B2B6B6A3C305EE1BA7BB1337A1A9F81C /* [CP-User] Generate Specs */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"/Users/sam/Desktop/work/thenewboston-mobile/node_modules/react-native/scripts/../Libraries",
+				"/Users/developer_ocansey/code/react/mobile/thenewboston-mobile/node_modules/react-native/scripts/../Libraries",
 			);
 			name = "[CP-User] Generate Specs";
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/codegen-FBReactNativeSpec.log",
-				"/Users/sam/Desktop/work/thenewboston-mobile/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec/FBReactNativeSpec.h",
-				"/Users/sam/Desktop/work/thenewboston-mobile/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec/FBReactNativeSpec-generated.mm",
+				"/Users/developer_ocansey/code/react/mobile/thenewboston-mobile/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec/FBReactNativeSpec.h",
+				"/Users/developer_ocansey/code/react/mobile/thenewboston-mobile/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec/FBReactNativeSpec-generated.mm",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -o pipefail\n\nbash -l -c 'SRCS_DIR=/Users/sam/Desktop/work/thenewboston-mobile/node_modules/react-native/scripts/../Libraries CODEGEN_MODULES_OUTPUT_DIR=/Users/sam/Desktop/work/thenewboston-mobile/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec CODEGEN_MODULES_LIBRARY_NAME=FBReactNativeSpec /Users/sam/Desktop/work/thenewboston-mobile/node_modules/react-native/scripts/generate-specs.sh' 2>&1 | tee \"${SCRIPT_OUTPUT_FILE_0}\"";
+			shellScript = "set -o pipefail\n\nbash -l -c 'SRCS_DIR=/Users/developer_ocansey/code/react/mobile/thenewboston-mobile/node_modules/react-native/scripts/../Libraries CODEGEN_MODULES_OUTPUT_DIR=/Users/developer_ocansey/code/react/mobile/thenewboston-mobile/node_modules/react-native/scripts/../React/FBReactNativeSpec/FBReactNativeSpec CODEGEN_MODULES_LIBRARY_NAME=FBReactNativeSpec /Users/developer_ocansey/code/react/mobile/thenewboston-mobile/node_modules/react-native/scripts/generate-specs.sh' 2>&1 | tee \"${SCRIPT_OUTPUT_FILE_0}\"";
 		};
 		BDDED0C33D2AEEA1B98B1616607F4C55 /* [CP] Copy XCFrameworks */ = {
 			isa = PBXShellScriptBuildPhase;

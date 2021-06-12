@@ -1,30 +1,32 @@
 import "react-native-gesture-handler";
 
 import * as React from "react";
-import { View, Text, Image } from "react-native";
 
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import { Image, Text, View } from "react-native";
 
+import Back from "./src/assets/svg/Back.svg";
 import ConnectScreen from "./src/views/Connect/Connect";
 import CreateAccountScreen from "./src/views/CreateAccount/CreateAccount";
+import EditAccountScreen from "./src/views/EditAccount/EditAccount";
+import Friends from "./src/assets/svg/Friends.svg";
 import FriendsScreen from "./src/views/Friends/Friends";
+// svg
+import Home from "./src/assets/svg/Home.svg";
 import LinearGradient from "react-native-linear-gradient";
 import LoginPasswordScreen from "./src/views/LoginPassword/LoginPassword";
 import LoginScreen from "./src/views/Login/Login";
 import OverviewScreen from "./src/views/MyAccount/Overview";
 import ScanCode from "./src/assets/svg/ScanCode.svg";
+import Settings from "./src/assets/svg/Settings.svg";
 import SettingsScreen from "./src/views/Settings/Settings";
 import TNBLogo from "./src/assets/svg/TNBLogo.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Transactions from "./src/assets/svg/Transactions.svg";
 import TransactionsScreen from "./src/views/Transactions/Transactions";
+import { Typography } from "./src/styles";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-
-// svg
-import Home from "./src/assets/svg/Home.svg";
-import Transactions from "./src/assets/svg/Transactions.svg";
-import Friends from "./src/assets/svg/Friends.svg";
-import Settings from "./src/assets/svg/Settings.svg";
 
 const Navigator = () => {
   const Stack = createStackNavigator();
@@ -69,6 +71,11 @@ const Navigator = () => {
             options={headerOptions}
             name="tab"
             component={TabNavigator}
+          />
+          <Stack.Screen
+          options={editNicknameOptions}
+          name="editAccount"
+          component={EditAccountScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -192,6 +199,22 @@ const headerOptions = {
   headerTitle: "",
   headerLeft: () => null,
 };
+
+const editNicknameOptions= {
+  headerStyle: {
+    backgroundColor: "transparent",
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  headerTitle: "Edit nickname",
+  headerTintColor: '#fff',
+  headerTitleStyle: {
+    fontWeight: "bold",
+    fontSize: Typography.FONT_SIZE_28
+  },
+  headerLeft: () => <Back/>,
+};
+
 
 const tabStyle = {
   position: "absolute",

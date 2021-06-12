@@ -35,7 +35,7 @@ const CustomButton = ({
     titleStyle={{
       color: buttonColor,
       fontSize: 16,
-      fontFamily: "Inter-Regular",
+      // fontFamily: "Inter-Regular",
     }}
     buttonStyle={[Style.buttonStyle, customStyle]}
     loadingProps={{ color: Colors.WHITE }}

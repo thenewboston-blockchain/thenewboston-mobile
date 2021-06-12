@@ -2,15 +2,15 @@ import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
+import AccountNumber from "../../components/AccountNumber/AccountNumber";
 // components
 import Accounts from "../../components/Accounts/Accounts";
+import Copy from "../../assets/svg/Copy.svg";
 import CustomButton from "../../components/CustomButton";
-import AccountNumber from "../../components/AccountNumber/AccountNumber";
-import SignKey from "../../components/SignKey/SignKey";
-
 // svg
 import Refresh from "../../assets/svg/Refresh.svg";
-
+import Share from "../../assets/svg/Share.svg";
+import SignKey from "../../components/SignKey/SignKey";
 import Style from "./Style";
 
 const OverviewScreen = () => {
@@ -57,6 +57,8 @@ const OverviewScreen = () => {
         />
 
         <AccountNumber
+          title={'MY ACCOUNT NUMBER'}
+          icons={[<Share/>, <Copy/>]}
           accountNumber={
             "c7c69c0abe97c2e0bbc2394e11e971d3fb0a75ba96c5d7262fb5272bb5ec7f6a"
           }
