@@ -56,7 +56,7 @@ const connectScreen = ({navigation: {navigate}}: connect) => {
           <CustomInput
             name="ipAddress"
             value={ipAddress}
-            staticLabel={true}
+            staticLabel={false}
             labelText="ip address"                      
             onChangeText={(value: string) => {
               setIpaddress(value);

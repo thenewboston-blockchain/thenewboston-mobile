@@ -1,42 +1,46 @@
 [
     {
-        "merged": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_round.png"
     },
     {
-        "merged": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher_round.png.flat",
-        "source": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png"
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\xml_network_security_config.xml.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\xml\\network_security_config.xml"
     },
     {
-        "merged": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher_round.png"
     },
     {
-        "merged": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher_round.png.flat",
-        "source": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png"
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher_round.png"
     },
     {
-        "merged": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher_round.png"
     },
     {
-        "merged": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher_round.png.flat",
-        "source": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png"
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher.png"
     },
     {
-        "merged": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher.png"
     },
     {
-        "merged": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher.png.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png"
     },
     {
-        "merged": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.png"
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher.png"
     },
     {
-        "merged": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher_round.png.flat",
-        "source": "/Users/sam/Desktop/work/thenewboston-mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png"
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "E:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher.png"
     }
 ]

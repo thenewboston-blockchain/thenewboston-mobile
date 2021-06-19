@@ -103,3 +103,6 @@ dist
 
 # TernJS port file
 .tern-port
+__tests__/App-test.js
+android/.gradle/6.7/executionHistory/executionHistory.bin
+*.lock

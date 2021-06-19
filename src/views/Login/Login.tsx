@@ -17,7 +17,7 @@ const LoginScreen = ({ navigation }:login) => {
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
 
-  const goToPasswordLogin = () => {
+  const goToPasswordLogin = () => { 
     navigation.navigate("loginPassword");
   };
 
