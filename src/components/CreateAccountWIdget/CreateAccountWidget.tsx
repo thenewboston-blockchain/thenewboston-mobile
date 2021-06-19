@@ -4,9 +4,9 @@ import CustomButton from 'components/CustomButton';
 import CustomInput from 'components/CustomInput';
 import React from 'react';
 import Style from './Style'
-import { useState } from 'react'; 
-import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston'
-
+import { useState } from 'react';  
+import {Buffer} from 'buffer' 
+import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston' 
 interface createAccount {
     title: string,
     navigation: any,
@@ -30,13 +30,10 @@ const CreateAccountWidget = (props: createAccount) => {
     })
     const [loading, setLoading] = useState<boolean>(false)
 
-    const handleCreateAccount=()=>{ 
-        const accountData = {
-            signingKey: "61647c0dd309646ea5b3868c8c237158483a10484b0485663e4f82a68a10535e",
-            accountNumber: "0fa2596d9fada397a6668463fed71c8c7260a411d108da6480d65121d443cc58",
-          };
-        const account = new Account(accountData.signingKey, accountData.accountNumber);
-        console.log("handleCreateAccount");
+    const handleCreateAccount=()=>{    
+        const account = new Account(); 
+        const signingKeyHex = account.signingKey
+        const accountNumberHex = account.accountNumberHex
         account.createSignedMessage({ name: data.nickname }); 
         props.navigation.navigate('tab')
         
