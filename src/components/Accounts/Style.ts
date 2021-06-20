@@ -43,6 +43,10 @@ const Style = StyleSheet.create({
     dropDownIcon: {
       marginRight: 6,
     },
+    activeButton: {
+      marginLeft: 8,
+      borderRadius: 50,
+    },
   });
   
   

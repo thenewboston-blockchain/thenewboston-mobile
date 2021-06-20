@@ -12,10 +12,12 @@ import AccountNumber from "../../components/AccountNumber/AccountNumber";
 import SignKey from "../../components/SignKey/SignKey";
 
 import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
+import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
 import BottomDrawer from "react-native-bottom-drawer-view";
-
+import { BlurView, VibrancyView } from "@react-native-community/blur";
 // svg
 import Refresh from "../../assets/svg/Refresh.svg";
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const TAB_BAR_HEIGHT = 20;
@@ -31,22 +33,24 @@ const OverviewScreen = (props) => {
   ]);
   const [loading, setLoading] = useState(false);
 
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);  
+  const [doneVisible, setDoneVisible] = useState(true); 
+  const [viewRef, setViewRef] = useState(null);  
 
   const handleSendCoins = () => {
     console.log("send coins");
   };
 
   return (
-    <View style={Style.container}>
-      <View style={{ alignItems: "center" }}>
-        <Text style={Style.heading}>John Doe</Text>
+    <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
+      <View style={{ alignItems: "center"}} >
+        <Text style={Style.heading}>John Doe</Text> 
         <Accounts
           accounts={accounts}
           addAccount={() => setModalVisible(true)}
         />
 
-      </View>
+      </View> 
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={[Custom.row, Custom.mt30]}>
@@ -108,6 +112,37 @@ const OverviewScreen = (props) => {
             />
         </View>
       </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={doneVisible}  
+        onRequestClose={() => {
+          // this.closeButtonFunction()
+        }}
+        
+      >
+         <BlurView
+          style={Style.absolute}
+          blurType="dark"
+          blurAmount={5}
+          reducedTransparencyFallbackColor="white"
+        />
+             
+         <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.9)']} style={Style.doModalContainer}>
+            <DoneModalViewWidget 
+                    title={"Done"}
+                    message={"Your account has been successfully created!"}
+                    navigation={props.navigation}
+                    button={"Ok"} 
+                    handleOk={() => {
+                    setDoneVisible(false);
+                }} />
+        </LinearGradient> 
+        
+        
+      </Modal>
+
 
     </View>
   );

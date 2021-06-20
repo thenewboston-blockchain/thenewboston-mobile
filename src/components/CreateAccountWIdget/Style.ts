@@ -10,11 +10,21 @@ const Styles = StyleSheet.create({
   formView: {
     marginTop: "10%",
     alignItems: "center",
-    width:"100%"
+    width:"100%",
   },
   heading: {
     fontSize: Typography.FONT_SIZE_28,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
+  },
+  customStyle:{
+    borderWidth: 0.3,
+    paddingHorizontal: 10,
+    backgroundColor: "#1E323A",
+    borderColor: "#62737E",
+    borderRadius: 12,
+    zIndex: 1,
+    height: 70,
+    marginBottom: 20,
   },
   labelStyle: {
     textTransform: "uppercase",

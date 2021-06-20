@@ -1,4 +1,4 @@
-#Sat Jun 19 13:23:49 CST 2021
+#Sun Jun 20 18:18:29 CST 2021
 base.2=E\:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\classes_0.dex
 base.1=E\:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\classes.dex
 base.0=E\:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
@@ -22,8 +22,14 @@ renamed.2=classes3.dex
 path.0=classes.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
+renamed.13=classes14.dex
+renamed.12=classes13.dex
 renamed.11=classes12.dex
 renamed.10=classes11.dex
+path.13=classes_11.dex
+base.13=E\:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\classes_11.dex
+path.12=classes_10.dex
+base.12=E\:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\classes_10.dex
 path.11=classes_9.dex
 base.11=E\:\\TianYing\\TianYing(Github)\\thenew-mobile\\android\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\classes_9.dex
 path.10=classes_8.dex

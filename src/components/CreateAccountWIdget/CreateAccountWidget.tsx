@@ -1,7 +1,7 @@
 import { Colors, Typography } from 'styles';
 import { Text, View } from 'react-native'; 
-import CustomButton from 'components/CustomButton';
-import CustomInput from 'components/CustomInput';
+import CustomButton from '../../components/CustomButton';
+import CustomInput from '../../components/CustomInput' 
 import React from 'react';
 import Style from './Style'
 import { useState } from 'react';  
@@ -30,12 +30,25 @@ const CreateAccountWidget = (props: createAccount) => {
     })
     const [loading, setLoading] = useState<boolean>(false)
 
-    const handleCreateAccount=()=>{    
-        const account = new Account(); 
-        const signingKeyHex = account.signingKey
-        const accountNumberHex = account.accountNumberHex
-        account.createSignedMessage({ name: data.nickname }); 
-        props.navigation.navigate('tab')
+    const handleCreateAccount=()=>{   
+        if(activity == NEW_ACCOUNT){
+            const account = new Account(); 
+            const signingKeyHex = account.signingKey
+            const accountNumberHex = account.accountNumberHex
+            console.log('signingKeyHex = ' + signingKeyHex)
+            console.log('accountNumberHex = ' + accountNumberHex)
+            account.createSignedMessage({ name: data.nickname }); 
+            props.navigation.navigate('tab')
+        }
+        else if(activity == EXISTING_ACCOUNT){
+            const account = new Account(data.key); 
+            const signingKeyHex = account.signingKey
+            const accountNumberHex = account.accountNumberHex
+            console.log('signingKeyHex = ' + signingKeyHex)
+            console.log('accountNumberHex = ' + accountNumberHex)
+            account.createSignedMessage({ name: data.nickname }); 
+            props.navigation.navigate('tab')
+        }
         
     }
 
@@ -49,15 +62,16 @@ const CreateAccountWidget = (props: createAccount) => {
           <Text style={[Typography.FONT_REGULAR, Style.heading]}>
             {props.title}
           </Text>
-        <View style={Style.switch}>
-            <Text style={activity===NEW_ACCOUNT?Style.active:Style.inactive } onPress={ () => { setActivity(NEW_ACCOUNT) } }>Create New Account</Text>
-            <Text style={activity===EXISTING_ACCOUNT?Style.active:Style.inactive } onPress={ () => { setActivity(EXISTING_ACCOUNT) } }>Add Existing Account</Text>
-        </View>
+            <View style={Style.switch}>
+                <Text style={activity===NEW_ACCOUNT?Style.active:Style.inactive } onPress={ () => { setActivity(NEW_ACCOUNT) } }>Create New Account</Text>
+                <Text style={activity===EXISTING_ACCOUNT?Style.active:Style.inactive } onPress={ () => { setActivity(EXISTING_ACCOUNT) } }>Add Existing Account</Text>
+            </View>
             <CustomInput
                 name="nickname"
                 value={data.nickname}
                 staticLabel={false}
                 labelText="nickname"
+                customInputStyle={{color:'white'}}
                 onChangeText={(value: string) => {
                     setData({
                         ...data,
@@ -69,9 +83,13 @@ const CreateAccountWidget = (props: createAccount) => {
             {activity === EXISTING_ACCOUNT &&
                 <CustomInput
                     name="key"
-                    value={data.key}
+                    value={data.key} 
                     staticLabel={false}
-                    labelText="signing key"
+                    labelText="signing key" 
+                    customInputStyle={{color:'white'}}  
+                    customStyles = {Style.customStyle}
+                    numberOfLines = {3}
+                    multiline = {true}
                     onChangeText={(value: string) => {
                         setData({
                             ...data,

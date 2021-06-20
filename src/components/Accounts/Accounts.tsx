@@ -11,7 +11,7 @@ import Style from './Style';
 
 interface Account {
   name: string;
-  active: Boolean;
+  active: boolean;
 }
 
 interface Accounts {
