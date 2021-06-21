@@ -31,8 +31,8 @@ import Settings from "./src/assets/svg/Settings.svg";
 import ArrowBack from "./src/assets/svg/ArrowBack.svg";
 
 
-const Navigator = () => {
-  const Stack = createStackNavigator();
+const Navigator = ({route}) => {
+  const Stack = createStackNavigator(); 
   return (
     <LinearGradient
       colors={["#62737E", "#040505"]}
@@ -63,6 +63,7 @@ const Navigator = () => {
           <Stack.Screen
             name="login"
             component={LoginScreen}
+            //initialParams={{bank_url:route.params.}}
             options={authHeaderOptions}
           />
           <Stack.Screen
@@ -98,8 +99,9 @@ const TabIcon = ({ icon, text, focused }) => {
   );
 };
 
-const TabNavigator = () => {
-  const Tab = createBottomTabNavigator();
+const TabNavigator = ({route}) => {
+  const Tab = createBottomTabNavigator();  
+
   return (
     <Tab.Navigator
       tabBarOptions={{ showLabel: false, style: tabStyle }}
@@ -116,6 +118,7 @@ const TabNavigator = () => {
             />
           ),
         }}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts}}
         component={OverviewStackScreen}
       />
       <Tab.Screen
@@ -161,14 +164,14 @@ const TabNavigator = () => {
   );
 };
 
-const OverviewStackScreen = () => {
-  const OverviewStack = createStackNavigator();
-
+const OverviewStackScreen = ({route}) => {
+  const OverviewStack = createStackNavigator();  
   return (
     <OverviewStack.Navigator>
       <OverviewStack.Screen
         options={{ headerShown: false }}
-        name="overview"
+        name="overview" 
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts}}
         component={OverviewScreen}
       />
       <OverviewStack.Screen

@@ -7,15 +7,29 @@ import { Custom, Typography, Colors } from "styles";
 import CustomInput from "../../components/CustomInput";
 import CustomSelect from "../../components/CustomSelect";
 import CustomButton from "../../components/CustomButton";
+import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston' 
 
-const LoginPasswordScreen = ({ navigation }) => {
-  const [password, setPassword] = useState("");
-  const [nickname, setNickname] = useState("");
+const LoginPasswordScreen = ({ navigation, route}) => {
+  const [password, setPassword] = useState("23ba5b604ac5291510d9aa3856666c75bb88fb68a10329930faa1639c59c8cd2");
+  const [nickname, setNickname] = useState("Mobile1");
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
+  const {accounts} = route.params.accounts;
 
   const login = () => {
-    navigation.navigate("tab");
+    const account = new Account(password); 
+    const signingKey = account.signingKey
+    const accountNumberHex = account.accountNumberHex
+    let signedMessage = account.createSignedMessage({ name: nickname });
+    console.log('signingKeyHex = ' + signedMessage.signature)
+    console.log('accountNumber = ' + signedMessage.node_identifier) 
+    console.log('signedMessage = ' + signingKey)  
+    navigation.navigate('tab', {
+      nickname: nickname,
+      signingKeyHex: signedMessage.signature,
+      accountNumber: signedMessage.node_identifier, 
+      signingKey: password,
+    });
   };
 
   const handleSubmit = () => {
@@ -53,6 +67,9 @@ const LoginPasswordScreen = ({ navigation }) => {
             name="password"
             value={password}
             staticLabel={false}
+            customStyles = {Style.customStyle}
+            numberOfLines = {3}
+            multiline = {true}
             labelText="password"
             onChangeText={(value: string) => {
               setPassword(value);

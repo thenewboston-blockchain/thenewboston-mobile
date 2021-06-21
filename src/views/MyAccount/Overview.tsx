@@ -23,28 +23,29 @@ import LinearGradient from 'react-native-linear-gradient';
 const TAB_BAR_HEIGHT = 20;
 const DOWN_DISPLAY = 50;
 
-const OverviewScreen = (props) => {
+const OverviewScreen = ({ route, navigation }) => {
 
-  const [accounts, setAccoiunts] = useState([
-    { active: true, name: "John Doe" },
-    { active: false, name: "Rob Tin" },
-    { active: false, name: "Hissein Johnson" },
-    { active: false, name: "Brad Scott" },
-  ]);
+  // const [accounts, setAccoiunts] = useState([
+  //   { active: true, name: "John Doe" },
+  //   { active: false, name: "Rob Tin" },
+  //   { active: false, name: "Hissein Johnson" },
+  //   { active: false, name: "Brad Scott" },
+  // ]);
   const [loading, setLoading] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);  
   const [doneVisible, setDoneVisible] = useState(true); 
   const [viewRef, setViewRef] = useState(null);  
+  const {nickname, signingKeyHex, accountNumber, signingKey, accounts} = route.params; 
 
-  const handleSendCoins = () => {
+  const handleSendCoins = () => { 
     console.log("send coins");
   };
 
   return (
     <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
       <View style={{ alignItems: "center"}} >
-        <Text style={Style.heading}>John Doe</Text> 
+        <Text style={Style.heading}>{nickname}</Text> 
         <Accounts
           accounts={accounts}
           addAccount={() => setModalVisible(true)}
@@ -70,7 +71,7 @@ const OverviewScreen = (props) => {
         <CustomButton
           title="Send Coins"
 
-          onPress={()=>props.navigation.navigate('sendcoins1')}
+          onPress={()=>navigation.navigate('sendcoins1')}
           buttonColor={Colors.WHITE}
           loading={loading}
           customStyle={{ width: "35%" }}
@@ -78,15 +79,16 @@ const OverviewScreen = (props) => {
 
         <AccountNumber
           accountNumber={
-            "c7c69c0abe97c2e0bbc2394e11e971d3fb0a75ba96c5d7262fb5272bb5ec7f6a"
+            accountNumber
           }
         />
         <SignKey
           signKey={
-            "................................................................................"
+            signingKey
+            
           }
         />
-
+{/* "................................................................................" */}
         <CustomButton
           title="Delete Account"
           onPress={handleSendCoins}
@@ -105,7 +107,7 @@ const OverviewScreen = (props) => {
       >
         <View style={Style.modalContainer}>
           <CreateAccountWidget title={"Create or Add Account"}
-            navigation={props.navigation}
+            navigation={navigation}
             handleCancel={() => {
               setModalVisible(false);
             }}
@@ -133,7 +135,7 @@ const OverviewScreen = (props) => {
             <DoneModalViewWidget 
                     title={"Done"}
                     message={"Your account has been successfully created!"}
-                    navigation={props.navigation}
+                    navigation={navigation}
                     button={"Ok"} 
                     handleOk={() => {
                     setDoneVisible(false);

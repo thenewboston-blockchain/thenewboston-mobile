@@ -20,7 +20,17 @@ const Styles = StyleSheet.create({
     zIndex: 100,
     fontWeight: "bold",
     fontSize: 10,
-  }
+  },
+  customStyle:{
+    borderWidth: 0.3,
+    paddingHorizontal: 10,
+    backgroundColor: "#1E323A",
+    borderColor: "#62737E",
+    borderRadius: 12,
+    zIndex: 1,
+    height: 70,
+    marginBottom: 20,
+  },
 });
 
 export default Styles;

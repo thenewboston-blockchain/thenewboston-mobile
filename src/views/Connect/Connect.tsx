@@ -1,7 +1,7 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-
+import {Account, Bank} from 'thenewboston' 
 import CustomButton from "../../components/CustomButton";
 // components
 import CustomInput from "../../components/CustomInput";
@@ -13,17 +13,28 @@ interface connect {
 }
 
 const connectScreen = ({navigation: {navigate}}: connect) => {
-  const [ipAddress, setIpaddress] = useState("");
-  const [port, setPort] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [protocol, setProtocol] = useState("");
+  const [ipAddress, setIpaddress] = useState("54.177.121.3");
+  const [port, setPort] = useState("80");
+  const [nickname, setNickname] = useState("Sevdev");
+  const [protocol, setProtocol] = useState("http");
   const [loading, setLoading] = useState(false);
   const [isValid,setValid] = useState(false);
 
   const protocols = [{ label: "HTTP", value: "http" }];
 
-  const handleSubmit=()=>{
-    navigate('login')
+  const handleSubmit = async()=>{
+    let bank_url = protocol + '://' + ipAddress
+    const bank = new Bank(bank_url);
+    try{
+      const accounts = await bank.getAccounts();
+      navigate('login', {
+        accounts: accounts
+      }); 
+      console.log(accounts)
+    } catch(err){
+      console.log(err)
+    }
+     
   }
 
   return (

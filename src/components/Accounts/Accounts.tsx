@@ -76,7 +76,8 @@ const Accounts = (props: Accounts) => {
       >
         {accounts.map((account, index) => (
           <ListItemButton
-            style={account.active ? Style.activeButton : Style.button}
+            // style={account.active ? Style.activeButton : Style.button}
+            style={Style.activeButton}
             onPress={() => null}
             key={index}
             active={account.active}

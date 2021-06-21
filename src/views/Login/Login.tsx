@@ -13,12 +13,15 @@ interface login {
   navigation: any
 }
 
-const LoginScreen = ({ navigation }:login) => {
+const LoginScreen = ({ navigation, route}:login) => {
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
 
+
   const goToPasswordLogin = () => { 
-    navigation.navigate("loginPassword");
+    navigation.navigate("loginPassword", {
+      accounts: route.params.accounts
+    });
   };
 
   const handleSubmit = () => {
