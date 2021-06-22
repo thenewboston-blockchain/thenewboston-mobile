@@ -28,9 +28,10 @@ const connectScreen = ({navigation: {navigate}}: connect) => {
     try{
       const accounts = await bank.getAccounts();
       navigate('login', {
-        accounts: accounts
+        accounts: accounts,
+        bank_url: bank_url
       }); 
-      console.log(accounts)
+      //console.log(accounts)
     } catch(err){
       console.log(err)
     }

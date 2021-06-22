@@ -22,6 +22,8 @@ import TransactionsScreen from "./src/views/Transactions/Transactions";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Colors, Custom, Typography } from "styles";
+import QRCodeScreen from "./src/views/QRCode/QRcode";;
+
 
 // svg
 import Home from "./src/assets/svg/Home.svg";
@@ -44,20 +46,21 @@ const Navigator = ({route}) => {
       <NavigationContainer theme={MainTheme}>
         <Stack.Navigator>
           <Stack.Screen
-            name="connect"
+            name="connec"
             component={ConnectScreen}
-            options={{
-              ...authHeaderOptions,
-              headerRight: () => (
-                <TouchableOpacity>
-                  <ScanCode />
-                </TouchableOpacity>
-              ),
-            }}
+            options={({ navigation }) =>
+            qrCodeHeaderOptions("", navigation)
+            }
+            
           />
           <Stack.Screen
             name="createAccount"
             component={CreateAccountScreen}
+            options={authHeaderOptions}
+          />
+          <Stack.Screen
+            name="qrCodeScreen"
+            component={QRCodeScreen}
             options={authHeaderOptions}
           />
           <Stack.Screen
@@ -100,8 +103,7 @@ const TabIcon = ({ icon, text, focused }) => {
 };
 
 const TabNavigator = ({route}) => {
-  const Tab = createBottomTabNavigator();  
-
+  const Tab = createBottomTabNavigator();   
   return (
     <Tab.Navigator
       tabBarOptions={{ showLabel: false, style: tabStyle }}
@@ -118,7 +120,7 @@ const TabNavigator = ({route}) => {
             />
           ),
         }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, bank_url: route.params.bank_url, login: route.params.login}}
         component={OverviewStackScreen}
       />
       <Tab.Screen
@@ -132,6 +134,7 @@ const TabNavigator = ({route}) => {
             />
           ),
         }}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, bank_url: route.params.bank_url}}
         component={TransactionsScreen}
       />
       <Tab.Screen
@@ -171,7 +174,7 @@ const OverviewStackScreen = ({route}) => {
       <OverviewStack.Screen
         options={{ headerShown: false }}
         name="overview" 
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, bank_url: route.params.bank_url, login: route.params.login}}
         component={OverviewScreen}
       />
       <OverviewStack.Screen
@@ -208,6 +211,23 @@ const authHeaderOptions = {
   },
   headerTitle: "",
   headerLeft: () => <TNBLogo />,
+}; 
+
+const qrCodeHeaderOptions = (title, navigation) => {
+  return {
+    headerStyle: {
+      backgroundColor: "transparent",
+      elevation: 0,
+      shadowOpacity: 0,
+    }, 
+    headerTitle: title,
+      headerRight: () => (
+        <TouchableOpacity onPress={() => navigation.navigate("qrCodeScreen")}>
+          <ScanCode />
+        </TouchableOpacity>
+      ), 
+    headerLeft: () => <TNBLogo />, 
+  }; 
 };
 
 const headerOptions = {

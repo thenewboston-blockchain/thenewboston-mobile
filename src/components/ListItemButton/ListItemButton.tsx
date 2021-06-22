@@ -16,6 +16,7 @@ interface ListItem {
   text?: string;
   style: any;
   icon?: any;
+  noname?:boolean; 
 }
 
 const Touchable = Platform.select({
@@ -25,11 +26,17 @@ const Touchable = Platform.select({
   default: TouchableOpacity,
 });
 
-const getInitials = (name) => {
-  var matches = name.match(/\b(\w)/g);
-  return matches.join("").toUpperCase();
+const getInitials = (name, noname) => {
+  if(noname == true){
+    return name;
+  }
+  else{
+    var matches = name.match(/\b(\w)/g);
+    return matches.join("").toUpperCase();
+  }
+  
 };
-const ListItemButton = ({ active, onPress, text, style, icon }: ListItem) => {
+const ListItemButton = ({ active, onPress, text, style, icon , noname}: ListItem, props) => {
   const textStyle = [Style.text];
   style = [style];
 
@@ -51,8 +58,7 @@ const ListItemButton = ({ active, onPress, text, style, icon }: ListItem) => {
           <Avatar
             size={56}
             rounded
-            title={getInitials(text)}
-            onPress={() => console.log("Works!")}
+            title={getInitials(text, noname)} 
             activeOpacity={0.7}
             titleStyle={{ fontSize: 18, fontWeight: "600" }}
             containerStyle={{

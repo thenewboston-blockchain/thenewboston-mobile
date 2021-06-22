@@ -5,6 +5,7 @@ import {
   View,
   FlatList,
 } from "react-native";
+import {Account, Bank, Transaction} from 'thenewboston' 
 import Style from "./Style";
 
 // components
@@ -12,23 +13,34 @@ import TransactionItem from "../../components/TransactionItem/TransactionItem";
 
 // svg
 
-const TransactionsScreen = () => {
-  const [transactions, setTransactions] = useState(testTransactions);
+const TransactionsScreen = ({route}) => {
+  const {nickname, signingKeyHex, accountNumber, signingKey, bank_url, login} = route.params; 
+  const [transactions, setTransactions] = useState(null);    
+
+  useEffect(() => { 
+    async function gettingTransactions() {
+      const bank = new Bank(bank_url);
+      var trans = await bank.getTransactions(); 
+      setTransactions(trans); 
+    } 
+    gettingTransactions()
+    
+  }, []);
 
   return (
     <View style={Style.container}>
       <View style={{ alignItems: "center" }}>
-        <Text style={[Custom.mb10, { color: "#62737E" }]}>John Doe,</Text>
+        <Text style={[Custom.mb10, { color: "#62737E" }]}>{nickname}</Text>
         <Text style={Style.heading}>Transactions</Text>
       </View>
 
       <FlatList
-        data={transactions}
+        data={transactions != null && transactions.results != null ? transactions.results : null}
         renderItem={({ item, index }) => (
           <TransactionItem
-            transaction={item}
+            transaction={item} 
             showDate={
-              index == 0 || item.date != transactions[index - 1].date
+              index == 0 || item.id != transactions.results[index - 1].id
                 ? true
                 : false
             }

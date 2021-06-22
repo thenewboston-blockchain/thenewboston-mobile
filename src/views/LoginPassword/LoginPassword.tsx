@@ -14,13 +14,13 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   const [nickname, setNickname] = useState("Mobile1");
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
-  const {accounts} = route.params.accounts;
+  const {accounts, bank_url} = route.params;
 
   const login = () => {
     const account = new Account(password); 
     const signingKey = account.signingKey
     const accountNumberHex = account.accountNumberHex
-    let signedMessage = account.createSignedMessage({ name: nickname });
+    let signedMessage = account.createSignedMessage({ name: nickname }); 
     console.log('signingKeyHex = ' + signedMessage.signature)
     console.log('accountNumber = ' + signedMessage.node_identifier) 
     console.log('signedMessage = ' + signingKey)  
@@ -29,6 +29,9 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       signingKeyHex: signedMessage.signature,
       accountNumber: signedMessage.node_identifier, 
       signingKey: password,
+      accounts: accounts,
+      bank_url: bank_url,
+      login: 'login',
     });
   };
 

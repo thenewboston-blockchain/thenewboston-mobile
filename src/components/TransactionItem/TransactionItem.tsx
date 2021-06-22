@@ -25,7 +25,7 @@ const TransactionItem = ({ transaction, showDate }: TransactionProps) => {
     <TouchableOpacity style={Style.container} onPress={() => toggleOpen(!open)}>
       {showDate ? (
         <View style={Style.dateContainer}>
-          <Text style={Style.dateText}>{transaction.date}</Text>
+          <Text style={Style.dateText}>{transaction.block.modified_date}</Text>
         </View>
       ) : null}
 
@@ -35,7 +35,7 @@ const TransactionItem = ({ transaction, showDate }: TransactionProps) => {
         </View>
         <View style={{ flex: 0.4, justifyContent: "space-between" }}>
           <Text style={Style.subHeading}>SENDER</Text>
-          <Text style={Style.heading}>{transaction.sender}</Text>
+          <Text style={Style.heading}>{transaction.block.sender}</Text>
         </View>
         <View style={{ flex: 0.35, justifyContent: "space-between" }}>
           <Text style={Style.subHeading}>AMOUNT</Text>

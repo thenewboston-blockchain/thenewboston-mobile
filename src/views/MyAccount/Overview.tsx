@@ -33,22 +33,35 @@ const OverviewScreen = ({ route, navigation }) => {
   // ]);
   const [loading, setLoading] = useState(false);
 
-  const [modalVisible, setModalVisible] = useState(false);  
-  const [doneVisible, setDoneVisible] = useState(true); 
+  const [modalVisible, setModalVisible] = useState(false);   
   const [viewRef, setViewRef] = useState(null);  
-  const {nickname, signingKeyHex, accountNumber, signingKey, accounts} = route.params; 
+  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, bank_url, login} = route.params; 
+  const [actName, setActName] = useState(nickname); 
+  const [actNumber, setActNumber] = useState(accountNumber);  
+  const [actSignKey, setActSignKey] = useState(signingKey); 
+  const [doneVisible, setDoneVisible] = useState(login != 'login'); 
 
+ 
   const handleSendCoins = () => { 
     console.log("send coins");
   };
 
+  const handleTransIndex = (index) => { 
+    if(accounts.results[index - 1].name == null){
+      setActName(index);
+    } 
+    setActNumber(accounts.results[index - 1].account_number);
+    setActSignKey(accounts.results[index - 1].id);  //will be updated
+  }
+
   return (
     <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
       <View style={{ alignItems: "center"}} >
-        <Text style={Style.heading}>{nickname}</Text> 
+        <Text style={Style.heading}>{actName}</Text> 
         <Accounts
-          accounts={accounts}
+          accounts={accounts.results}
           addAccount={() => setModalVisible(true)}
+          handleTransIndex = {(index) => handleTransIndex(index)}
         />
 
       </View> 
@@ -79,12 +92,12 @@ const OverviewScreen = ({ route, navigation }) => {
 
         <AccountNumber
           accountNumber={
-            accountNumber
+            actNumber
           }
         />
         <SignKey
           signKey={
-            signingKey
+            actSignKey
             
           }
         />

@@ -10,17 +10,18 @@ import Style from "./Style";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface login {
-  navigation: any
+  navigation: any,
+  route: any
 }
 
-const LoginScreen = ({ navigation, route}:login) => {
+const LoginScreen = ({ navigation, route }:login) => {
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
-
-
+ 
   const goToPasswordLogin = () => { 
     navigation.navigate("loginPassword", {
-      accounts: route.params.accounts
+      accounts: route.params.accounts,
+      bank_url: route.params.bank_url, 
     });
   };
 
