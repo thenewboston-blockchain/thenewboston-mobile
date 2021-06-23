@@ -14,6 +14,8 @@ target 'newthebostonapp' do
 
   pod 'react-native-blur', :path => '../node_modules/@react-native-community/blur'
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
   target 'newthebostonappTests' do
     inherit! :complete
     # Pods for testing
