@@ -19,14 +19,19 @@ const LoginScreen = ({ navigation, route }:login) => {
   const [isValid, setValid] = useState(false);
  
   const goToPasswordLogin = () => { 
-    navigation.navigate("loginPassword", {
+    navigation.navigate("loginPassword", { 
       accounts: route.params.accounts,
       bank_url: route.params.bank_url, 
+      nickname: route.params.nickname,
     });
   };
 
-  const handleSubmit = () => {
-    navigation.navigate("createAccount");
+  const handleSubmit = () => { 
+    navigation.navigate("createAccount", { 
+      accounts: route.params.accounts,
+      bank_url: route.params.bank_url, 
+      nickname: route.params.nickname, 
+    });
   };
 
   return (

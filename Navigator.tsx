@@ -134,7 +134,7 @@ const TabNavigator = ({route}) => {
             />
           ),
         }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, bank_url: route.params.bank_url}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, bank_url: route.params.bank_url, login: route.params.login}}
         component={TransactionsScreen}
       />
       <Tab.Screen

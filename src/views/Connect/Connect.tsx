@@ -8,38 +8,49 @@ import CustomInput from "../../components/CustomInput";
 import CustomSelect from "../../components/CustomSelect";
 import Style from "./Style";
 import { IAppState } from '../../store/store';
-import {connect, useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch} from 'react-redux';
 
 import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../../actions/loginActions'
 
-interface connects {
-  props: any;
+interface connects { 
   navigation: any; // TODO use navigation props type
 }
  
 
-const connectScreen = (props, {navigation: {navigate}}: connects) => {
-  // console.log('props = ', props)
-  const ipAddress = useSelector((state: IAppState) => state.loginState.ipAddress);
+const connectScreen = ({navigation: {navigate}}: connects) => { 
+
+  const dispatch = useDispatch();
+
   const port = useSelector((state: IAppState) => state.loginState.port);
   const nickname = useSelector((state: IAppState) => state.loginState.nickName); 
   const protocol = useSelector((state: IAppState) => state.loginState.protocol);
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const [isValid, setValid] = useState(false);
+  const ipAddress = useSelector((state: IAppState) => {state.loginState.ipAddress});
+ 
+  const [lPort, setlPort] = useState<string>(port)
+  const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)
+  const [lNickName, setlNickName] = useState<string>(nickname)
+  const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == null ? "54.177.121.3" : protocol)
 
   
+  const [loading, setLoading] = useState(false);
+  const [isValid, setValid] = useState(false); 
+  const protocols = [{ label: "HTTP", value: "http" }];
 
-  const handleSubmit = async()=>{
-    console.log(props);
-    let bank_url = protocol + '://' + ipAddress
-    const bank = new Bank(bank_url);
+  const handleSubmit = async()=>{ 
+    let bank_url = lProtocol + '://' + lIpAddress 
     try{
+      const bank = new Bank(bank_url);
       const accounts = await bank.getAccounts();
-     
+
+      console.log(lPort);
+      dispatch(ProtocolAction(lProtocol));
+      dispatch(IpAddressAction(lIpAddress))
+      dispatch(NickNameAction(lNickName))
+      dispatch(PortAction(lPort))
       navigate('login', {
+        nickname: lNickName,
         accounts: accounts,
-        bank_url: bank_url
+        bank_url: bank_url, 
       }); 
       //console.log(accounts)
     } catch(err){
@@ -67,43 +78,45 @@ const connectScreen = (props, {navigation: {navigate}}: connects) => {
           </Text>
 
           <CustomSelect
-            options={protocol}
-            selected={protocol}
+            options={protocols}
+            selected={lProtocol}
             required={true}
-            updateSelected={(selected: any) => dispatch(ProtocolAction(selected))}
+            updateSelected={(selected: any) => {
+              setlProtocol(selected) 
+            }}
             customStyle={[Custom.mb20]}
             placeholder={{ label: "Protocol" }}
           />
 
           <CustomInput
             name="ipAddress"
-            value={ipAddress}
+            value={lIpAddress}
             staticLabel={false}
             labelText="ip address"                      
-            onChangeText={(value: string) => { 
-              dispatch(IpAddressAction(value))
+            onChangeText={(value: string) => {  
+              setlIpAddress(value); 
             }}
             autoCapitalize="none"
           />
 
           <CustomInput
             name="port"
-            value={port}
+            value={lPort}
             staticLabel={false}
             labelText="port"
             onChangeText={(value: string) => { 
-              dispatch(PortAction(value))
+              setlPort(value);
             }}
             autoCapitalize="none"
           />
 
           <CustomInput
             name="nickname"
-            value={nickname}
+            value={lNickName}
             staticLabel={false}
             labelText="nickname"
             onChangeText={(value: string) => { 
-              dispatch(NickNameAction(value))
+              setlNickName(value); 
             }}
             autoCapitalize="none"
           />

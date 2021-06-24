@@ -34,7 +34,7 @@ const OverviewScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);   
-  const [viewRef, setViewRef] = useState(null);  
+  const [viewRef, setViewRef] = useState(null);   
   const {nickname, signingKeyHex, accountNumber, signingKey, accounts, bank_url, login} = route.params; 
   const [actName, setActName] = useState(nickname); 
   const [actNumber, setActNumber] = useState(accountNumber);  
@@ -121,6 +121,7 @@ const OverviewScreen = ({ route, navigation }) => {
         <View style={Style.modalContainer}>
           <CreateAccountWidget title={"Create or Add Account"}
             navigation={navigation}
+            route = {route.params} 
             handleCancel={() => {
               setModalVisible(false);
             }}

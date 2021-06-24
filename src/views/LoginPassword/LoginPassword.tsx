@@ -10,11 +10,10 @@ import CustomButton from "../../components/CustomButton";
 import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston' 
 
 const LoginPasswordScreen = ({ navigation, route}) => {
-  const [password, setPassword] = useState("23ba5b604ac5291510d9aa3856666c75bb88fb68a10329930faa1639c59c8cd2");
-  const [nickname, setNickname] = useState("Mobile1");
+  const [password, setPassword] = useState("23ba5b604ac5291510d9aa3856666c75bb88fb68a10329930faa1639c59c8cd2"); 
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
-  const {accounts, bank_url} = route.params;
+  const {accounts, bank_url, nickname} = route.params;
 
   const login = () => {
     const account = new Account(password); 
@@ -35,8 +34,12 @@ const LoginPasswordScreen = ({ navigation, route}) => {
     });
   };
 
-  const handleSubmit = () => {
-    navigation.navigate("createAccount");
+  const handleSubmit = () => {  
+    navigation.navigate('createAccount', { 
+      accounts: accounts,
+      bank_url: bank_url,
+      login: 'create',
+    }); 
   };
 
   return (

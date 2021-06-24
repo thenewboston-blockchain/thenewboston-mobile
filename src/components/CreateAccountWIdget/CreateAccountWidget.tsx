@@ -6,10 +6,11 @@ import React from 'react';
 import Style from './Style'
 import { useState } from 'react';  
 import {Buffer} from 'buffer' 
-import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston' 
+import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Bank} from 'thenewboston' 
 interface createAccount {
     title: string,
-    navigation: any,
+    navigation: any,  
+    route: any,
     handleCancel:Function
 }
 
@@ -28,17 +29,30 @@ const CreateAccountWidget = (props: createAccount) => {
         nickname: "",
         key:""
     })
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)  
+    const {accounts, bank_url} = props.route.params; 
 
-    const handleCreateAccount=()=>{   
+    const handleCreateAccount=async()=>{      
         if(activity == NEW_ACCOUNT){
-            const account = new Account(); 
-            const signingKeyHex = account.signingKey
-            const accountNumberHex = account.accountNumberHex
-            console.log('signingKeyHex = ' + signingKeyHex)
-            console.log('accountNumberHex = ' + accountNumberHex)
-            account.createSignedMessage({ name: data.nickname }); 
-            props.navigation.navigate('tab')
+            try{ 
+                const account = new Account(); 
+                const signingKeyHex = account.signingKey
+                const accountNumberHex = account.accountNumberHex 
+                account.createSignedMessage({ name: data.nickname });  
+
+                let signedMessage = account.createSignedMessage({ name: data.nickname });   
+                props.navigation.navigate('tab', {
+                    nickname: data.nickname, 
+                    accountNumber: signedMessage.node_identifier, 
+                    signingKey: account.signingKey,
+                    accounts: accounts,
+                    bank_url: bank_url,
+                    login: 'create',
+                }); 
+              } catch(err){
+                console.log(err)
+              }
+            
         }
         else if(activity == EXISTING_ACCOUNT){
             const account = new Account(data.key); 
