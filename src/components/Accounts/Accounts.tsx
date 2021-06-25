@@ -65,7 +65,7 @@ const Accounts = (props: Accounts) => {
   const scrollViewPaddingRight = ACCOUNTS_BUTTON_WIDTH - 18; 
   return (
     <View style={Style.container}>
-      <ScrollView
+      {accounts != null && <ScrollView
         horizontal
         style={Style.scrollView}
         contentContainerStyle={[
@@ -88,7 +88,7 @@ const Accounts = (props: Accounts) => {
             noname={results.name == null} 
           />
         ))}
-      </ScrollView>
+      </ScrollView>}
       <View style={Style.stickyItem}>
         {/* <Animated.View
           style={[

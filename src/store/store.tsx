@@ -8,6 +8,7 @@ Redux Thunk middleware allows you to write action creators that return a functio
 import thunk from 'redux-thunk';
 // Import reducers and state type
 import { ILoginState, loginReducer } from '../reducers/loginReducer';
+import { IFriendState, friendReducer } from '../reducers/friendReducer';
 
 const persistConfig = {
   key:'root',
@@ -18,12 +19,14 @@ const persistConfig = {
 }
 // Create an interface for the application state
 export interface IAppState {
-  loginState: ILoginState
+  loginState: ILoginState,
+  friendState: IFriendState,
 }
 
 // Create the root reducer
 const rootReducer = combineReducers<IAppState>({
-    loginState: loginReducer
+    loginState: loginReducer,
+    friendState: friendReducer,
 });
 
 // Create a configure store function of type `IAppState`

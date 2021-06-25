@@ -32,10 +32,10 @@ const CreateAccountWidget = (props: createAccount) => {
     const [loading, setLoading] = useState<boolean>(false)  
     const {accounts, bank_url} = props.route.params; 
 
-    const handleCreateAccount=async()=>{      
-        if(activity == NEW_ACCOUNT){
+    const handleCreateAccount=async()=>{   
+        if(activity == NEW_ACCOUNT){ 
             try{ 
-                const account = new Account(); 
+                const account = new Account();  
                 const signingKeyHex = account.signingKey
                 const accountNumberHex = account.accountNumberHex 
                 account.createSignedMessage({ name: data.nickname });  

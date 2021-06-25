@@ -11,20 +11,22 @@ import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOpti
 
 const LoginPasswordScreen = ({ navigation, route}) => {
   const [password, setPassword] = useState("23ba5b604ac5291510d9aa3856666c75bb88fb68a10329930faa1639c59c8cd2"); 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
   const [isValid, setValid] = useState(false);
   const {accounts, bank_url, nickname} = route.params;
+  const [lnickName, setlNickName] = useState(nickname);
 
   const login = () => {
-    const account = new Account(password); 
+    
+    const account = new Account(password);  
     const signingKey = account.signingKey
     const accountNumberHex = account.accountNumberHex
-    let signedMessage = account.createSignedMessage({ name: nickname }); 
+    let signedMessage = account.createSignedMessage({ name: lnickName }); 
     console.log('signingKeyHex = ' + signedMessage.signature)
     console.log('accountNumber = ' + signedMessage.node_identifier) 
     console.log('signedMessage = ' + signingKey)  
     navigation.navigate('tab', {
-      nickname: nickname,
+      nickname: lnickName,
       signingKeyHex: signedMessage.signature,
       accountNumber: signedMessage.node_identifier, 
       signingKey: password,
@@ -60,11 +62,11 @@ const LoginPasswordScreen = ({ navigation, route}) => {
 
           <CustomInput
             name="nickname"
-            value={nickname}
+            value={lnickName}
             staticLabel={false}
-            labelText="nickname"
+            labelText="lnickName"
             onChangeText={(value: string) => {
-              setNickname(value);
+              setlNickName(value);
             }}
             autoCapitalize="none"
           />
