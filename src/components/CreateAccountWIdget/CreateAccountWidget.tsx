@@ -11,6 +11,8 @@ interface createAccount {
     title: string,
     navigation: any,  
     route: any,
+    validator_accounts: [],
+    addAccount: Function,
     handleCancel:Function
 }
 
@@ -27,41 +29,45 @@ const CreateAccountWidget = (props: createAccount) => {
     const [isValid,setValid] = useState(false);
     const [data, setData] = useState<createAccountPayload>({
         nickname: "",
-        key:""
+        key:"f111e3eaa9d04fbc9352b1f33e5e672793ae06e4b79e6c73457327431df5ddc5"
     })
     const [loading, setLoading] = useState<boolean>(false)  
-    const {accounts, bank_url} = props.route.params; 
+    //const {accounts, bank_url, validator_accounts} = props.route.params; 
 
     const handleCreateAccount=async()=>{   
         if(activity == NEW_ACCOUNT){ 
-            try{ 
-                const account = new Account();  
-                const signingKeyHex = account.signingKey
-                const accountNumberHex = account.accountNumberHex 
-                account.createSignedMessage({ name: data.nickname });  
-
-                let signedMessage = account.createSignedMessage({ name: data.nickname });   
-                props.navigation.navigate('tab', {
-                    nickname: data.nickname, 
-                    accountNumber: signedMessage.node_identifier, 
-                    signingKey: account.signingKey,
-                    accounts: accounts,
-                    bank_url: bank_url,
-                    login: 'create',
-                }); 
-              } catch(err){
-                console.log(err)
-              }
-            
-        }
-        else if(activity == EXISTING_ACCOUNT){
             const account = new Account(data.key); 
             const signingKeyHex = account.signingKey
             const accountNumberHex = account.accountNumberHex
             console.log('signingKeyHex = ' + signingKeyHex)
             console.log('accountNumberHex = ' + accountNumberHex)
             account.createSignedMessage({ name: data.nickname }); 
-            props.navigation.navigate('tab')
+            props.navigation.navigate('tab') 
+        }
+        else if(activity == EXISTING_ACCOUNT){
+            const account = {name: data.nickname, sign_key: data.key, account_number: "", balance: 0}
+            var curBalance = 0;  
+            if(account.name == ""){
+                alert("Please input account name!")
+                return;
+            }
+            if(account.sign_key == ""){
+                alert("Please input signing key!")
+                return;
+            } 
+            const newAccount = new Account(data.key); 
+            account.account_number = newAccount.accountNumberHex
+            console.log("newAccount.accountNumberHex", newAccount.accountNumberHex)
+            if(props.validator_accounts != null){
+                props.validator_accounts.results.map((item)=>{
+                    if(account.account_number == item.account_number){
+                        curBalance = item.balance    ///how to get balance?
+                    } 
+                })
+               
+                account.balance = curBalance 
+                props.addAccount(account, true);  
+            }  
         }
         
     }

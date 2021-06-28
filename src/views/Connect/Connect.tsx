@@ -31,6 +31,8 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const [lNickName, setlNickName] = useState<string>(nickname)
   const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == null ? "54.177.121.3" : protocol)
 
+  const validator_IpAddress = "54.219.183.128"
+
   
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false); 
@@ -42,6 +44,11 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
       const bank = new Bank(bank_url);
       const accounts = await bank.getAccounts();
 
+      let validator_rul = lProtocol + '://' + validator_IpAddress 
+      const validator_bank = new Bank(validator_rul);
+      const validator_accounts = await validator_bank.getAccounts();
+      
+
       console.log(lPort);
       dispatch(ProtocolAction(lProtocol));
       dispatch(IpAddressAction(lIpAddress))
@@ -50,9 +57,10 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
       navigate('login', {
         nickname: lNickName,
         accounts: accounts,
+        validator_accounts: validator_accounts,
         bank_url: bank_url, 
       }); 
-      //console.log(accounts)
+      console.log(accounts)
     } catch(err){
       console.log(err)
     }

@@ -9,6 +9,7 @@ import thunk from 'redux-thunk';
 // Import reducers and state type
 import { ILoginState, loginReducer } from '../reducers/loginReducer';
 import { IFriendState, friendReducer } from '../reducers/friendReducer';
+import { IAccountState, accountReducer } from '../reducers/accountReduer';
 
 const persistConfig = {
   key:'root',
@@ -21,12 +22,14 @@ const persistConfig = {
 export interface IAppState {
   loginState: ILoginState,
   friendState: IFriendState,
+  accountState: IAccountState,
 }
 
 // Create the root reducer
 const rootReducer = combineReducers<IAppState>({
     loginState: loginReducer,
     friendState: friendReducer,
+    accountState: accountReducer,
 });
 
 // Create a configure store function of type `IAppState`

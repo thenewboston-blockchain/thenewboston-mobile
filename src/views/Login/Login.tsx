@@ -21,6 +21,7 @@ const LoginScreen = ({ navigation, route }:login) => {
   const goToPasswordLogin = () => { 
     navigation.navigate("loginPassword", { 
       accounts: route.params.accounts,
+      validator_accounts: route.params.validator_accounts,
       bank_url: route.params.bank_url, 
       nickname: route.params.nickname,
     });
@@ -29,6 +30,7 @@ const LoginScreen = ({ navigation, route }:login) => {
   const handleSubmit = () => { 
     navigation.navigate("createAccount", { 
       accounts: route.params.accounts,
+      validator_accounts: route.params.validator_accounts,
       bank_url: route.params.bank_url, 
       nickname: route.params.nickname, 
     });

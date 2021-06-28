@@ -1,17 +1,20 @@
 import { Colors, Typography } from 'styles';
-import { Text, View } from 'react-native'; 
+import { Text, TextPropTypes, View } from 'react-native'; 
 import CustomButton from '../CustomButton';
 import CustomInput from '../CustomInput' 
 import React from 'react';
 import Style from './Style'
 import { useState } from 'react';  
+import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Bank} from 'thenewboston' 
 import {Buffer} from 'buffer'  
 
 interface createFriend {
     title: string,
     navigation: any,  
     route: any,
-    handleCancel:Function
+    handleCancel: Function,
+    addFirends: Function,
+    accounts: [],
 }
 
 interface createFriendPayload {
@@ -23,18 +26,35 @@ const createFriendWidget = (props: createFriend) => {
     const [isValid,setValid] = useState(false);
     const [data, setData] = useState<createFriendPayload>({
         nickname: "",
-        key:""
+        key:"449baf4c0b43f44e9b091947bf36880bf237a91e413adb85ca2ae1f33e239440"
     })
-    const [loading, setLoading] = useState<boolean>(false)  
-    const {accounts, bank_url} = props.route.params; 
+    const [loading, setLoading] = useState<boolean>(false)   
 
     const handleCreateFriend=async()=>{   
-        props.navigation.navigate('tab', { 
-        }); 
+        const friend = {name: data.nickname, account_number: data.key, balance: "0"} 
+        let curBalance = "0"; 
+        if(friend.name == ""){
+            alert("Please input account name!")
+            return;
+        }
+        if(friend.account_number == ""){
+            alert("Please input account number!")
+            return;
+        }   
+        if(props.accounts != null){
+            props.accounts.results.map((item)=>{
+                if(item.account_number == friend.account_number){
+                    curBalance = item.balance    ///how to get balance?
+                }
+            }) 
+            friend.balance = curBalance;
+            props.addFirends(friend);   
+        } 
+        
     }
 
     // const handleCancel=()=>{
-    //     props.navigation.goBack(null)
+    //     //props.navigation.goBack(null)
     // }
     
     return (
@@ -62,7 +82,7 @@ const createFriendWidget = (props: createFriend) => {
                 name="key"
                 value={data.key} 
                 staticLabel={false}
-                labelText="signing key" 
+                labelText="Friend's account number" 
                 customInputStyle={{color:'white'}}  
                 customStyles = {Style.customStyle}
                 numberOfLines = {3}

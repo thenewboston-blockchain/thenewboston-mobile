@@ -20,7 +20,7 @@ import Refresh from "../../assets/svg/Refresh.svg";
 import LinearGradient from 'react-native-linear-gradient';
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
-import {Account, Bank, Transaction} from 'thenewboston' 
+import { FriendAction } from '../../actions/friendActions'
 
 const TAB_BAR_HEIGHT = 20;
 const DOWN_DISPLAY = 50;
@@ -36,28 +36,29 @@ const FriendsScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch(); 
-  const friends = useSelector((state: IAppState) => state.friendState.friend);
+  const lFriends = useSelector((state: IAppState) => state.friendState.friend);
 
-  console.log('friends', friends);
+  const [friends, setFriends] = useState(lFriends == null ? [] : lFriends); 
 
   const [modalVisible, setModalVisible] = useState(false);   
   const [viewRef, setViewRef] = useState(null);   
-  const {nickname, signingKeyHex, signingKey, accounts, bank_url, login} = route.params;   
-  const [actName, setActName] = useState('No Friends'); 
-  const [balance, setBalance] = useState('0.0');  
-  const [actNumber, setActNumber] = useState('');  
-  const [actSignKey, setActSignKey] = useState(signingKey); 
+  const {nickname, signingKeyHex, signingKey, accounts, validator_accounts, bank_url, login} = route.params;   
+  const [actName, setActName] = useState((friends == null || friends.length == 0) ? 'No Friends' : friends[0].name); 
+  const [balance, setBalance] = useState((friends == null || friends.length == 0) ? '0.0' : friends[0].balance);  
+  const [actNumber, setActNumber] = useState('');   
   const [doneVisible, setDoneVisible] = useState(login != 'login');  
+  
    
   const handleTransIndex = (index) => { 
-    if(friends.length > 0){
-      if(friends[index - 1].name == null){
+    if(friends.length > 0){ 
+      if(friends[index].name == null){
         setActName(index);
       } 
       else{
-        setActName(friends[index - 1].name);
+        setActName(friends[index].name);
       }
-      setActNumber(friends[index - 1].account_number); 
+      setActNumber(friends[index].account_number);  
+      setBalance(friends[index].balance); 
     }
     
   } 
@@ -106,13 +107,45 @@ const FriendsScreen = ({ route, navigation }) => {
         }}
       >
         <View style={Style.modalContainer}>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <CreateFriendWidget title={"Add Friend"}
             navigation={navigation}
             route = {route} 
+            addFirends={(friend) => { 
+              setActName(friend.name);
+              setActNumber(friend.account_number)
+              setBalance(friend.balance)
+              var bExist = false;  
+              var bExistName = false; 
+              friends.map((item)=>{
+                if(item.account_number == friend.account_number){
+                  bExist = true;
+                }
+                if(item.name == friend.name){
+                  bExistName = true;
+                }
+              }) 
+              if(bExist != false){
+                alert("This account number exists in your accounts")
+              }
+              else if(bExistName != false){
+                alert("This account name exists in your accounts")
+              }
+              else{ 
+                friends.push(friend);
+                dispatch(FriendAction(friends));
+                setFriends(friends);
+                setModalVisible(false);
+                setDoneVisible(true);
+              }
+              
+            }} 
+            accounts = {validator_accounts}
             handleCancel={() => {
               setModalVisible(false);
             }}
             />
+            </ScrollView>
         </View>
       </Modal>
 
@@ -135,7 +168,7 @@ const FriendsScreen = ({ route, navigation }) => {
          <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.9)']} style={Style.doModalContainer}>
             <DoneModalViewWidget 
                     title={"Done"}
-                    message={"Your account has been successfully created!"}
+                    message={"Your successfully added a new friend!"}
                     navigation={navigation}
                     button={"Ok"} 
                     handleOk={() => {

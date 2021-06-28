@@ -120,7 +120,7 @@ const TabNavigator = ({route}) => {
             />
           ),
         }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, bank_url: route.params.bank_url, login: route.params.login}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts,bank_url: route.params.bank_url, login: route.params.login}}
         component={OverviewStackScreen}
       />
       <Tab.Screen
@@ -134,7 +134,7 @@ const TabNavigator = ({route}) => {
             />
           ),
         }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, bank_url: route.params.bank_url, login: route.params.login}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login}}
         component={TransactionsScreen}
       />
       <Tab.Screen
@@ -148,7 +148,7 @@ const TabNavigator = ({route}) => {
             />
           ),
         }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, bank_url: route.params.bank_url, login: route.params.login}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login}}
         component={FriendsScreen}
       />
       <Tab.Screen
@@ -176,7 +176,7 @@ const OverviewStackScreen = ({route}) => {
       <OverviewStack.Screen
         options={{ headerShown: false }}
         name="overview" 
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, bank_url: route.params.bank_url, login: route.params.login}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login}}
         component={OverviewScreen}
       />
       <OverviewStack.Screen

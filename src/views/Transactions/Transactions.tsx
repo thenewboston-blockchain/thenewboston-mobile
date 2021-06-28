@@ -7,7 +7,9 @@ import {
 } from "react-native";
 import {Account, Bank, Transaction} from 'thenewboston' 
 import Style from "./Style";
-
+import { IAppState } from '../../store/store';
+import { useSelector, useDispatch} from 'react-redux';
+import { AccountAction } from '../../actions/accountActions'
 // components
 import TransactionItem from "../../components/TransactionItem/TransactionItem";
 
@@ -16,6 +18,8 @@ import TransactionItem from "../../components/TransactionItem/TransactionItem";
 const TransactionsScreen = ({route}) => {
   const {nickname, signingKeyHex, accountNumber, signingKey, bank_url, login} = route.params; 
   const [transactions, setTransactions] = useState(null);    
+  const lAccounts = useSelector((state: IAppState) => state.accountState.account);
+  const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
 
   useEffect(() => { 
     async function gettingTransactions() {
@@ -39,6 +43,7 @@ const TransactionsScreen = ({route}) => {
         renderItem={({ item, index }) => (
           <TransactionItem
             transaction={item} 
+            myAccounts={myAccounts}
             showDate={
               index == 0 || item.id != transactions.results[index - 1].id
                 ? true

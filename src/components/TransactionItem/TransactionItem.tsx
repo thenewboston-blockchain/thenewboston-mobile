@@ -15,11 +15,18 @@ import ArrowDown from "../../assets/svg/ArrowDown.svg";
 
 interface TransactionProps {
   transaction: any;
+  myAccounts: [];
   showDate: Boolean;
 }
 
-const TransactionItem = ({ transaction, showDate }: TransactionProps) => {
+const TransactionItem = ({ transaction, myAccounts, showDate }: TransactionProps) => {
   const [open, toggleOpen] = useState(false);
+  var name = ""
+  myAccounts.map((item)=>{
+    if(item.account_number == transaction.block.sender){
+      name = item.name;
+    } 
+  });
 
   return (
     <TouchableOpacity style={Style.container} onPress={() => toggleOpen(!open)}>
@@ -35,7 +42,7 @@ const TransactionItem = ({ transaction, showDate }: TransactionProps) => {
         </View>
         <View style={{ flex: 0.4, justifyContent: "space-between" }}>
           <Text style={Style.subHeading}>SENDER</Text>
-          <Text style={Style.heading}>{transaction.block.sender}</Text>
+          <Text style={Style.heading}>{name == "" ? transaction.block.sender.substr(0, 10) : name}</Text>
         </View>
         <View style={{ flex: 0.35, justifyContent: "space-between" }}>
           <Text style={Style.subHeading}>AMOUNT</Text>

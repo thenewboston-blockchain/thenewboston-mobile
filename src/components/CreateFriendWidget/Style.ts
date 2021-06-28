@@ -13,6 +13,7 @@ const Styles = StyleSheet.create({
     width:"100%",
   },
   heading: {
+    marginBottom: "5%",
     fontSize: Typography.FONT_SIZE_28,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
   },

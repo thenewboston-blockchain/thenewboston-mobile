@@ -15,5 +15,5 @@ export type FriendActions = IFriendAction;
 
 /*<Promise<Return Type>, State Interface, Type of Param, Type of Action> */
  
-export const ProtocolAction: ActionCreator<ThunkAction<any, IFriendState, null, IFriendAction>> = (friend: []) => 
+export const FriendAction: ActionCreator<ThunkAction<any, IFriendState, null, IFriendAction>> = (friend: []) => 
     (dispatch: Dispatch) => dispatch({type: FriendActionTypes.FRIEND, friend: friend}) 

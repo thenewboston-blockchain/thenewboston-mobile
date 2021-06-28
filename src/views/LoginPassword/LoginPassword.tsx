@@ -13,7 +13,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   const [password, setPassword] = useState("23ba5b604ac5291510d9aa3856666c75bb88fb68a10329930faa1639c59c8cd2"); 
   const [loading, setLoading] = useState(false); 
   const [isValid, setValid] = useState(false);
-  const {accounts, bank_url, nickname} = route.params;
+  const {accounts, validator_accounts, bank_url, nickname} = route.params;
   const [lnickName, setlNickName] = useState(nickname);
 
   const login = () => {
@@ -31,6 +31,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       accountNumber: signedMessage.node_identifier, 
       signingKey: password,
       accounts: accounts,
+      validator_accounts: validator_accounts,
       bank_url: bank_url,
       login: 'login',
     });
@@ -39,6 +40,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   const handleSubmit = () => {  
     navigation.navigate('createAccount', { 
       accounts: accounts,
+      validator_accounts: validator_accounts,
       bank_url: bank_url,
       login: 'create',
     }); 

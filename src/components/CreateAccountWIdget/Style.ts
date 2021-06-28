@@ -5,10 +5,10 @@ import { padding } from "styles/mixins";
 
 const Styles = StyleSheet.create({
   container: {
-    paddingVertical: "10%",
+    paddingVertical: "5%",
   },
   formView: {
-    marginTop: "10%",
+    marginTop: "5%",
     alignItems: "center",
     width:"100%",
   },

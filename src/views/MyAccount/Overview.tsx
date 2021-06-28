@@ -15,9 +15,13 @@ import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAcco
 import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
 import BottomDrawer from "react-native-bottom-drawer-view";
 import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { IAppState } from '../../store/store';
+import { useSelector, useDispatch} from 'react-redux';
+import { AccountAction } from '../../actions/accountActions'
+import LinearGradient from 'react-native-linear-gradient';
 // svg
 import Refresh from "../../assets/svg/Refresh.svg";
-import LinearGradient from 'react-native-linear-gradient';
+
 
 
 const TAB_BAR_HEIGHT = 20;
@@ -32,26 +36,38 @@ const OverviewScreen = ({ route, navigation }) => {
   //   { active: false, name: "Brad Scott" },
   // ]);
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useDispatch(); 
+  const lAccounts = useSelector((state: IAppState) => state.accountState.account);
+  const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [modalVisible, setModalVisible] = useState(false);   
   const [viewRef, setViewRef] = useState(null);   
-  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, bank_url, login} = route.params; 
-  const [actName, setActName] = useState(nickname); 
-  const [actNumber, setActNumber] = useState(accountNumber);  
-  const [actSignKey, setActSignKey] = useState(signingKey); 
+  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login} = route.params; 
+  const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : myAccounts[0].name); 
+  const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : myAccounts[0].account_number);
+  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '................................................................................' : myAccounts[0].sign_key);  
+  const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
+  const [addMode, setAddMode] = useState(false); 
 
+  
  
   const handleSendCoins = () => { 
     console.log("send coins");
   };
 
   const handleTransIndex = (index) => { 
-    if(accounts.results[index - 1].name == null){
-      setActName(index);
+    console.log(myAccounts[index].balance)
+    if(myAccounts.length > 0){
+      if(myAccounts[index].name == null){
+        setActName(index);
+      } 
+      else{
+        setActName(myAccounts[index].name);
+      }
+      setActNumber(myAccounts[index].account_number);
+      setActSignKey(myAccounts[index].sign_key);
+      setActBalance(myAccounts[index].balance); 
     } 
-    setActNumber(accounts.results[index - 1].account_number);
-    setActSignKey(accounts.results[index - 1].id);  //will be updated
   }
 
   return (
@@ -59,7 +75,7 @@ const OverviewScreen = ({ route, navigation }) => {
       <View style={{ alignItems: "center"}} >
         <Text style={Style.heading}>{actName}</Text> 
         <Accounts
-          accounts={accounts.results}
+          accounts={myAccounts}
           addAccount={() => setModalVisible(true)}
           handleTransIndex = {(index) => handleTransIndex(index)}
         />
@@ -70,7 +86,7 @@ const OverviewScreen = ({ route, navigation }) => {
         <View style={[Custom.row, Custom.mt30]}>
           <View>
             <Text style={[Style.subHeading]}>MY ACCOUNT BALANCE</Text>
-            <Text style={[Style.heading]}>52.659</Text>
+            <Text style={[Style.heading]}>{actBalance}</Text>
           </View>
           <TouchableOpacity
             style={Style.refreshbutton}
@@ -82,8 +98,7 @@ const OverviewScreen = ({ route, navigation }) => {
 
         {/* send coins  */}
         <CustomButton
-          title="Send Coins"
-
+          title="Send Coins" 
           onPress={()=>navigation.navigate('sendcoins1')}
           buttonColor={Colors.WHITE}
           loading={loading}
@@ -100,8 +115,7 @@ const OverviewScreen = ({ route, navigation }) => {
             actSignKey
             
           }
-        />
-{/* "................................................................................" */}
+        /> 
         <CustomButton
           title="Delete Account"
           onPress={handleSendCoins}
@@ -118,14 +132,53 @@ const OverviewScreen = ({ route, navigation }) => {
           // this.closeButtonFunction()
         }}
       >
+        <BlurView
+          style={Style.absolute}
+          blurType="dark"
+          blurAmount={5}
+          reducedTransparencyFallbackColor="white"
+        />
         <View style={Style.modalContainer}>
+          <ScrollView showsVerticalScrollIndicator={false}>
           <CreateAccountWidget title={"Create or Add Account"}
             navigation={navigation}
-            route = {route.params} 
+            route = {route} 
+            addAccount={(account, addMode) => { 
+              setActName(account.name);
+              setActNumber(account.account_number);
+              setActBalance(account.balance);
+              setAddMode(addMode);
+              var bExist = false;  
+              var bExistName = false;
+              myAccounts.map((item)=>{
+                if(item.account_number == account.account_number){
+                  bExist = true;
+                }
+                if(item.name == account.name){
+                  bExistName = true;
+                }
+              })
+              if(bExist != false){
+                alert("This account number exists in your accounts")
+              }
+              else if(bExistName != false){
+                alert("This account name exists in your accounts")
+              }
+              else{
+                myAccounts.push(account);
+                dispatch(AccountAction(myAccounts));
+                setMyAccounts(myAccounts);
+                setModalVisible(false);
+                setDoneVisible(true);
+              }
+              
+            }} 
+            validator_accounts = {validator_accounts}
             handleCancel={() => {
               setModalVisible(false);
             }}
             />
+            </ScrollView>
         </View>
       </Modal>
 
@@ -148,7 +201,7 @@ const OverviewScreen = ({ route, navigation }) => {
          <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.9)']} style={Style.doModalContainer}>
             <DoneModalViewWidget 
                     title={"Done"}
-                    message={"Your account has been successfully created!"}
+                    message={addMode ? "Your account has been successfully added!" : "Your account has been successfully created!"}
                     navigation={navigation}
                     button={"Ok"} 
                     handleOk={() => {
