@@ -108,6 +108,18 @@ const Styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
   },
+  actions: {
+    right: 0,
+    position: "absolute",
+  },
+  actionContainer: {
+    alignItems: "center",
+  },
+  numberText: {
+    fontSize: 16,
+    color: "#63737E",
+    // fontWeight: "bold",
+  },
 
 });
 

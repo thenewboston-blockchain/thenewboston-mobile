@@ -24,7 +24,7 @@ const CustomSelect = ({
 }: SelectProps) => {
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
-      <View style={{ flex: 1 }}>
+      <View style={Style.containerStyles}>
         <RNPickerSelect
           value={selected}
           fixAndroidTouchableBug={true}

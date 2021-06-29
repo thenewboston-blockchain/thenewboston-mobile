@@ -15,16 +15,36 @@ import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAcco
 import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
 import BottomDrawer from "react-native-bottom-drawer-view";
 import { BlurView, VibrancyView } from "@react-native-community/blur";
-// svg
-import Refresh from "../../assets/svg/Refresh.svg";
-import LinearGradient from 'react-native-linear-gradient';
-
+ 
+import SettingPanel from "../../components/SettingPanel/SettingPanel";
 
 const TAB_BAR_HEIGHT = 20;
 const DOWN_DISPLAY = 50;
+ 
 
 const SettingsScreen = ({ route, navigation }) => {
- 
+
+    const [viewRef, setViewRef] = useState(null);  
+    const {nickname} = route.params;    
+    
+    return (
+        <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
+            <View style={{ alignItems: "center"}} >
+            <Text style={Style.heading}>{'Settings'}</Text>  
+            </View>  
+
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={[Custom.row, Custom.mt30]}> 
+                    <SettingPanel
+                        nickname={nickname}
+                        onEditAccount={() => {  
+                            navigation.navigate('editaccount'); 
+                        }}
+                    /> 
+                </View>  
+            </ScrollView>  
+    </View> 
+    );
 };
 
 export default SettingsScreen;

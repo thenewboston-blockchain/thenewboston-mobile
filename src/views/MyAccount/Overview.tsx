@@ -159,7 +159,7 @@ const OverviewScreen = ({ route, navigation }) => {
                 }
               })
               if(bExist != false){
-                alert("This account number exists in your accounts")
+                alert("This signning key exists in your accounts")
               }
               else if(bExistName != false){
                 alert("This account name exists in your accounts")

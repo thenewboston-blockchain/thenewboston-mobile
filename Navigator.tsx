@@ -16,6 +16,8 @@ import ScanCode from "./src/assets/svg/ScanCode.svg";
 import SettingsScreen from "./src/views/Settings/Settings";
 import SendCoins1Screen from "./src/views/SendCoins1/SendCoins1";
 import SendCoins2Screen from "./src/views/SendCoins2/SendCoins2";
+import EditAccountScreen from "./src/views/Settings/EditAccount/EditAccount"; 
+
 import TNBLogo from "./src/assets/svg/TNBLogo.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import TransactionsScreen from "./src/views/Transactions/Transactions";
@@ -65,8 +67,7 @@ const Navigator = ({route}) => {
           />
           <Stack.Screen
             name="login"
-            component={LoginScreen}
-            //initialParams={{bank_url:route.params.}}
+            component={LoginScreen} 
             options={authHeaderOptions}
           />
           <Stack.Screen
@@ -76,7 +77,7 @@ const Navigator = ({route}) => {
           />
           <Stack.Screen
             options={headerOptions}
-            name="tab"
+            name="tab" 
             component={TabNavigator}
           />
         </Stack.Navigator>
@@ -106,8 +107,8 @@ const TabNavigator = ({route}) => {
   const Tab = createBottomTabNavigator();   
   return (
     <Tab.Navigator
-      tabBarOptions={{ showLabel: false, style: tabStyle }}
-      initialRouteName="overview"
+      tabBarOptions={{ showLabel: false, style: tabStyle, keyboardHidesTabBar: true}}
+      initialRouteName="overview" 
     >
       <Tab.Screen
         name="overview"
@@ -152,8 +153,8 @@ const TabNavigator = ({route}) => {
         component={FriendsScreen}
       />
       <Tab.Screen
-        name="settings"
-        options={{
+        name="settings" 
+        options={{ 
           tabBarIcon: ({ focused }) => (
             <TabIcon
               text="Settings"
@@ -162,10 +163,32 @@ const TabNavigator = ({route}) => {
             />
           ),
         }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, bank_url: route.params.bank_url, login: route.params.login}}
-        component={SettingsScreen}
+        initialParams={{nickname: route.params.nickname}}
+        component={SettingsStackScreen}
       />
     </Tab.Navigator>
+  );
+};
+
+const SettingsStackScreen = ({route, navigation}) => {
+  const SettingStack = createStackNavigator();  
+  return (
+    <SettingStack.Navigator>
+      <SettingStack.Screen
+        options={{ headerShown: false }}
+        name="settingView" 
+        initialParams={{nickname: route.params.nickname, navigation: navigation}}
+        component={SettingsScreen}
+      />
+      <SettingStack.Screen
+        options={({ navigation }) =>
+          stackheaderOptions("Edit nickname", navigation)
+        }
+        name="editaccount"
+        initialParams={{nickname: route.params.nickname, navigation: navigation}}
+        component={EditAccountScreen}
+      /> 
+    </SettingStack.Navigator>
   );
 };
 
@@ -246,10 +269,12 @@ const headerOptions = {
 const stackheaderOptions = (title, navigation) => {
   return {
     headerStyle: {
-      backgroundColor: "transparent",
+      elevation: 0,
+      shadowOpacity: 0,
+      backgroundColor: "transparent", 
     },
     headerLeft: () => (
-      <TouchableOpacity onPress={() => navigation.goBack(null)}>
+      <TouchableOpacity style={{left:10}} onPress={() => navigation.goBack(null)}>
         <ArrowBack />
       </TouchableOpacity>
     ),
@@ -273,7 +298,7 @@ const tabStyle = {
 const headingStyle = {
   fontSize: Typography.FONT_SIZE_28,
   fontWeight: Typography.FONT_WEIGHT_BOLD,
-  color: Colors.WHITE,
+  color: Colors.WHITE, 
 };
 
 export default Navigator;

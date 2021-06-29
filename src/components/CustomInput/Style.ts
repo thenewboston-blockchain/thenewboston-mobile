@@ -8,7 +8,7 @@ const Styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 10,
   },
-  containerStyles: {
+  containerStyles: { 
     borderWidth: 0.3,
     paddingHorizontal: 10,
     backgroundColor: "#1E323A",
@@ -16,10 +16,11 @@ const Styles = StyleSheet.create({
     borderRadius: 12,
     zIndex: 1,
     height: 55,
-    marginBottom: 20,
+    marginBottom: 20, 
   },
   inputStyles: {
-    fontSize: 12,
+    fontSize: 15,
+    color:'white'
   },
 });
 
