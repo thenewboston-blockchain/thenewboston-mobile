@@ -21,12 +21,22 @@ const TransactionsScreen = ({route}) => {
   const lAccounts = useSelector((state: IAppState) => state.accountState.account);
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
 
-  useEffect(() => { 
-    async function gettingTransactions() {
-      const bank = new Bank(bank_url);
-      var trans = await bank.getTransactions(); 
-      setTransactions(trans); 
+  async function gettingTransactions() {
+    const bank = new Bank(bank_url);
+    var trans = [];
+    const Atrans = await bank.getTransactions({ limit: 1, offset: 0 }); 
+    let trans_size = 100;//Atrans.count; 
+    for(let i = 0; i < trans_size; i+=100){
+      const part_trans = await bank.getTransactions({ limit: 100, offset: i });  
+      trans = [...trans, ...part_trans.results]; 
     } 
+    console.log(trans.length)
+    setTransactions(trans);  
+    
+  } 
+
+  useEffect(() => { 
+     
     gettingTransactions()
     
   }, []);
@@ -39,13 +49,13 @@ const TransactionsScreen = ({route}) => {
       </View>
 
       <FlatList
-        data={transactions != null && transactions.results != null ? transactions.results : null}
+        data={transactions != null && transactions != null ? transactions : null}
         renderItem={({ item, index }) => (
           <TransactionItem
             transaction={item} 
             myAccounts={myAccounts}
             showDate={
-              index == 0 || item.id != transactions.results[index - 1].id
+              index == 0 || item.id != transactions[index - 1].id
                 ? true
                 : false
             }

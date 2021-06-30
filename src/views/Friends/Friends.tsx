@@ -48,6 +48,7 @@ const FriendsScreen = ({ route, navigation }) => {
   const [actNumber, setActNumber] = useState('');   
   const [doneVisible, setDoneVisible] = useState(login != 'login');  
   
+  console.log(validator_accounts)
    
   const handleTransIndex = (index) => { 
     if(friends.length > 0){ 
@@ -126,10 +127,10 @@ const FriendsScreen = ({ route, navigation }) => {
                 }
               }) 
               if(bExist != false){
-                alert("This account number exists in your accounts")
+                alert("This account number exists in your friends")
               }
               else if(bExistName != false){
-                alert("This account name exists in your accounts")
+                alert("This account name exists in your friends")
               }
               else{ 
                 friends.push(friend);

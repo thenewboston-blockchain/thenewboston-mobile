@@ -56,10 +56,9 @@ const CreateAccountWidget = (props: createAccount) => {
                 return;
             } 
             const newAccount = new Account(data.key); 
-            account.account_number = newAccount.accountNumberHex
-            console.log("newAccount.accountNumberHex", newAccount.accountNumberHex)
+            account.account_number = newAccount.accountNumberHex 
             if(props.validator_accounts != null){
-                props.validator_accounts.results.map((item)=>{
+                props.validator_accounts.map((item)=>{
                     if(account.account_number == item.account_number){
                         curBalance = item.balance    ///how to get balance?
                     } 

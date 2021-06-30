@@ -207,6 +207,7 @@ const OverviewStackScreen = ({route}) => {
           stackheaderOptions("Send Coins", navigation)
         }
         name="sendcoins1"
+        initialParams={{validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url}}
         component={SendCoins1Screen}
       />
       <OverviewStack.Screen

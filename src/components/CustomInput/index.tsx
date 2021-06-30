@@ -16,6 +16,7 @@ type InputProps = {
   keyboardType?:any; 
   numberOfLines?:number;
   multiline?:boolean;
+  labelCenter?:boolean;
 };
 
 const CustomInput = ({
@@ -29,6 +30,7 @@ const CustomInput = ({
   keyboardType,
   numberOfLines,
   multiline,
+  labelCenter,
 }: InputProps) => {
   return (
     <FloatingLabelInput
@@ -39,14 +41,14 @@ const CustomInput = ({
       containerStyles={customStyles ? customStyles : Style.containerStyles}
       customLabelStyles={{
         colorFocused: "#62737E",
-        fontSizeFocused: 10, 
+        fontSizeFocused: 10,   
       }}
       inputStyles={customInputStyle ? customInputStyle : Style.inputStyles}
       onChangeText={onChangeText}
       isPassword={isPassword}
       keyboardType={keyboardType}  
       numberOfLines={numberOfLines ? numberOfLines : 1}
-      multiline={multiline ? multiline : false}
+      multiline={multiline ? multiline : false} 
     />
   );
 };

@@ -26,7 +26,7 @@ const createFriendWidget = (props: createFriend) => {
     const [isValid,setValid] = useState(false);
     const [data, setData] = useState<createFriendPayload>({
         nickname: "",
-        key:"449baf4c0b43f44e9b091947bf36880bf237a91e413adb85ca2ae1f33e239440"
+        key:"f111e3eaa9d04fbc9352b1f33e5e672793ae06e4b79e6c73457327431df5ddc5"
     })
     const [loading, setLoading] = useState<boolean>(false)   
 
@@ -42,7 +42,7 @@ const createFriendWidget = (props: createFriend) => {
             return;
         }   
         if(props.accounts != null){
-            props.accounts.results.map((item)=>{
+            props.accounts.map((item)=>{
                 if(item.account_number == friend.account_number){
                     curBalance = item.balance    ///how to get balance?
                 }

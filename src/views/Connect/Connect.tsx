@@ -45,22 +45,27 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
       const accounts = await bank.getAccounts();
 
       let validator_rul = lProtocol + '://' + validator_IpAddress 
-      const validator_bank = new Bank(validator_rul);
-      const validator_accounts = await validator_bank.getAccounts();
-      
+      setLoading(true)
+      const validator_bank = new Bank(validator_rul); 
+      const Aaccount = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
+      var validator_accounts = [];
+      let account_size = Aaccount.count; 
+      for(let i = 0; i < account_size; i+=100){
+        const part_accounts = await validator_bank.getAccounts({ limit: 100, offset: i });  
+        validator_accounts = [...validator_accounts, ...part_accounts.results]; 
+      }  
 
-      console.log(lPort);
       dispatch(ProtocolAction(lProtocol));
       dispatch(IpAddressAction(lIpAddress))
       dispatch(NickNameAction(lNickName))
       dispatch(PortAction(lPort))
+      setLoading(false)
       navigate('login', {
         nickname: lNickName,
         accounts: accounts,
         validator_accounts: validator_accounts,
         bank_url: bank_url, 
-      }); 
-      console.log(accounts)
+      });  
     } catch(err){
       console.log(err)
     }

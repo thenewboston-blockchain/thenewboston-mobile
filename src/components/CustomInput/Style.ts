@@ -6,7 +6,8 @@ const Styles = StyleSheet.create({
     color: "#62737E",
     zIndex: 100,
     fontWeight: "bold",
-    fontSize: 10,
+    fontSize: 10,    
+     
   },
   containerStyles: { 
     borderWidth: 0.3,
@@ -16,7 +17,7 @@ const Styles = StyleSheet.create({
     borderRadius: 12,
     zIndex: 1,
     height: 55,
-    marginBottom: 20, 
+    marginBottom: 20,  
   },
   inputStyles: {
     fontSize: 15,

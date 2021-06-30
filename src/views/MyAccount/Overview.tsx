@@ -28,13 +28,7 @@ const TAB_BAR_HEIGHT = 20;
 const DOWN_DISPLAY = 50;
 
 const OverviewScreen = ({ route, navigation }) => {
-
-  // const [accounts, setAccoiunts] = useState([
-  //   { active: true, name: "John Doe" },
-  //   { active: false, name: "Rob Tin" },
-  //   { active: false, name: "Hissein Johnson" },
-  //   { active: false, name: "Brad Scott" },
-  // ]);
+ 
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch(); 
   const lAccounts = useSelector((state: IAppState) => state.accountState.account);

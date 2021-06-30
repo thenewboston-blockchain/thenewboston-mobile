@@ -7,20 +7,72 @@ import CustomButton from "../../components/CustomButton";
 import CustomInput from "../../components/CustomInput";
 import CustomSelect from "../../components/CustomSelect";
 import Style from "./Style";
+//redux
+import { IAppState } from '../../store/store';
+import { useSelector, useDispatch} from 'react-redux'; 
+
 
 const SendCoins1Screen = (props) => {
-  const [memo, setMemo] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const dispatch = useDispatch(); 
+  const lAccounts = useSelector((state: IAppState) => state.accountState.account);
+  const lFriends = useSelector((state: IAppState) => state.friendState.friend);
+  const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
+  const [friends, setFriends] = useState(lFriends == null ? [] : lFriends); 
+  const {validator_accounts, bank_url} = props.route.params; 
+  
+  const [memo, setMemo] = useState(""); 
 
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
 
-  const froms = [{ label: "HTTP", value: "http" }];
-  const tos = [{ label: "HTTP", value: "http" }];
+  const _from = myAccounts.map(item => ( 
+    {  
+      label: item.name,
+      value: item.account_number,
+      balance: item.balance
+    }
+  ));
+  const [froms, setFroms] = useState(_from);  
+
+  const _tos = friends.map(item => ( 
+    {  
+      label: item.name,
+      value: item.account_number,
+      balance: item.balance
+    }
+  ));
+  const [tos, setTos] = useState(_tos);  
+
+  const [from, setFrom] = useState("Select"); 
+  const [to, setTo] = useState("To"); 
+
+  useEffect(() => { 
+     
+    
+  }, []);
 
   const handleSubmit = () => {
-    props.navigation.navigate("sendcoins2");
+    let selectFrom;
+    froms.map(item =>{
+      if(item.value == from){
+        selectFrom = item
+      }
+    })
+    let selectTo;
+    tos.map(item =>{
+      if(item.value == to){
+        selectTo = item
+      }
+    })
+    if(selectFrom != null && selectTo != null){
+      props.navigation.navigate("sendcoins2",{
+        from: selectFrom,
+        to: selectTo,
+        memo: memo,
+        bank_url: bank_url,
+      });
+    }
+    
   };
 
   return (
@@ -33,7 +85,7 @@ const SendCoins1Screen = (props) => {
             required={true}
             updateSelected={(selected: any) => setFrom(selected)}
             customStyle={[Custom.mb20]}
-            placeholder={{ label: "From" }}
+            placeholder={{ label: "Select" }}
           />
 
           <CustomSelect
