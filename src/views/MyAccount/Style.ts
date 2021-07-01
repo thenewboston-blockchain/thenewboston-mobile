@@ -59,7 +59,20 @@ const Styles = StyleSheet.create({
     borderColor: 'rgba(53, 96, 104, 0.9)',
     borderWidth: 1,
   },
-  
+  doInofContainer:{
+    height: '38%',
+    width:'80%', 
+    marginLeft:'10%',
+    marginRight:'10%',
+    marginTop: 'auto',
+    marginBottom:'auto',
+    borderRadius:30, 
+    backgroundColor:'linear-gradient(20.23deg, rgba(29, 39, 49, 0.9) -4.86%, rgba(53, 96, 104, 0.9) 114.68%)',
+    overflow: 'hidden',
+    padding:15,  
+    borderColor: 'rgba(53, 96, 104, 0.9)',
+    borderWidth: 1,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

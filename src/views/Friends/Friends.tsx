@@ -12,6 +12,7 @@ import FriendNumber from "../../components/FriendNumber/FriendNumber";
 import SignKey from "../../components/SignKey/SignKey";
 
 import CreateFriendWidget from "../../components/CreateFriendWidget/CreateFriendWidget";
+import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
 import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
 import BottomDrawer from "react-native-bottom-drawer-view";
 import { BlurView, VibrancyView } from "@react-native-community/blur";
@@ -47,8 +48,8 @@ const FriendsScreen = ({ route, navigation }) => {
   const [balance, setBalance] = useState((friends == null || friends.length == 0) ? '0.0' : friends[0].balance);  
   const [actNumber, setActNumber] = useState('');   
   const [doneVisible, setDoneVisible] = useState(login != 'login');  
-  
-  console.log(validator_accounts)
+  const [dlgMessage, setDlgMessage] = useState("");
+  const [dlgVisible, setDlgVisible] = useState(false);
    
   const handleTransIndex = (index) => { 
     if(friends.length > 0){ 
@@ -126,11 +127,13 @@ const FriendsScreen = ({ route, navigation }) => {
                   bExistName = true;
                 }
               }) 
-              if(bExist != false){
-                alert("This account number exists in your friends")
+              if(bExist != false){ 
+                setDlgMessage("This account number exists in your friends");
+                setDlgVisible(true);
               }
-              else if(bExistName != false){
-                alert("This account name exists in your friends")
+              else if(bExistName != false){ 
+                setDlgMessage("This account name exists in your friends");
+                setDlgVisible(true);
               }
               else{ 
                 friends.push(friend);
@@ -179,7 +182,32 @@ const FriendsScreen = ({ route, navigation }) => {
         
         
       </Modal>
-
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={dlgVisible}  
+        onRequestClose={() => {
+          // this.closeButtonFunction()
+        }}
+        
+      >
+         <BlurView
+          style={Style.absolute}
+          blurType="dark"
+          blurAmount={5}
+          reducedTransparencyFallbackColor="white"
+        />
+             
+         <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.9)']} style={Style.doInofContainer}>
+            <InfoModalWidget 
+                title={""}
+                message={dlgMessage} 
+                button={"Ok"} 
+                handleOk={() => {
+                setDlgVisible(false);
+            }} /> 
+        </LinearGradient>  
+      </Modal>
 
     </View>
   );

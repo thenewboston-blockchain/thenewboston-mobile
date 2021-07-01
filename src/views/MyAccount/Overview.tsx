@@ -13,6 +13,7 @@ import SignKey from "../../components/SignKey/SignKey";
 
 import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
 import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
+import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
 import BottomDrawer from "react-native-bottom-drawer-view";
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { IAppState } from '../../store/store';
@@ -42,7 +43,8 @@ const OverviewScreen = ({ route, navigation }) => {
   const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
   const [addMode, setAddMode] = useState(false); 
-
+  const [dlgMessage, setDlgMessage] = useState("");
+  const [dlgVisible, setDlgVisible] = useState(false);
   
  
   const handleSendCoins = () => { 
@@ -152,11 +154,13 @@ const OverviewScreen = ({ route, navigation }) => {
                   bExistName = true;
                 }
               })
-              if(bExist != false){
-                alert("This signning key exists in your accounts")
+              if(bExist != false){ 
+                setDlgMessage("This signning key exists in your accounts");
+                setDlgVisible(true);
               }
-              else if(bExistName != false){
-                alert("This account name exists in your accounts")
+              else if(bExistName != false){ 
+                setDlgMessage("This account name exists in your accounts");
+                setDlgVisible(true);
               }
               else{
                 myAccounts.push(account);
@@ -201,11 +205,34 @@ const OverviewScreen = ({ route, navigation }) => {
                     handleOk={() => {
                     setDoneVisible(false);
                 }} />
-        </LinearGradient> 
-        
-        
+        </LinearGradient>  
       </Modal>
-
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={dlgVisible}  
+        onRequestClose={() => {
+          // this.closeButtonFunction()
+        }}
+        
+      >
+         <BlurView
+          style={Style.absolute}
+          blurType="dark"
+          blurAmount={5}
+          reducedTransparencyFallbackColor="white"
+        />
+             
+         <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.9)']} style={Style.doInofContainer}>
+            <InfoModalWidget 
+                title={""}
+                message={dlgMessage} 
+                button={"Ok"} 
+                handleOk={() => {
+                setDlgVisible(false);
+            }} /> 
+        </LinearGradient>  
+      </Modal>
 
     </View>
   );

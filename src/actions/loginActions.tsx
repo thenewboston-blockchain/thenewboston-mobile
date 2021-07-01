@@ -7,6 +7,7 @@ export enum LoginActionTypes {
     IP_ADDRESS = 'IP_ADDRESS',
     PORT = 'PORT',
     NICK_NAME = 'NICK_NAME',
+    PASSWORD = 'PASSWORD',
 } 
 
 export interface IProtocolAction {
@@ -28,7 +29,13 @@ export interface INickNameAction {
     type: LoginActionTypes.NICK_NAME;
     nickName: string;
 }
-export type LoginActions = IProtocolAction | IIpAddressAction | IPortAction | INickNameAction;
+
+export interface IPasswordAction {
+    type: LoginActionTypes.PASSWORD;
+    password: string;
+}
+
+export type LoginActions = IProtocolAction | IIpAddressAction | IPortAction | INickNameAction | IPasswordAction;
 
 /*<Promise<Return Type>, State Interface, Type of Param, Type of Action> */
  
@@ -43,3 +50,6 @@ export const PortAction: ActionCreator<ThunkAction<any, ILoginState, null, IPort
 
 export const NickNameAction: ActionCreator<ThunkAction<any, ILoginState, null, INickNameAction>> = (nickName: string) => 
     (dispatch: Dispatch) => dispatch({type: LoginActionTypes.NICK_NAME, nickName: nickName})
+
+export const PasswordAction: ActionCreator<ThunkAction<any, ILoginState, null, IPasswordAction>> = (password: string) => 
+    (dispatch: Dispatch) => dispatch({type: LoginActionTypes.PASSWORD, password: password})    

@@ -1,7 +1,7 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
 
-import { ScrollView, Text, TouchableOpacity, View, Modal } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, BackHandler, Modal} from "react-native";
 import Style from "./Style";
 
 
@@ -13,9 +13,10 @@ import SignKey from "../../components/SignKey/SignKey";
 
 import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
 import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
-import BottomDrawer from "react-native-bottom-drawer-view";
+import BottomDrawer from "react-native-bottom-drawer-view"; 
+import YesNoModalViewScreen from "../../components/InfoModalWidgets/YesNoModalview"; 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
- 
+import LinearGradient from 'react-native-linear-gradient';
 import SettingPanel from "../../components/SettingPanel/SettingPanel";
 
 const TAB_BAR_HEIGHT = 20;
@@ -26,6 +27,11 @@ const SettingsScreen = ({ route, navigation }) => {
 
     const [viewRef, setViewRef] = useState(null);  
     const {nickname} = route.params;    
+    const [dlgMessage, setDlgMessage] = useState("Are you sure want to exit?");
+    const [dlgVisible, setDlgVisible] = useState(true);
+    const handleExit = () => { 
+        BackHandler.exitApp();
+    };
     
     return (
         <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
@@ -42,7 +48,47 @@ const SettingsScreen = ({ route, navigation }) => {
                         }}
                     /> 
                 </View>  
+                
             </ScrollView>  
+            <CustomButton
+                title="Exit"
+                onPress={()=>{setDlgVisible(true)}}
+                buttonColor={Colors.WHITE}
+                loading={false}
+                customStyle={Style.deleteButton}
+            />
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={dlgVisible}  
+                onRequestClose={() => {
+                // this.closeButtonFunction()
+                }}
+                
+            >
+                <BlurView
+                style={Style.absolute}
+                blurType="dark"
+                blurAmount={5}
+                reducedTransparencyFallbackColor="white"
+                />
+                    
+                <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.9)']} style={Style.doInofContainer}>
+                    <YesNoModalViewScreen 
+                        title={""}
+                        message={dlgMessage} 
+                        yes={"Yes"} 
+                        no={"No"} 
+                        handleYes={() => {
+                            handleExit();
+                            setDlgVisible(false);
+                        }}
+                        handleNo={() => {
+                            setDlgVisible(false);
+                        }}
+                    /> 
+                </LinearGradient>  
+            </Modal>
     </View> 
     );
 };

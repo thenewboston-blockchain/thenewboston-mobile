@@ -7,6 +7,7 @@ type InputProps = {
   staticLabel?: boolean;
   labelText: string;
   onChangeText: any;
+  onTogglePassword?: any;
   autoCapitalize: string;
   value: any;
   name: any;
@@ -23,6 +24,7 @@ const CustomInput = ({
   staticLabel,
   labelText,
   onChangeText,
+  onTogglePassword,
   value,
   isPassword,
   customStyles,
@@ -45,7 +47,8 @@ const CustomInput = ({
       }}
       inputStyles={customInputStyle ? customInputStyle : Style.inputStyles}
       onChangeText={onChangeText}
-      isPassword={isPassword}
+      isPassword={isPassword} 
+      onTogglePassword={onTogglePassword}
       keyboardType={keyboardType}  
       numberOfLines={numberOfLines ? numberOfLines : 1}
       multiline={multiline ? multiline : false} 

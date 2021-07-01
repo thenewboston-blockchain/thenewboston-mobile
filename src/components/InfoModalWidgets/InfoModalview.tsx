@@ -17,11 +17,11 @@ interface DoneModal {
   handleOk:Function
 } 
 
-const DoneModalScreen = (props: DoneModal) => {
+const InfoModalViewScreen = (props: DoneModal) => {
   return (
     <View style={Style.container}> 
         <View style={Style.formView}>
-            <DoneSvg width="15%" height="15%"/>
+            {/* <DoneSvg width="15%" height="15%"/> */}
             <Text style={[Typography.FONT_REGULAR, Style.heading]}>
                 {props.title}
             </Text>
@@ -40,4 +40,4 @@ const DoneModalScreen = (props: DoneModal) => {
   );
 };
 
-export default DoneModalScreen;
+export default InfoModalViewScreen;

@@ -1,11 +1,14 @@
 import { Colors, Typography } from 'styles';
-import { Text, View } from 'react-native'; 
+import { Text, View, Modal} from 'react-native'; 
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput' 
 import React from 'react';
 import Style from './Style'
 import { useState } from 'react';  
 import {Buffer} from 'buffer' 
+import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+import LinearGradient from 'react-native-linear-gradient';
 import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Bank} from 'thenewboston' 
 interface createAccount {
     title: string,
@@ -30,7 +33,9 @@ const CreateAccountWidget = (props: createAccount) => {
     const [data, setData] = useState<createAccountPayload>({
         nickname: "",
         key:"f111e3eaa9d04fbc9352b1f33e5e672793ae06e4b79e6c73457327431df5ddc5"
-    })
+    }) 
+    const [dlgMessage, setDlgMessage] = useState("");
+    const [dlgVisible, setDlgVisible] = useState(false);
     const [loading, setLoading] = useState<boolean>(false)  
     //const {accounts, bank_url, validator_accounts} = props.route.params; 
 
@@ -47,12 +52,14 @@ const CreateAccountWidget = (props: createAccount) => {
         else if(activity == EXISTING_ACCOUNT){
             const account = {name: data.nickname, sign_key: data.key, account_number: "", balance: 0}
             var curBalance = 0;  
-            if(account.name == ""){
-                alert("Please input account name!")
+            if(account.name == ""){ 
+                setDlgMessage("Please input account name!");
+                setDlgVisible(true);
                 return;
             }
-            if(account.sign_key == ""){
-                alert("Please input signing key!")
+            if(account.sign_key == ""){ 
+                setDlgMessage("Please input signing key!");
+                setDlgVisible(true);
                 return;
             } 
             const newAccount = new Account(data.key); 
@@ -133,6 +140,32 @@ const CreateAccountWidget = (props: createAccount) => {
                     loading={false}
                     customStyle={{ backgroundColor: "transparent", marginTop: 0 }}
                 />
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={dlgVisible}  
+                    onRequestClose={() => {
+                    // this.closeButtonFunction()
+                    }}
+                    
+                >
+                    <BlurView
+                    style={Style.absolute}
+                    blurType="dark"
+                    blurAmount={5}
+                    reducedTransparencyFallbackColor="white"
+                    />
+                        
+                    <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.9)']} style={Style.doInofContainer}>
+                        <InfoModalWidget 
+                            title={""}
+                            message={dlgMessage} 
+                            button={"Ok"} 
+                            handleOk={() => {
+                            setDlgVisible(false);
+                        }} /> 
+                    </LinearGradient>  
+                </Modal>
         </View>    
         </View>
     );

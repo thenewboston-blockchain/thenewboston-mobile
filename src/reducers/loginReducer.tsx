@@ -6,13 +6,15 @@ export interface ILoginState {
     ipAddress: string;
     port: string;
     nickName: string;
+    password: string;
 }
 
 const initialLoginState: ILoginState = {
     protocol: 'Http',
     ipAddress: '',
     port: '80',
-    nickName: ''
+    nickName: '',
+    password: '',
 };
 
 export const loginReducer: Reducer<ILoginState, LoginActions> = (
@@ -42,6 +44,12 @@ export const loginReducer: Reducer<ILoginState, LoginActions> = (
         return {
             ...state,
             nickName: action.nickName
+          };
+      }
+      case LoginActionTypes.PASSWORD: {
+        return {
+            ...state,
+            password: action.password
           };
       }
       default:
