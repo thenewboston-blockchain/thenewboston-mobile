@@ -57,6 +57,12 @@ const SettingsScreen = ({ route, navigation }) => {
                 loading={false}
                 customStyle={Style.deleteButton}
             />
+             <CustomButton
+                title=""
+                onPress={()=>{}} 
+                loading={false}
+                customStyle={Style.bottomArea}
+            />
             <Modal
                 animationType="slide"
                 transparent={true}

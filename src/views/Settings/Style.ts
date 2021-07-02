@@ -35,7 +35,13 @@ const Styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingHorizontal: 20,
   },
-
+  bottomArea: {
+    backgroundColor: "transparent", 
+    marginTop: 2,
+    height: 60,
+    justifyContent: "flex-start",
+    paddingHorizontal: 20,
+  },
   modalContainer:{
     height: '75%',
     marginTop: 'auto',

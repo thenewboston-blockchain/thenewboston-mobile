@@ -9,6 +9,7 @@ import {Account, Bank, Transaction} from 'thenewboston'
 import Style from "./Style";
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
+import CustomButton from "../../components/CustomButton";
 import { AccountAction } from '../../actions/accountActions'
 // components
 import TransactionItem from "../../components/TransactionItem/TransactionItem";
@@ -62,6 +63,12 @@ const TransactionsScreen = ({route}) => {
           />
         )}
         keyExtractor={(item, index) => "key" + index}
+      />
+     <CustomButton
+          title=""
+          onPress={()=>{}} 
+          loading={false}
+          customStyle={Style.bottomArea}
       />
     </View>
   );

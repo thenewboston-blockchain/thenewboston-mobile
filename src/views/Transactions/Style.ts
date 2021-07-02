@@ -22,6 +22,13 @@ const Styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: "bold",
   },
+  bottomArea: {
+    backgroundColor: "transparent", 
+    marginTop: 2,
+    height: 60,
+    justifyContent: "flex-start",
+    paddingHorizontal: 20,
+  },
   refreshbutton: {
     position: "absolute",
     bottom: 0,

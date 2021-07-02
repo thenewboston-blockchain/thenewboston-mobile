@@ -10,6 +10,8 @@ import {
 import { Avatar } from "react-native-elements";
 import { Custom } from "../../styles";
 import Style from "./Style";
+import Clipboard from '@react-native-community/clipboard';
+import RNFS from 'react-native-fs';
 
 // svg
 import Visible from "../../assets/svg/Visible.svg";
@@ -18,21 +20,42 @@ import Download from "../../assets/svg/Download.svg";
 
 interface SignKeyProps {
   signKey: string;
-}
+  writeKeyFunc?: Function;
+} 
+  
 
-const SignKey = ({ signKey }: SignKeyProps) => {
+const SignKey = ({ signKey, writeKeyFunc}: SignKeyProps) => {
+
+  const copyToClipboard = () => {
+    Clipboard.setString(signKey)
+  }
+
+  const writeKeyFile = () =>{
+    var path = 'mnt/sdcard/download/sginKey.txt';
+    if (Platform.OS === 'ios') {
+      path = RNFS.DocumentDirectoryPath + '/sginKey.txt';
+    } 
+    RNFS.writeFile(path, signKey, 'utf8')
+      .then((success) => {
+        writeKeyFunc('SignKey donwload success!') 
+      })
+      .catch((err) => { 
+        writeKeyFunc(err.message) 
+      });
+  }
+
   return (
     <View style={Style.container}>
       <View style={[Custom.row, Style.actionContainer]}>
         <Text style={Style.subHeading}>MY SIGN KEY</Text>
         <View style={[Custom.row, Style.actions]}>
-          <TouchableOpacity style={{ marginRight: 10 }}>
+          <TouchableOpacity style={{ marginRight: 10 }} onPress={writeKeyFile}>
             <Download />
           </TouchableOpacity>
           <TouchableOpacity style={{ marginRight: 10 }}>
             <Visible />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={copyToClipboard}>
             <Copy />
           </TouchableOpacity>
         </View>

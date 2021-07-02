@@ -10,6 +10,7 @@ import {
 import { Avatar } from "react-native-elements";
 import { Custom } from "../../styles";
 import Style from "./Style";
+import Clipboard from '@react-native-community/clipboard'
 
 // svg 
 import Copy from "../../assets/svg/Copy.svg";
@@ -19,12 +20,17 @@ interface FriendNumberProps {
 }
 
 const FriendNumber = ({ friendNumber }: FriendNumberProps) => {
+
+  const copyToClipboard = () => {
+    Clipboard.setString(friendNumber)
+  }
+
   return (
     <View style={Style.container}>
       <View style={[Custom.row,Style.actionContainer]}>
         <Text style={Style.subHeading}>FRIEND'S ACCOUNT NUMBER</Text>
         <View style={[Custom.row, Style.actions]}> 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={copyToClipboard}>
             <Copy />
           </TouchableOpacity>
         </View>

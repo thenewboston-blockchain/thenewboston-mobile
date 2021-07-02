@@ -13,6 +13,7 @@ import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../../actions/loginActions'
+import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";
 
 interface connects { 
   navigation: any; // TODO use navigation props type
@@ -42,13 +43,13 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
 
   const handleSubmit = async()=>{ 
     let bank_url = lProtocol + '://' + lIpAddress 
-    try{
-      setLoading(true)
-      const bank = new Bank(bank_url);
-      const accounts = await bank.getAccounts();
-
+    try{ 
+      
+      setLoading(true) 
+      const bank = new Bank(bank_url); 
+      const accounts = await bank.getAccounts(); 
       let validator_rul = lProtocol + '://' + validator_IpAddress  
-      const validator_bank = new Bank(validator_rul); 
+      const validator_bank = new Bank(validator_rul);  
       const Aaccount = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
       var validator_accounts = [];
       let account_size = Aaccount.count; 
@@ -164,9 +165,9 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
           reducedTransparencyFallbackColor="white"
         />
              
-         <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.9)']} style={Style.doModalContainer}>
-            <DoneModalViewWidget 
-                    title={"Done"}
+         <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.9)']} style={Style.doInofContainer}>
+            <InfoModalWidget 
+                    title={""}
                     message={dlgMessage} 
                     button={"Ok"} 
                     handleOk={() => {

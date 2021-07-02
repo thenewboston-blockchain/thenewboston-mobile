@@ -19,6 +19,7 @@ import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
 import { AccountAction } from '../../actions/accountActions'
+import DeleteAccount from './DeleteAccount/DeleteAccount'
 import LinearGradient from 'react-native-linear-gradient';
 // svg
 import Refresh from "../../assets/svg/Refresh.svg";
@@ -44,15 +45,22 @@ const OverviewScreen = ({ route, navigation }) => {
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
   const [addMode, setAddMode] = useState(false); 
   const [dlgMessage, setDlgMessage] = useState("");
-  const [dlgVisible, setDlgVisible] = useState(false);
+  const [dlgVisible, setDlgVisible] = useState(false); 
+  const [removeVisible, setRemoveVisible] = useState(false);
+  
   
  
   const handleSendCoins = () => { 
     console.log("send coins");
   };
 
+  const deleteAccount = () => {  
+    let _myaccounts = setMyAccounts(myAccounts.filter(item => item.account_number !== actNumber))
+    dispatch(AccountAction(_myaccounts));
+  }; 
+
   const handleTransIndex = (index) => { 
-    console.log(myAccounts[index].balance)
+     
     if(myAccounts.length > 0){
       if(myAccounts[index].name == null){
         setActName(index);
@@ -62,7 +70,7 @@ const OverviewScreen = ({ route, navigation }) => {
       }
       setActNumber(myAccounts[index].account_number);
       setActSignKey(myAccounts[index].sign_key);
-      setActBalance(myAccounts[index].balance); 
+      setActBalance(myAccounts[index].balance);  
     } 
   }
 
@@ -102,22 +110,35 @@ const OverviewScreen = ({ route, navigation }) => {
         />
 
         <AccountNumber
+          navigator={navigation}
           accountNumber={
             actNumber
           }
         />
         <SignKey
-          signKey={
-            actSignKey
-            
-          }
+          signKey={ actSignKey }
+          writeKeyFunc = {(msg)=>{
+            setDlgMessage(msg);
+            setDlgVisible(true);
+          }}
         /> 
         <CustomButton
           title="Delete Account"
-          onPress={handleSendCoins}
+          onPress={()=>{
+            if(myAccounts.length > 0){
+              setRemoveVisible(true);  
+            }
+          }}
           buttonColor={Colors.WHITE}
           loading={loading}
           customStyle={Style.deleteButton}
+        />
+        <CustomButton
+          title=""
+          onPress={handleSendCoins}
+          buttonColor={Colors.WHITE}
+          loading={loading}
+          customStyle={Style.bottomArea}
         />
       </ScrollView>
       <Modal
@@ -208,7 +229,7 @@ const OverviewScreen = ({ route, navigation }) => {
         </LinearGradient>  
       </Modal>
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
@@ -233,7 +254,41 @@ const OverviewScreen = ({ route, navigation }) => {
             }} /> 
         </LinearGradient>  
       </Modal>
+      <Modal
+          animationType="fade"
+          transparent={true}
+          visible={removeVisible}  
+          onRequestClose={() => {
+          // this.closeButtonFunction()
+          }}
+          
+      >
+          <BlurView
+          style={Style.absolute}
+          blurType="dark"
+          blurAmount={5}
+          reducedTransparencyFallbackColor="white"
+          /> 
 
+          <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.6)']} style={Style.deleteContainer}>
+              <DeleteAccount 
+                  title={"Delete account"}
+                  message={"Are you sure you want to delete this account?"} 
+                  balance={actBalance}
+                  nickname={actName}
+                  account_number={actNumber}
+                  yes={"Ok"} 
+                  no={"Cancel"} 
+                  handleYes={() => {  
+                      deleteAccount();
+                      setRemoveVisible(false);
+                  }}
+                  handleNo={() => {
+                    setRemoveVisible(false);
+                  }}
+              /> 
+          </LinearGradient>  
+      </Modal>
     </View>
   );
 };

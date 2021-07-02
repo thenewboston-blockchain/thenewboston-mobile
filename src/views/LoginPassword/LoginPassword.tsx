@@ -70,19 +70,19 @@ const LoginPasswordScreen = ({ navigation, route}) => {
               { color: "#63737E" },
             ]}
           >
-            Please enter your nickname and password to login
+            Please enter your password to login
           </Text>
 
-          <CustomInput
+          {/* <CustomInput
             name="nickname"
             value={lnickName}
             staticLabel={false}
-            labelText="lnickName" 
+            labelText="nickName" 
             onChangeText={(value: string) => {
               setlNickName(value);
             }}
             autoCapitalize="none"
-          />
+          /> */}
 
           <CustomInput
             name="password"
