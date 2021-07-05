@@ -30,13 +30,17 @@ const SendCoins1Screen = (props) => {
     console.log(config);
   }
 
+  const handleSendCoins =() =>{
+
+  }
+
   const handleSubmit = async() => {
     setLoading(true);
     const sendersAccount = new Account(from.value); 
     const paymentHandlerOptions = {
       account: sendersAccount,
       bankUrl: bank_url,
-    };
+    }; 
     
     const paymentHandler = new AccountPaymentHandler(paymentHandlerOptions); 
     await paymentHandler.init();
@@ -107,8 +111,15 @@ const SendCoins1Screen = (props) => {
             disabled={!isValid}  
             buttonColor={Colors.WHITE}
             loading={loading}
-          />
+          /> 
         </View>
+        <CustomButton
+          title=""
+          onPress={handleSendCoins}
+          buttonColor={Colors.WHITE}
+          loading={loading}
+          customStyle={Style.bottomArea}
+        />
       </ScrollView>
     </View>
   );

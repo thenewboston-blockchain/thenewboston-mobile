@@ -17,7 +17,7 @@ interface EditAccountPayload {
 }
 
 const EditAccountScreen = ({route, navigation}) => {
-  const {nickname, navigationPanel} = route.params;    
+  const {nickname} = route.params;    
   const dispatch = useDispatch();  
   const lNickname = useSelector((state: IAppState) => state.loginState.nickName);  
   const [data, setData] = useState<EditAccountPayload>({
@@ -60,7 +60,7 @@ const EditAccountScreen = ({route, navigation}) => {
                 transparent={true}
                 visible={dlgVisible}  
                 onRequestClose={() => {
-                // this.closeButtonFunction()
+                    
                 }}
                 
             >
@@ -78,6 +78,7 @@ const EditAccountScreen = ({route, navigation}) => {
                         button={"Ok"} 
                         handleOk={() => {
                         setDlgVisible(false);
+                        navigation.goBack(null);
                     }} /> 
                 </LinearGradient>  
             </Modal>

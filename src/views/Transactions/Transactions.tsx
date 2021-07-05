@@ -4,6 +4,7 @@ import {
   Text,
   View,
   FlatList,
+  ActivityIndicator
 } from "react-native";
 import {Account, Bank, Transaction} from 'thenewboston' 
 import Style from "./Style";
@@ -21,10 +22,12 @@ const TransactionsScreen = ({route}) => {
   const [transactions, setTransactions] = useState(null);    
   const lAccounts = useSelector((state: IAppState) => state.accountState.account);
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
+  const [spinVisible, setSpinVisible] = useState(true);
 
   async function gettingTransactions() {
     const bank = new Bank(bank_url);
     var trans = [];
+    setSpinVisible(true);
     const Atrans = await bank.getTransactions({ limit: 1, offset: 0 }); 
     let trans_size = 100;//Atrans.count; 
     for(let i = 0; i < trans_size; i+=100){
@@ -33,7 +36,7 @@ const TransactionsScreen = ({route}) => {
     } 
     console.log(trans.length)
     setTransactions(trans);  
-    
+    setSpinVisible(false); 
   } 
 
   useEffect(() => { 
@@ -47,9 +50,9 @@ const TransactionsScreen = ({route}) => {
       <View style={{ alignItems: "center" }}>
         <Text style={[Custom.mb10, { color: "#62737E" }]}>{nickname}</Text>
         <Text style={Style.heading}>Transactions</Text>
-      </View>
-
-      <FlatList
+      </View> 
+      {spinVisible && <ActivityIndicator size="large" color="white" style={{justifyContent:'center', marginTop:'35%'}}></ActivityIndicator>}
+      {!spinVisible && <FlatList
         data={transactions != null && transactions != null ? transactions : null}
         renderItem={({ item, index }) => (
           <TransactionItem
@@ -63,7 +66,7 @@ const TransactionsScreen = ({route}) => {
           />
         )}
         keyExtractor={(item, index) => "key" + index}
-      />
+      />}
      <CustomButton
           title=""
           onPress={()=>{}} 

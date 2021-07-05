@@ -1,7 +1,7 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
 
-import { ScrollView, Text, TouchableOpacity, View, Modal } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, Modal, ActivityIndicator} from "react-native";
 import Style from "./Style";
 
 
@@ -27,13 +27,7 @@ const TAB_BAR_HEIGHT = 20;
 const DOWN_DISPLAY = 50;
 
 const FriendsScreen = ({ route, navigation }) => {
-
-  // const [accounts, setAccoiunts] = useState([
-  //   { active: true, name: "John Doe" },
-  //   { active: false, name: "Rob Tin" },
-  //   { active: false, name: "Hissein Johnson" },
-  //   { active: false, name: "Brad Scott" },
-  // ]);
+ 
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch(); 
@@ -46,10 +40,11 @@ const FriendsScreen = ({ route, navigation }) => {
   const {nickname, signingKeyHex, signingKey, accounts, validator_accounts, bank_url, login} = route.params;   
   const [actName, setActName] = useState((friends == null || friends.length == 0) ? 'No Friends' : friends[0].name); 
   const [balance, setBalance] = useState((friends == null || friends.length == 0) ? '0.0' : friends[0].balance);  
-  const [actNumber, setActNumber] = useState('');   
+  const [actNumber, setActNumber] = useState((friends == null || friends.length == 0) ? '0.0' : friends[0].account_number);   
   const [doneVisible, setDoneVisible] = useState(login != 'login');  
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false);
+  const [spinVisible, setSpinVisible] = useState(false)
    
   const handleTransIndex = (index) => { 
     if(friends.length > 0){ 
@@ -65,6 +60,28 @@ const FriendsScreen = ({ route, navigation }) => {
     
   } 
 
+  const onRefresh = () => {
+    if(validator_accounts != null){ 
+      setSpinVisible(true);
+      let cusFriends = friends.map((friend)=>{
+        validator_accounts.forEach(item => {
+          if(item.account_number == friend.account_number){
+            friend.balance = item.balance; 
+            return false;
+          }
+        }); 
+        return friend 
+      }) 
+     dispatch(FriendAction(cusFriends));  
+     setFriends(cusFriends);
+     setSpinVisible(false);
+   }  
+  }
+
+  const handleFunction =() => {
+
+  }
+
   return (
     <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
       <View style={{ alignItems: "center"}} >
@@ -78,9 +95,9 @@ const FriendsScreen = ({ route, navigation }) => {
           handleTransIndex = {(index) => handleTransIndex(index)}
         />
       </View>  
-
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={[Custom.row, Custom.mt30]}>
+      {spinVisible && <ActivityIndicator size="large" color="white" style={{justifyContent:'center', marginTop:'32%'}}></ActivityIndicator>}
+      {!spinVisible && <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={[Custom.row, Custom.mt30, Custom.mb20]}>
           <View>
            <Text style={Style.heading}>{actName}</Text> 
             <Text style={[Style.subHeading]}>FRIEND'S ACCOUNT BALANCE</Text>
@@ -88,7 +105,7 @@ const FriendsScreen = ({ route, navigation }) => {
           </View>
           <TouchableOpacity
             style={Style.refreshbutton}
-            onPress={() => console.log("refresh")}
+            onPress={onRefresh}
           >
             <Refresh />
           </TouchableOpacity>
@@ -99,7 +116,14 @@ const FriendsScreen = ({ route, navigation }) => {
             actNumber
           }
         />  
-      </ScrollView>
+         <CustomButton
+          title=""
+          onPress={handleFunction}
+          buttonColor={Colors.WHITE}
+          loading={loading}
+          customStyle={Style.bottomArea}
+        />
+      </ScrollView>}
       <Modal
         animationType="slide"
         transparent={true}
@@ -148,9 +172,10 @@ const FriendsScreen = ({ route, navigation }) => {
             handleCancel={() => {
               setModalVisible(false);
             }}
-            />
+            /> 
             </ScrollView>
         </View>
+        
       </Modal>
 
       <Modal

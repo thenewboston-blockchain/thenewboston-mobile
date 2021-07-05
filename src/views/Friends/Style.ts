@@ -55,6 +55,14 @@ const Styles = StyleSheet.create({
     borderColor: 'rgba(53, 96, 104, 0.9)',
     borderWidth: 1,
   },
+  bottomArea: {
+    backgroundColor: "transparent", 
+    borderColor: "#1E323A",
+    marginTop: 2,
+    height: 50,
+    justifyContent: "flex-start",
+    paddingHorizontal: 20,
+  },
   modalContainer:{
     height: '70%',
     marginTop: 'auto',

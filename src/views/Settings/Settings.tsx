@@ -28,7 +28,7 @@ const SettingsScreen = ({ route, navigation }) => {
     const [viewRef, setViewRef] = useState(null);  
     const {nickname} = route.params;    
     const [dlgMessage, setDlgMessage] = useState("Are you sure want to exit?");
-    const [dlgVisible, setDlgVisible] = useState(true);
+    const [dlgVisible, setDlgVisible] = useState(false);
     const handleExit = () => { 
         BackHandler.exitApp();
     };

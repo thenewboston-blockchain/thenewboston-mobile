@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 const Styles = StyleSheet.create({
-    inputIOS: {
+    inputIOS: { 
       fontSize: 12,
       borderBottomWidth: 0.5,
       color: "white",
@@ -16,7 +16,7 @@ const Styles = StyleSheet.create({
       height: 55,
     },
     containerStyles: {
-      flex: 1,
+      flex: 1, 
       borderWidth: 0.3,
       paddingHorizontal: 10,
       backgroundColor: "#1E323A",
@@ -25,7 +25,7 @@ const Styles = StyleSheet.create({
       zIndex: 1,
       height: 55,
       marginBottom: 20,
-    },
+    }, 
     inputAndroid: {
         fontSize: 12,
         borderBottomWidth: 0.5,

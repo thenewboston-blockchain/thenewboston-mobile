@@ -12,6 +12,7 @@ import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux'; 
 
 
+
 const SendCoins1Screen = (props) => {
   const dispatch = useDispatch(); 
   const lAccounts = useSelector((state: IAppState) => state.accountState.account);

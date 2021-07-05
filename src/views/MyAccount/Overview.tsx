@@ -1,7 +1,7 @@
 import { Colors, Custom, Typography } from "styles";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,} from "react";
 
-import { ScrollView, Text, TouchableOpacity, View, Modal } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, Modal, ActivityIndicator} from "react-native";
 import Style from "./Style";
 
 
@@ -47,7 +47,7 @@ const OverviewScreen = ({ route, navigation }) => {
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false); 
   const [removeVisible, setRemoveVisible] = useState(false);
-  
+  const [spinVisible, setSpinVisible] = useState(false)
   
  
   const handleSendCoins = () => { 
@@ -58,6 +58,25 @@ const OverviewScreen = ({ route, navigation }) => {
     let _myaccounts = setMyAccounts(myAccounts.filter(item => item.account_number !== actNumber))
     dispatch(AccountAction(_myaccounts));
   }; 
+
+  const onRefresh = () => {
+    if(validator_accounts != null){ 
+      setSpinVisible(true);
+      let cusAccounts = myAccounts.map((account)=>{
+        validator_accounts.forEach(item => {
+          if(item.account_number == account.account_number){
+            account.balance = item.balance; 
+            return false;
+          }
+        }); 
+        return account 
+      }) 
+     dispatch(AccountAction(cusAccounts)); 
+     setMyAccounts(cusAccounts);
+     setSpinVisible(false);
+
+   }  
+  }
 
   const handleTransIndex = (index) => { 
      
@@ -85,8 +104,8 @@ const OverviewScreen = ({ route, navigation }) => {
         />
 
       </View> 
-
-      <ScrollView showsVerticalScrollIndicator={false}>
+      {spinVisible && <ActivityIndicator size="large" color="white" style={{justifyContent:'center', marginTop:'32%'}}></ActivityIndicator>}
+      {!spinVisible && <ScrollView showsVerticalScrollIndicator={false}>
         <View style={[Custom.row, Custom.mt30]}>
           <View>
             <Text style={[Style.subHeading]}>MY ACCOUNT BALANCE</Text>
@@ -94,7 +113,7 @@ const OverviewScreen = ({ route, navigation }) => {
           </View>
           <TouchableOpacity
             style={Style.refreshbutton}
-            onPress={() => console.log("refresh")}
+            onPress={onRefresh}
           >
             <Refresh />
           </TouchableOpacity>
@@ -140,7 +159,7 @@ const OverviewScreen = ({ route, navigation }) => {
           loading={loading}
           customStyle={Style.bottomArea}
         />
-      </ScrollView>
+      </ScrollView>}
       <Modal
         animationType="slide"
         transparent={true}

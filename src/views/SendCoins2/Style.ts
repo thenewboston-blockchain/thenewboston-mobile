@@ -39,6 +39,14 @@ const Styles = StyleSheet.create({
     textAlign: "center",
     color: "#FFF",
   },
+  bottomArea: {
+    backgroundColor: "transparent", 
+    borderColor: "#1E323A",
+    marginTop: 2,
+    height: 30,
+    justifyContent: "flex-start",
+    paddingHorizontal: 20,
+  },
   balanceContainer: {
     alignItems: "center",
     justifyContent: "center",
