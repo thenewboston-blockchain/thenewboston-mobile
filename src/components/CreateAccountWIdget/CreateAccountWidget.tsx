@@ -40,21 +40,19 @@ const CreateAccountWidget = (props: createAccount) => {
     //const {accounts, bank_url, validator_accounts} = props.route.params; 
 
     const handleCreateAccount=async()=>{   
-        if(activity == NEW_ACCOUNT){ 
-            const account = new Account(data.key); 
+        if(activity == NEW_ACCOUNT){  
+            const account = new Account("f111e3eaa9d04fbc9352b1f33e5e672793ae06e4b79e6c73457327431df5ddc5");  
             const signingKeyHex = account.signingKey
             const accountNumberHex = account.accountNumberHex
-            console.log('signingKeyHex = ' + signingKeyHex)
-            console.log('accountNumberHex = ' + accountNumberHex)
-            account.createSignedMessage({ name: data.nickname }); 
-            props.navigation.navigate('tab') 
+            const newAccount = {name: data.nickname, sign_key: signingKeyHex, account_number: accountNumberHex, balance: 0}
+            props.addAccount(newAccount, true);   
         }
         else if(activity == EXISTING_ACCOUNT){
             const account = {name: data.nickname, sign_key: data.key, account_number: "", balance: 0}
             var curBalance = 0;  
             if(account.name == ""){ 
                 setDlgMessage("Please input account name!");
-                setDlgVisible(true);
+                setDlgVisible(false);
                 return;
             }
             if(account.sign_key == ""){ 

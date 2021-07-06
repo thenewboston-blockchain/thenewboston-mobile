@@ -71,7 +71,8 @@ const CustomSelect = ({
             
           ) 
           }
-        /> 
+        > 
+        </RNPickerSelect> 
         
       </View>
       

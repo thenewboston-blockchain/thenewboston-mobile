@@ -30,16 +30,19 @@ const SendCoins1Screen = (props) => {
     {  
       label: item.name,
       value: item.account_number,
-      balance: item.balance
+      balance: item.balance,
+      color: "#62737E", 
     }
   ));
   const [froms, setFroms] = useState(_from);  
+ 
 
   const _tos = friends.map(item => ( 
     {  
       label: item.name,
       value: item.account_number,
-      balance: item.balance
+      balance: item.balance,
+      color: "#62737E"
     }
   ));
   const [tos, setTos] = useState(_tos);  
