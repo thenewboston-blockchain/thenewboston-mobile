@@ -54,7 +54,6 @@
         "react-native-securerandom": "^1.0.0",
         "react-native-svg": "^12.1.1",
         "react-native-svg-transformer": "^0.14.3",
-        "react-native-tweetnacl": "^1.0.5",
         "react-native-uuid": "^2.0.1",
         "react-native-vector-icons": "^8.1.0",
         "react-redux": "^7.2.4",
@@ -68,7 +67,6 @@
         "@thenewboston/ui": "^0.1.5",
         "@thenewboston/utils": "^1.0.0",
         "tweetnacl": "^1.0.3",
-        "tweetnacl-util": "^0.15.1",
         "uglify-js": "^3.13.9",
         "urix": "^0.1.0",
         "yup": "^0.32.9"

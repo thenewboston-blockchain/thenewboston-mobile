@@ -32,7 +32,7 @@ const CreateAccountWidget = (props: createAccount) => {
     const [isValid,setValid] = useState(false);
     const [data, setData] = useState<createAccountPayload>({
         nickname: "",
-        key:"f111e3eaa9d04fbc9352b1f33e5e672793ae06e4b79e6c73457327431df5ddc5"
+        key:""
     }) 
     const [dlgMessage, setDlgMessage] = useState("");
     const [dlgVisible, setDlgVisible] = useState(false);
@@ -67,8 +67,7 @@ const CreateAccountWidget = (props: createAccount) => {
                     if(account.account_number == item.account_number){
                         curBalance = item.balance    ///how to get balance?
                     } 
-                })
-               
+                }) 
                 account.balance = curBalance 
                 props.addAccount(account, true);  
             }  

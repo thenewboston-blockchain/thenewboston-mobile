@@ -13,7 +13,8 @@ type SelectProps = {
   containerStyle?: any;
   onPress: Function;
   disabled?: boolean;
-  loading: boolean;
+  isDisable?: boolean;
+  loading: boolean; 
 };
 
 const CustomButton = ({
@@ -25,6 +26,7 @@ const CustomButton = ({
   containerStyle,
   onPress,
   disabled,
+  isDisable,
   loading,
   ...rest
 }: SelectProps) => (
@@ -41,6 +43,7 @@ const CustomButton = ({
     loadingProps={{ color: Colors.WHITE }}
     containerStyle={Style.containerStyle}
     // disabled={disabled}
+    disabled = {isDisable}
     loading={loading}
     onPress={()=>onPress()}
   />

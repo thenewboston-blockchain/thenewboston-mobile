@@ -22,15 +22,14 @@ interface createAccount {
  
 
 const CreateAccountScreen = ({ navigation, route}: createAccount) => { 
-  //const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login} = route.params; 
-  const validator_accounts = null,bank_url= null, login= null;
+  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login} = route.params;  
   const dispatch = useDispatch(); 
   const lAccounts = useSelector((state: IAppState) => state.accountState.account);
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [modalVisible, setModalVisible] = useState(false);   
   const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : myAccounts[0].name); 
   const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : myAccounts[0].account_number);
-  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '................................................................................' : myAccounts[0].sign_key);  
+  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : myAccounts[0].sign_key);  
   const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
   const [addMode, setAddMode] = useState(true); 

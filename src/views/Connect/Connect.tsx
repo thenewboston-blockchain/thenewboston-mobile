@@ -42,7 +42,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const protocols = [{ label: "HTTP", value: "http" }];
 
   const handleSubmit = async()=>{ 
-    let bank_url = lProtocol + '://' + lIpAddress 
+    let bank_url = lProtocol + '://' + lIpAddress + ':' + port;
     try{ 
       
       setLoading(true) 
