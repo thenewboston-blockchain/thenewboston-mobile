@@ -48,18 +48,18 @@ const Navigator = ({route}) => {
       <NavigationContainer theme={MainTheme}>
         <Stack.Navigator>
           <Stack.Screen
+            name="createAccount"
+            component={CreateAccountScreen}
+            options={authHeaderOptions}
+          />
+          <Stack.Screen
             name="connec"
             component={ConnectScreen}
             options={({ navigation }) =>
             qrCodeHeaderOptions("", navigation)
             }
             
-          />
-          <Stack.Screen
-            name="createAccount"
-            component={CreateAccountScreen}
-            options={authHeaderOptions}
-          />
+          /> 
           <Stack.Screen
             name="qrCodeScreen"
             component={QRCodeScreen}

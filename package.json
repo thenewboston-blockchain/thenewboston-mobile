@@ -9,6 +9,15 @@
         "test": "jest",
         "lint": "eslint ."
     },
+    "lint-staged": {
+        "{,!(node_modules)/**/}*.{ts,tsx,js}": [
+            "eslint --cache --fix",
+            "prettier --write"
+        ],
+        "{,!(node_modules)/**/}*.{css,scss}": [
+            "prettier --write"
+        ]
+    },
     "dependencies": {
         "@react-native-async-storage/async-storage": "^1.15.5",
         "@react-native-community/blur": "^3.6.0",
@@ -56,7 +65,8 @@
         "rn-nodeify": "^10.3.0",
         "text-encoding": "^0.7.0",
         "text-encoding-polyfill": "^0.6.7",
-        "thenewboston": "^1.1.0-alpha.4",
+        "@thenewboston/ui": "^0.1.5",
+        "@thenewboston/utils": "^1.0.0",
         "tweetnacl": "^1.0.3",
         "tweetnacl-util": "^0.15.1",
         "uglify-js": "^3.13.9",
@@ -64,6 +74,7 @@
         "yup": "^0.32.9"
     },
     "devDependencies": {
+        "thenewboston": "^1.1.0-alpha.4",
         "@babel/core": "^7.12.9",
         "@babel/runtime": "^7.12.5",
         "@react-native-community/eslint-config": "^2.0.0",

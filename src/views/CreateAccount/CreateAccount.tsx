@@ -22,7 +22,8 @@ interface createAccount {
  
 
 const CreateAccountScreen = ({ navigation, route}: createAccount) => { 
-  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login} = route.params; 
+  //const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login} = route.params; 
+  const validator_accounts = null,bank_url= null, login= null;
   const dispatch = useDispatch(); 
   const lAccounts = useSelector((state: IAppState) => state.accountState.account);
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 

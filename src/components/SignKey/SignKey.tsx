@@ -15,7 +15,7 @@ import RNFS from 'react-native-fs';
 
 // svg
 import Visible from "../../assets/svg/Visible.svg";
-import HideVisible from "../../assets/imgs/visible_hide.png";
+import HideVisible from "../../assets/svg/Hide.svg";
 
 
 import Copy from "../../assets/svg/Copy.svg";
@@ -66,7 +66,8 @@ const SignKey = ({ signKey, writeKeyFunc}: SignKeyProps) => {
             <Download />
           </TouchableOpacity>
           <TouchableOpacity style={{ marginRight: 10 }} onPress={onVisiblePassword}>
-            <Visible />  
+            {!secVisible && <Visible />}
+            {secVisible && <HideVisible />}
           </TouchableOpacity>
           <TouchableOpacity onPress={copyToClipboard}>
             <Copy />
