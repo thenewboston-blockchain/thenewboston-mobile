@@ -6,7 +6,7 @@ import {
   FlatList,
   ActivityIndicator
 } from "react-native";
-import {Account, Bank, Transaction} from 'thenewboston' 
+import {Account, Bank, Transaction} from 'thenewboston/dist/index.js';
 import Style from "./Style";
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';

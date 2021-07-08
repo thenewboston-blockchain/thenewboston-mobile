@@ -1,7 +1,7 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View, Modal } from "react-native";
-import {Account, Bank, AccountPaymentHandler} from 'thenewboston' 
+import {Account, Bank, AccountPaymentHandler} from 'thenewboston/dist/index.js';
 import CustomButton from "../../components/CustomButton"; 
 import CustomInput from "../../components/CustomInput";
 import CustomSelect from "../../components/CustomSelect";

@@ -7,7 +7,7 @@ import { Custom, Typography, Colors } from "styles";
 import CustomInput from "../../components/CustomInput";
 import CustomSelect from "../../components/CustomSelect";
 import CustomButton from "../../components/CustomButton";
-import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston' 
+import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston/dist/index.js'' 
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
 import { PasswordAction } from '../../actions/loginActions';

@@ -8,7 +8,7 @@ import { useState } from 'react';
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
-import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Bank} from 'thenewboston' 
+import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Bank} from 'thenewboston/dist/index.js';
 import {Buffer} from 'buffer'  
 
 interface createFriend {

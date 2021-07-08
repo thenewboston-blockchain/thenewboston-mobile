@@ -32,7 +32,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const [lPort, setlPort] = useState<string>(port)
   const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)
   const [lNickName, setlNickName] = useState<string>(nickname)
-  const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == null ? "54.177.121.3" : ipAddress)
+  const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == null ? "" : ipAddress)
   const validator_IpAddress = "54.219.183.128"
 
   const [dlgVisible, setDlgVisible] = useState(false)

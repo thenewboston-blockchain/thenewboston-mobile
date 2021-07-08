@@ -9,7 +9,7 @@ import {Buffer} from 'buffer'
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
-import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Bank} from 'thenewboston' 
+import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Bank} from 'thenewboston/dist/index.js' 
 interface createAccount {
     title: string,
     navigation: any,  
@@ -32,7 +32,7 @@ const CreateAccountWidget = (props: createAccount) => {
     const [isValid,setValid] = useState(false);
     const [data, setData] = useState<createAccountPayload>({
         nickname: "",
-        key:""
+        key:"f111e3eaa9d04fbc9352b1f33e5e672793ae06e4b79e6c73457327431df5ddc5"
     }) 
     const [dlgMessage, setDlgMessage] = useState("");
     const [dlgVisible, setDlgVisible] = useState(false);
