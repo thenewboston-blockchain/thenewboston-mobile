@@ -22,7 +22,7 @@ interface createAccount {
  
 
 const CreateAccountScreen = ({ navigation, route}: createAccount) => { 
-  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login} = route.params;  
+  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login, pScreen} = route.params;  
   const dispatch = useDispatch(); 
   const lAccounts = useSelector((state: IAppState) => state.accountState.account);
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
@@ -33,11 +33,12 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
   const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
   const [addMode, setAddMode] = useState(true); 
+  const [prevScreen, setPrevScreen] = useState(pScreen); 
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false); 
   const [removeVisible, setRemoveVisible] = useState(false);
   const [spinVisible, setSpinVisible] = useState(false)
-
+  
   return (
     <View style={Style.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -47,8 +48,8 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
             addAccount={(account, addMode) => { 
               setActName(account.name);
               setActNumber(account.account_number);
-              setActBalance(account.balance);
-              setAddMode(addMode);
+              setActBalance(account.balance); 
+              setAddMode(addMode); 
               var bExist = false;  
               var bExistName = false;
               myAccounts.map((item)=>{
@@ -71,22 +72,23 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
                 myAccounts.push(account);
                 dispatch(AccountAction(myAccounts));
                 setMyAccounts(myAccounts);
-                navigation.navigate('tab', {
-                  nickname: account.name,
-                  signingKeyHex: "",
-                  accountNumber: "", 
-                  signingKey: "",
+                navigation.navigate("loginPassword", { 
                   accounts: myAccounts,
                   validator_accounts: validator_accounts,
-                  bank_url: bank_url,
-                  login: 'login',
-                });
+                  bank_url: bank_url, 
+                  nickname: route.params.nickname,
+                }); 
               }
               
             }} 
             validator_accounts = {validator_accounts}
-            handleCancel={() => {
-              setModalVisible(false);
+            handleCancel={() => { 
+              if(prevScreen == 'login' || prevScreen == 'password'){ 
+                navigation.goBack(null);  
+              }
+              else{
+                setModalVisible(false); 
+              }
             }}
             />
       </ScrollView>

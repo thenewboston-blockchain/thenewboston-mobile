@@ -9,14 +9,15 @@ import {Buffer} from 'buffer'
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
-import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Bank} from 'thenewboston/dist/index.js' 
+import {Account} from 'thenewboston/dist/index.js' 
+
 interface createAccount {
     title: string,
     navigation: any,  
     route: any,
     validator_accounts: [],
     addAccount: Function,
-    handleCancel:Function
+    handleCancel:Function, 
 }
 
 interface createAccountPayload {
@@ -32,23 +33,23 @@ const CreateAccountWidget = (props: createAccount) => {
     const [isValid,setValid] = useState(false);
     const [data, setData] = useState<createAccountPayload>({
         nickname: "",
-        key:"f111e3eaa9d04fbc9352b1f33e5e672793ae06e4b79e6c73457327431df5ddc5"
+        key:""
     }) 
     const [dlgMessage, setDlgMessage] = useState("");
     const [dlgVisible, setDlgVisible] = useState(false);
     const [loading, setLoading] = useState<boolean>(false)  
-    //const {accounts, bank_url, validator_accounts} = props.route.params; 
+    //const {accounts, bank_url, validator_accounts} = props.route.params;  
 
     const handleCreateAccount=async()=>{   
         if(activity == NEW_ACCOUNT){   
-            const account = new Account();  
-            const signingKeyHex = account.signingKey
-            const accountNumberHex = account.accountNumberHex
-            const newAccount = {name: data.nickname, sign_key: signingKeyHex, account_number: accountNumberHex, balance: 0}
+            const account = new Account();   
+            const signingKey = account.signingKey
+            const accountNumber = account.accountNumber;
+            const newAccount = {name: data.nickname, sign_key: signingKey, account_number: accountNumber, balance: 0}   
             props.addAccount(newAccount, true);   
         }
         else if(activity == EXISTING_ACCOUNT){
-            const account = {name: data.nickname, sign_key: data.key, account_number: "", balance: 0}
+            const account = {name: data.nickname, sign_key: data.key, account_number: null, balance: 0}
             var curBalance = 0;  
             if(account.name == ""){ 
                 setDlgMessage("Please input account name!");
@@ -61,7 +62,7 @@ const CreateAccountWidget = (props: createAccount) => {
                 return;
             } 
             const newAccount = new Account(data.key); 
-            account.account_number = newAccount.accountNumberHex 
+            account.account_number = newAccount.accountNumber 
             if(props.validator_accounts != null){
                 props.validator_accounts.map((item)=>{
                     if(account.account_number == item.account_number){

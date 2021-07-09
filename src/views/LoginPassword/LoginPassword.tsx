@@ -7,7 +7,7 @@ import { Custom, Typography, Colors } from "styles";
 import CustomInput from "../../components/CustomInput";
 import CustomSelect from "../../components/CustomSelect";
 import CustomButton from "../../components/CustomButton";
-import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston/dist/index.js'' 
+import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston/dist/index.js';
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
 import { PasswordAction } from '../../actions/loginActions';
@@ -29,7 +29,11 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   const [dlgVisible, setDlgVisible] = useState(false);
   const login = () => {
     
-    if((lPassword == "" || lPassword == password) && password != ""){
+    if(password == ""){
+      setDlgMessage("Input your Password")
+      setDlgVisible(true);
+    } 
+    else if((lPassword == "" || lPassword == null) || lPassword == password){
       dispatch(PasswordAction(password));
       navigation.navigate('tab', {
         nickname: lnickName,
@@ -40,6 +44,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
         validator_accounts: validator_accounts,
         bank_url: bank_url,
         login: 'login',
+        pScreen:'password'
       });
     }
     else{
@@ -54,6 +59,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       validator_accounts: validator_accounts,
       bank_url: bank_url,
       login: 'create',
+      pScreen:'password'
     }); 
   };
 

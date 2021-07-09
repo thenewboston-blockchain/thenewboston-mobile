@@ -39,15 +39,17 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const [dlgMessage, setDlgMessage] = useState("") 
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false); 
-  const protocols = [{ label: "HTTP", value: "http" }];
+  const protocols = [{ label: "PROTPCOL", value: "Protocol" }];
 
   const handleSubmit = async()=>{ 
+    if(lIpAddress == "" || lProtocol == null || lProtocol != "http") {
+      return;
+    }
     let bank_url = lProtocol + '://' + lIpAddress + ':' + port;
-    try{ 
-      
+    try{  
       setLoading(true) 
-      const bank = new Bank(bank_url); 
-      const accounts = await bank.getAccounts(); 
+      const bank = new Bank(bank_url);  
+      const accounts = await bank.getAccounts();  
       let validator_rul = lProtocol + '://' + validator_IpAddress  
       const validator_bank = new Bank(validator_rul);  
       const Aaccount = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
@@ -104,7 +106,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
               setlProtocol(selected) 
             }}
             customStyle={[Custom.mb20]}
-            placeholder={{ label: "Protocol" }}
+            placeholder={{ label: "HTTP", value: "http" }}
           />
 
           <CustomInput

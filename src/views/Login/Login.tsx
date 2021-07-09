@@ -32,7 +32,8 @@ const LoginScreen = ({ navigation, route }:login) => {
       accounts: route.params.accounts,
       validator_accounts: route.params.validator_accounts,
       bank_url: route.params.bank_url, 
-      nickname: route.params.nickname, 
+      nickname: route.params.nickname,  
+      pScreen: 'login'
     });
   };
 

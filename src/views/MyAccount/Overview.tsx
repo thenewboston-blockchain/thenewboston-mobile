@@ -39,8 +39,8 @@ const OverviewScreen = ({ route, navigation }) => {
   const [viewRef, setViewRef] = useState(null);   
   const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login} = route.params; 
   const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : myAccounts[0].name); 
-  const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : myAccounts[0].account_number);
-  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '................................................................................' : myAccounts[0].sign_key);  
+  const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : toHexString(myAccounts[0].account_number));
+  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : toHexString(myAccounts[0].sign_key));  
   const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
   const [addMode, setAddMode] = useState(false); 
@@ -54,9 +54,28 @@ const OverviewScreen = ({ route, navigation }) => {
     console.log("send coins");
   };
 
+  function toHexString(byteArray) {
+    return Array.prototype.map.call(byteArray, function(byte) {
+      return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+    }).join('');
+  }
+
   const deleteAccount = () => {  
     let _myaccounts = setMyAccounts(myAccounts.filter(item => item.account_number !== actNumber))
     dispatch(AccountAction(_myaccounts));
+    setMyAccounts(_myaccounts);
+    if(_myaccounts == "" && _myaccounts.length > 0){
+      setActName(_myaccounts[0].name);
+      setActNumber(toHexString(_myaccounts[0].account_number));
+      setActSignKey(toHexString(_myaccounts[0].sign_key));
+      setActBalance(_myaccounts[0].balance);
+    }
+    else{
+      setActName('No Accounts');
+      setActNumber('');
+      setActSignKey('');
+      setActBalance('0.00');
+    }
   }; 
 
   const onRefresh = () => {
@@ -87,8 +106,8 @@ const OverviewScreen = ({ route, navigation }) => {
       else{
         setActName(myAccounts[index].name);
       }
-      setActNumber(myAccounts[index].account_number);
-      setActSignKey(myAccounts[index].sign_key);
+      setActNumber(toHexString(myAccounts[index].account_number));
+      setActSignKey(toHexString(myAccounts[index].sign_key));
       setActBalance(myAccounts[index].balance);  
     } 
   }

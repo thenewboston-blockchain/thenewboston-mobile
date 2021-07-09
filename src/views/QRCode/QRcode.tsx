@@ -20,7 +20,7 @@ const QRCodeScreen = ({ navigation }) => {
           }}  
           type={RNCamera.Constants.Type.back}
           barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-          googleVisionBarcodeType = {[QR_CODE]}
+          //googleVisionBarcodeType = {GoogleVisionBarcodeType.QR_CODE}
           flashMode={RNCamera.Constants.FlashMode.on}
           androidCameraPermissionOptions={{
             title: 'Permission to use camera',
@@ -28,12 +28,11 @@ const QRCodeScreen = ({ navigation }) => {
             buttonPositive: 'Ok',
             buttonNegative: 'Cancel',
           }} 
-          // onGoogleVisionBarcodesDetected={({ barcodes }) => {
-          //   alert(111);
-          //   console.log(barcodes);
-          // }}
+          onGoogleVisionBarcodesDetected={({ barcodes }) => {
+            alert(barcodes); 
+          }}
           onBarCodeRead = {(e) =>{
-            alert(111);  
+            alert(e);  
           }}
         >
         </RNCamera>
