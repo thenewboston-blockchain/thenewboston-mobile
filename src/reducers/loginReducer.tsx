@@ -10,7 +10,7 @@ export interface ILoginState {
 }
 
 const initialLoginState: ILoginState = {
-    protocol: 'Http',
+    protocol: 'http',
     ipAddress: '',
     port: '80',
     nickName: '',

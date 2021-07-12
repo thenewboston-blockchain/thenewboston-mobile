@@ -41,11 +41,13 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const [isValid, setValid] = useState(false); 
   const protocols = [{ label: "PROTPCOL", value: "Protocol" }];
 
-  const handleSubmit = async()=>{ 
+  const handleSubmit = async()=>{  
+ 
     if(lIpAddress == "" || lProtocol == null || lProtocol != "http") {
       return;
-    }
+    } 
     let bank_url = lProtocol + '://' + lIpAddress + ':' + port;
+    
     try{  
       setLoading(true) 
       const bank = new Bank(bank_url);  

@@ -1,16 +1,19 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image } from "react-native";
- 
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
 import Style from "./Style"; 
  
 const QRCodeScreen = ({ navigation }) => {  
   const [camera, setCamera] = useState(null);   
+  const onSuccess = (e) => {
+     console.log(e.data)
+  };
    
   return ( 
     <View style={Style.container}> 
-       <RNCamera
+       {/* <RNCamera
           ref={ref => { 
             setCamera(ref)
           }}
@@ -35,7 +38,22 @@ const QRCodeScreen = ({ navigation }) => {
             alert(e);  
           }}
         >
-        </RNCamera>
+        </RNCamera> */}
+        <QRCodeScanner 
+          onRead={onSuccess} 
+          topContent={
+            <Text style={Style.centerText}>
+              Go to{' '}
+              <Text style={Style.textBold}>wikipedia.org/wiki/QR_code</Text> on
+              your computer and scan the QR code.
+            </Text>
+          }
+          bottomContent={
+            <TouchableOpacity style={Style.buttonTouchable}>
+              <Text style={Style.buttonText}>OK. Got it!</Text>
+            </TouchableOpacity>
+          }
+      />
     </View>
     );
 };
