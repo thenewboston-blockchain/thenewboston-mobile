@@ -18,6 +18,8 @@ target 'newthebostonapp' do
 
   pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
 
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+
   target 'newthebostonappTests' do
     inherit! :complete
     # Pods for testing
