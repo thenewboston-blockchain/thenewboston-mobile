@@ -14,6 +14,8 @@ import { useSelector, useDispatch} from 'react-redux';
 import { AccountAction } from '../../actions/accountActions'
 import Style from "./Style";
 import LinearGradient from 'react-native-linear-gradient';
+import CryptoJS from "crypto-js"
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface createAccount {
   navigation: any; // TODO use navigation props type
@@ -31,13 +33,44 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
   const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : myAccounts[0].account_number);
   const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : myAccounts[0].sign_key);  
   const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
+  const [actCap, setActCap] = useState((myAccounts == null || myAccounts.length == 0) ? false : myAccounts[0].isCapsule); 
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
   const [addMode, setAddMode] = useState(true); 
   const [prevScreen, setPrevScreen] = useState(pScreen); 
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false); 
   const [removeVisible, setRemoveVisible] = useState(false);
-  const [spinVisible, setSpinVisible] = useState(false)
+  const [spinVisible, setSpinVisible] = useState(false); 
+  const [seed, setSeed] = useState(""); 
+
+  useEffect(() => {  
+    getSeedESP();
+  }, []); 
+
+  async function setMyAccountsESP(accounts, isCapsule) {
+    try {
+      await EncryptedStorage.setItem(
+          "myAccounts",
+          JSON.stringify({ 
+            isCapsule: isCapsule,
+            myAccounts : accounts, 
+        })
+      ); 
+    } catch (error) {
+       console.log(error);
+    }
+  } 
+
+  async function getSeedESP() {
+    try {   
+      const session = await EncryptedStorage.getItem("seed"); 
+      if (session !== undefined) {
+           setSeed(session); 
+      }
+    } catch (error) {
+       console.log(error);
+    }
+  }
   
   return (
     <View style={Style.container}>
@@ -45,7 +78,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
         <CreateAccountWidget title={"Create or Add Account"}
             navigation={navigation}
             route = {route} 
-            addAccount={(account, addMode) => { 
+            addAccount={(account, addMode) => {  
               setActName(account.name);
               setActNumber(account.account_number);
               setActBalance(account.balance); 
@@ -71,6 +104,13 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
               else{
                 myAccounts.push(account);
                 dispatch(AccountAction(myAccounts));
+                if(seed != "" && seed != null){
+                  var ciphertext = CryptoJS.AES.encrypt(myAccounts, seed); 
+                  setMyAccountsESP(ciphertext, true)
+                }
+                else{
+                  setMyAccountsESP(accounts, false)
+                }
                 setMyAccounts(myAccounts);
                 navigation.navigate("loginPassword", { 
                   accounts: myAccounts,

@@ -7,6 +7,8 @@ export interface ILoginState {
     port: string;
     nickName: string;
     password: string;
+    signing_key: string;
+    account_number: string;
 }
 
 const initialLoginState: ILoginState = {
@@ -15,6 +17,8 @@ const initialLoginState: ILoginState = {
     port: '80',
     nickName: '',
     password: '',
+    signing_key: '',
+    account_number: '',
 };
 
 export const loginReducer: Reducer<ILoginState, LoginActions> = (
@@ -50,6 +54,18 @@ export const loginReducer: Reducer<ILoginState, LoginActions> = (
         return {
             ...state,
             password: action.password
+          };
+      }
+      case LoginActionTypes.SINGING_KEY: {
+        return {
+            ...state,
+            signing_key: action.signing_key
+          };
+      }
+      case LoginActionTypes.ACCOUNT_NUMBER: {
+        return {
+            ...state,
+            account_number: action.account_number
           };
       }
       default:

@@ -14,12 +14,14 @@ import { PasswordAction } from '../../actions/loginActions';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";  
+import CryptoJS from "crypto-js"
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const LoginPasswordScreen = ({ navigation, route}) => {
 
   const dispatch = useDispatch(); 
-  const lPassword = useSelector((state: IAppState) => state.loginState.password);  
- 
+  //const lPassword = useSelector((state: IAppState) => state.loginState.password);  
+  const [seed, setSeed] = useState("");
   const [password, setPassword] = useState(""); 
   const [loading, setLoading] = useState(false); 
   const [isValid, setValid] = useState(false);
@@ -27,14 +29,53 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   const [lnickName, setlNickName] = useState(nickname);
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false);
-  const login = () => {
-    
+
+  useEffect(() => {  
+    getSeedESP() 
+  }, []);
+
+  async function setSeedESP(seed) {
+    try {
+      await EncryptedStorage.setItem(
+          "seed",
+          seed
+      ); 
+    } catch (error) {
+       console.log(error);
+    }
+  }
+
+  async function getSeedESP() {
+    try {   
+      const session = await EncryptedStorage.getItem("seed"); 
+      if (session !== undefined) {
+           setSeed(session);
+           console.log(session);
+      }
+    } catch (error) {
+       console.log(error);
+    }
+  }
+
+  const login = async ()  => { 
     if(password == ""){
       setDlgMessage("Input your Password")
       setDlgVisible(true);
     } 
-    else if((lPassword == "" || lPassword == null) || lPassword == password){
-      dispatch(PasswordAction(password));
+    else if (seed == "" || seed == null){
+      dispatch(PasswordAction(password)); 
+      navigation.navigate('createAccount', { 
+        accounts: accounts,
+        validator_accounts: validator_accounts,
+        bank_url: bank_url,
+        login: 'create',
+        pScreen:'password'
+      }); 
+    }
+    else if(seed == password){
+      dispatch(PasswordAction(password)); 
+
+      setSeedESP(password);
       navigation.navigate('tab', {
         nickname: lnickName,
         signingKeyHex: "",
@@ -47,7 +88,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
         pScreen:'password'
       });
     }
-    else{
+    else{ 
       setDlgMessage("Your password is not correct.")
       setDlgVisible(true);
     }

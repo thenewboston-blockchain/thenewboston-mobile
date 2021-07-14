@@ -23,7 +23,8 @@ import DeleteAccount from './DeleteAccount/DeleteAccount'
 import LinearGradient from 'react-native-linear-gradient';
 // svg
 import Refresh from "../../assets/svg/Refresh.svg";
-
+import CryptoJS from "crypto-js"
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 
 const TAB_BAR_HEIGHT = 20;
@@ -60,9 +61,42 @@ const OverviewScreen = ({ route, navigation }) => {
     }).join('');
   }
 
+  const [seed, setSeed] = useState(""); 
+
+  useEffect(() => {  
+    getSeedESP();
+  }, []); 
+
+  async function setMyAccountsESP(accounts, isCapsule) {
+    try {
+      await EncryptedStorage.setItem(
+          "myAccounts",
+          JSON.stringify({ 
+            isCapsule: isCapsule,
+            myAccounts : accounts, 
+        })
+      ); 
+    } catch (error) {
+       console.log(error);
+    }
+  } 
+
+  async function getSeedESP() {
+    try {   
+      const session = await EncryptedStorage.getItem("seed"); 
+      if (session !== undefined) {
+           setSeed(session); 
+      }
+    } catch (error) {
+       console.log(error);
+    }
+  }
+
   const deleteAccount = () => {  
     let _myaccounts = setMyAccounts(myAccounts.filter(item => item.account_number !== actNumber))
-    dispatch(AccountAction(_myaccounts));
+    var ciphertext = CryptoJS.AES.encrypt(_myaccounts, seed); 
+    setMyAccountsESP(ciphertext, true)
+    dispatch(AccountAction(_myaccounts)); 
     setMyAccounts(_myaccounts);
     if(_myaccounts == "" && _myaccounts.length > 0){
       setActName(_myaccounts[0].name);
@@ -90,6 +124,8 @@ const OverviewScreen = ({ route, navigation }) => {
         }); 
         return account 
       }) 
+     var ciphertext = CryptoJS.AES.encrypt(cusAccounts, seed); 
+     setMyAccountsESP(ciphertext, true)
      dispatch(AccountAction(cusAccounts)); 
      setMyAccounts(cusAccounts);
      setSpinVisible(false);
@@ -225,6 +261,8 @@ const OverviewScreen = ({ route, navigation }) => {
                 myAccounts.push(account);
                 dispatch(AccountAction(myAccounts));
                 setMyAccounts(myAccounts);
+                var ciphertext = CryptoJS.AES.encrypt(myAccounts, seed); 
+                setMyAccountsESP(ciphertext, true)
                 setModalVisible(false);
                 setDoneVisible(true);
               }

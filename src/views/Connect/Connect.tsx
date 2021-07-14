@@ -14,6 +14,8 @@ import { useSelector, useDispatch} from 'react-redux';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../../actions/loginActions'
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";
+import CryptoJS from "crypto-js"
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface connects { 
   navigation: any; // TODO use navigation props type
@@ -40,6 +42,42 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false); 
   const protocols = [{ label: "PROTPCOL", value: "Protocol" }];
+  const [seed, setSeed] = useState(""); 
+
+  useEffect(() => {  
+    getSeedESP();
+  }, []);
+
+  async function getSeedESP() {
+    try {   
+      const session = await EncryptedStorage.getItem("seed"); 
+      if (session !== undefined) {
+           setSeed(session); 
+           getMyAccountsESP();
+      }
+    } catch (error) {
+       console.log(error);
+    }
+  }
+
+  async function getMyAccountsESP() {
+    try {   
+      const session = await EncryptedStorage.getItem("myAccounts");
+  
+      if (session !== undefined) {
+          if(session.isCapsule){ 
+            var bytes  = CryptoJS.AES.decrypt(session.accounts.toString(), seed);
+            var accounts = bytes.toString(CryptoJS.enc.Utf8);
+            dispatch(AccountAction(accounts)); 
+          }
+          else{
+            dispatch(AccountAction(session.accounts)); 
+          }
+        }
+    } catch (error) {
+        // There was an error on the native side
+    }
+  } 
 
   const handleSubmit = async()=>{  
  
