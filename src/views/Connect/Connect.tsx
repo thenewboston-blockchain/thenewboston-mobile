@@ -1,29 +1,123 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
-
+import { ScrollView, Text, View, Modal} from "react-native";
+import {Account, Bank} from 'thenewboston' 
 import CustomButton from "../../components/CustomButton";
 // components
 import CustomInput from "../../components/CustomInput";
 import CustomSelect from "../../components/CustomSelect";
+import LinearGradient from 'react-native-linear-gradient';
+import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
 import Style from "./Style";
+import { IAppState } from '../../store/store';
+import { useSelector, useDispatch} from 'react-redux';
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../../actions/loginActions'
+import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";
+import CryptoJS from "crypto-js"
+import EncryptedStorage from 'react-native-encrypted-storage';
 
-interface connect {
-    navigation: any // TODO use navigation props type
+interface connects { 
+  navigation: any; // TODO use navigation props type
 }
+ 
 
-const connectScreen = ({navigation: {navigate}}: connect) => {
-  const [ipAddress, setIpaddress] = useState("");
-  const [port, setPort] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [protocol, setProtocol] = useState("");
+const connectScreen = ({navigation: {navigate}}: connects) => { 
+
+  const dispatch = useDispatch(); 
+
+  const port = useSelector((state: IAppState) => state.loginState.port);
+  const nickname = useSelector((state: IAppState) => state.loginState.nickName); 
+  const protocol = useSelector((state: IAppState) => state.loginState.protocol);
+  const ipAddress = useSelector((state: IAppState) => state.loginState.ipAddress); 
+ 
+  const [lPort, setlPort] = useState<string>(port)
+  const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)
+  const [lNickName, setlNickName] = useState<string>(nickname)
+  const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == null ? "" : ipAddress)
+  const validator_IpAddress = "54.219.183.128"
+
+  const [dlgVisible, setDlgVisible] = useState(false)
+  const [dlgMessage, setDlgMessage] = useState("") 
   const [loading, setLoading] = useState(false);
-  const [isValid,setValid] = useState(false);
+  const [isValid, setValid] = useState(false); 
+  const protocols = [{ label: "PROTPCOL", value: "Protocol" }];
+  const [seed, setSeed] = useState(""); 
 
-  const protocols = [{ label: "HTTP", value: "http" }];
+  useEffect(() => {  
+    getSeedESP();
+  }, []);
 
-  const handleSubmit=()=>{
-    navigate('login')
+  async function getSeedESP() {
+    try {   
+      const session = await EncryptedStorage.getItem("seed"); 
+      if (session !== undefined) {
+           setSeed(session); 
+           getMyAccountsESP();
+      }
+    } catch (error) {
+       console.log(error);
+    }
+  }
+
+  async function getMyAccountsESP() {
+    try {   
+      const session = await EncryptedStorage.getItem("myAccounts");
+  
+      if (session !== undefined) {
+          if(session.isCapsule){ 
+            var bytes  = CryptoJS.AES.decrypt(session.accounts.toString(), seed);
+            var accounts = bytes.toString(CryptoJS.enc.Utf8);
+            dispatch(AccountAction(accounts)); 
+          }
+          else{
+            dispatch(AccountAction(session.accounts)); 
+          }
+        }
+    } catch (error) {
+        // There was an error on the native side
+    }
+  } 
+
+  const handleSubmit = async()=>{  
+ 
+    if(lIpAddress == "" || lProtocol == null || lProtocol != "http") {
+      return;
+    } 
+    let bank_url = lProtocol + '://' + lIpAddress + ':' + port;
+    
+    try{  
+      setLoading(true) 
+      const bank = new Bank(bank_url);  
+      const accounts = await bank.getAccounts();  
+      let validator_rul = lProtocol + '://' + validator_IpAddress  
+      const validator_bank = new Bank(validator_rul);  
+      const Aaccount = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
+      var validator_accounts = [];
+      let account_size = Aaccount.count; 
+      for(let i = 0; i < account_size; i+=100){
+        const part_accounts = await validator_bank.getAccounts({ limit: 100, offset: i });  
+        validator_accounts = [...validator_accounts, ...part_accounts.results]; 
+      }  
+
+      dispatch(ProtocolAction(lProtocol));
+      dispatch(IpAddressAction(lIpAddress))
+      dispatch(NickNameAction(lNickName))
+      dispatch(PortAction(lPort))
+      setLoading(false)
+      navigate('login', {
+        nickname: lNickName,
+        accounts: accounts,
+        validator_accounts: validator_accounts,
+        bank_url: bank_url, 
+      });  
+    } catch(err){
+      setLoading(false)
+      setDlgMessage(err);
+      setDlgVisible(true)
+      console.log(err)
+    }
+     
   }
 
   return (
@@ -46,42 +140,44 @@ const connectScreen = ({navigation: {navigate}}: connect) => {
 
           <CustomSelect
             options={protocols}
-            selected={protocol}
+            selected={lProtocol}
             required={true}
-            updateSelected={(selected: any) => setProtocol(selected)}
+            updateSelected={(selected: any) => {
+              setlProtocol(selected) 
+            }}
             customStyle={[Custom.mb20]}
-            placeholder={{ label: "Protocol" }}
+            placeholder={{ label: "HTTP", value: "http" }}
           />
 
           <CustomInput
             name="ipAddress"
-            value={ipAddress}
-            staticLabel={true}
+            value={lIpAddress}
+            staticLabel={false}
             labelText="ip address"                      
-            onChangeText={(value: string) => {
-              setIpaddress(value);
+            onChangeText={(value: string) => {  
+              setlIpAddress(value); 
             }}
             autoCapitalize="none"
           />
 
           <CustomInput
             name="port"
-            value={port}
+            value={lPort}
             staticLabel={false}
             labelText="port"
-            onChangeText={(value: string) => {
-              setPort(value);
+            onChangeText={(value: string) => { 
+              setlPort(value);
             }}
             autoCapitalize="none"
           />
 
           <CustomInput
             name="nickname"
-            value={nickname}
+            value={lNickName}
             staticLabel={false}
             labelText="nickname"
-            onChangeText={(value: string) => {
-              setNickname(value);
+            onChangeText={(value: string) => { 
+              setlNickName(value); 
             }}
             autoCapitalize="none"
           />
@@ -95,8 +191,37 @@ const connectScreen = ({navigation: {navigate}}: connect) => {
           />
         </View>
       </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={dlgVisible}  
+        onRequestClose={() => {
+          // this.closeButtonFunction()
+        }}
+        
+      >
+         <BlurView
+          style={Style.absolute}
+          blurType="dark"
+          blurAmount={5}
+          reducedTransparencyFallbackColor="white"
+        />
+             
+         <LinearGradient start={{x: 0, y: 1}} end={{x: 0, y: 0}} colors={['rgba(29, 39, 49, 0.9)', 'rgba(53, 96, 104, 0.9)']} style={Style.doInofContainer}>
+            <InfoModalWidget 
+                    title={""}
+                    message={dlgMessage} 
+                    button={"Ok"} 
+                    handleOk={() => {
+                    setDlgVisible(false);
+                }} />
+        </LinearGradient> 
+        
+        
+      </Modal>
     </View>
   );
 };
 
-export default connectScreen;
+export default connectScreen
+ 

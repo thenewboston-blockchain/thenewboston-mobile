@@ -12,6 +12,14 @@ target 'newthebostonapp' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-blur', :path => '../node_modules/@react-native-community/blur'
+
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
+
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+
   target 'newthebostonappTests' do
     inherit! :complete
     # Pods for testing

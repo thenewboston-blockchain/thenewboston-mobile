@@ -11,12 +11,14 @@ import Style from './Style';
 
 interface Account {
   name: string;
-  active: Boolean;
+  active: boolean;
 }
 
 interface Accounts {
   accounts: Account[];
-  addAccount:Function
+  handleTransIndex: Function;
+  addAccount:Function;
+  
 }
 
 const ACCOUNTS_ICON_WIDTH = 44;
@@ -26,6 +28,7 @@ const SCREEN_WIDTH = Dimensions.get("screen").width;
 const Accounts = (props: Accounts) => {
   var animatedWidth = new Animated.Value(0);
   var scrollViewRef = React.createRef();
+  var account_index = 1;
 
   const onAccountsScroll = (event) => {
     const eventX = event.nativeEvent.contentOffset.x;
@@ -56,12 +59,13 @@ const Accounts = (props: Accounts) => {
         });
     }
   };
+ 
 
-  const { accounts } = props;
-  const scrollViewPaddingRight = ACCOUNTS_BUTTON_WIDTH - 18;
+  const { accounts } = props; 
+  const scrollViewPaddingRight = ACCOUNTS_BUTTON_WIDTH - 18; 
   return (
     <View style={Style.container}>
-      <ScrollView
+      {accounts != null && <ScrollView
         horizontal
         style={Style.scrollView}
         contentContainerStyle={[
@@ -74,16 +78,17 @@ const Accounts = (props: Accounts) => {
         scrollEventThrottle={16}
         ref={scrollViewRef}
       >
-        {accounts.map((account, index) => (
+        {accounts.map((results, i) => (
           <ListItemButton
-            style={account.active ? Style.activeButton : Style.button}
-            onPress={() => null}
-            key={index}
-            active={account.active}
-            text={account.name}
+            style={results.trust != 0 ? Style.activeButton : Style.button} 
+            onPress={() => props.handleTransIndex(i)}
+            key={i}
+            active={results.trust != 0}
+            text={results.name == null ? String(++i) : results.name}
+            noname={results.name == null} 
           />
         ))}
-      </ScrollView>
+      </ScrollView>}
       <View style={Style.stickyItem}>
         {/* <Animated.View
           style={[

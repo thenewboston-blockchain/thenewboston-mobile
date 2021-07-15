@@ -1,0 +1,25 @@
+{
+  "name": "RNSecureRandom",
+  "version": "1.0.0",
+  "summary": "RNSecureRandom",
+  "description": "Generate cryptographically-secure random bytes in react native",
+  "homepage": "https://github.com/rh389/react-native-securerandom#readme",
+  "license": "MIT",
+  "authors": {
+    "Rob Hogan": "npm@rhogan.net"
+  },
+  "platforms": {
+    "ios": "7.0"
+  },
+  "source": {
+    "git": "https://github.com/rh389/react-native-securerandom.git",
+    "tag": "master"
+  },
+  "source_files": "ios/RNSecureRandom.{h,m}",
+  "requires_arc": true,
+  "dependencies": {
+    "React": [
+
+    ]
+  }
+}

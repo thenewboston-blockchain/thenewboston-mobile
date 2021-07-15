@@ -7,24 +7,32 @@ type InputProps = {
   staticLabel?: boolean;
   labelText: string;
   onChangeText: any;
+  onTogglePassword?: any;
   autoCapitalize: string;
   value: any;
   name: any;
   isPassword?: boolean;
   customStyles?: any;
   customInputStyle?: any;
-  keyboardType?:any
+  keyboardType?:any; 
+  numberOfLines?:number;
+  multiline?:boolean;
+  labelCenter?:boolean;
 };
 
 const CustomInput = ({
   staticLabel,
   labelText,
   onChangeText,
+  onTogglePassword,
   value,
   isPassword,
   customStyles,
   customInputStyle,
-  keyboardType
+  keyboardType,
+  numberOfLines,
+  multiline,
+  labelCenter,
 }: InputProps) => {
   return (
     <FloatingLabelInput
@@ -35,12 +43,15 @@ const CustomInput = ({
       containerStyles={customStyles ? customStyles : Style.containerStyles}
       customLabelStyles={{
         colorFocused: "#62737E",
-        fontSizeFocused: 10,
+        fontSizeFocused: 10,   
       }}
       inputStyles={customInputStyle ? customInputStyle : Style.inputStyles}
       onChangeText={onChangeText}
-      isPassword={isPassword}
-      keyboardType={keyboardType}
+      isPassword={isPassword} 
+      onTogglePassword={onTogglePassword}
+      keyboardType={keyboardType}  
+      numberOfLines={numberOfLines ? numberOfLines : 1}
+      multiline={multiline ? multiline : false} 
     />
   );
 };

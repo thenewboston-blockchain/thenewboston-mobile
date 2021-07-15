@@ -20,8 +20,13 @@ const Style = StyleSheet.create({
   },
   actionContainer: {
     alignItems: "center",
-  },
+  }, 
   numberText: {
+    fontSize: 20,
+    color: "#63737E",
+    // fontWeight: "bold",
+  }, 
+  setcureText: { 
     fontSize: 20,
     color: "#63737E",
     // fontWeight: "bold",

@@ -10,10 +10,10 @@ const Styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 25,
     marginBottom: 30,
-    borderRadius: 12,
+    borderRadius: 12, 
   },
   containerStyle:{
-    width:'100%'
+    width:'100%', 
   }
 });
 
