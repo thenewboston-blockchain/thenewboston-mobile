@@ -16,6 +16,7 @@ import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";
 import CryptoJS from "crypto-js"
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions'
 
 interface connects { 
   navigation: any; // TODO use navigation props type
@@ -43,37 +44,47 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const [isValid, setValid] = useState(false); 
   const protocols = [{ label: "PROTPCOL", value: "Protocol" }];
   const [seed, setSeed] = useState(""); 
+  const lIsCapsule = useSelector((state: IAppState) => state.accountState.isCapsule);
+  const lAccounts = useSelector((state: IAppState) => state.accountState.account);
+  const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
+  const [isCapsule, setCapsule] = useState(lIsCapsule == null ? false : lIsCapsule); 
 
   useEffect(() => {  
     getSeedESP();
-  }, []);
+  }, []); 
 
   async function getSeedESP() {
     try {   
-      const session = await EncryptedStorage.getItem("seed"); 
+      const session = await EncryptedStorage.getItem("seed");  
       if (session !== undefined) {
-           setSeed(session); 
-           getMyAccountsESP();
+           setSeed(session);   
+           if(isCapsule){ 
+            var bytes  = CryptoJS.AES.decrypt(lAccounts.toString(), session);
+            let accounts = JSON.parse(bytes.toString(CryptoJS.enc.Utf8)); 
+            console.log(accounts);
+            setMyAccounts(accounts)
+           }  
       }
     } catch (error) {
        console.log(error);
     }
   }
-
+  
   async function getMyAccountsESP() {
     try {   
-      const session = await EncryptedStorage.getItem("myAccounts");
-  
-      if (session !== undefined) {
-          if(session.isCapsule){ 
-            var bytes  = CryptoJS.AES.decrypt(session.accounts.toString(), seed);
-            var accounts = bytes.toString(CryptoJS.enc.Utf8);
-            dispatch(AccountAction(accounts)); 
+      await EncryptedStorage.getItem("myAccounts").then((data)=>{ 
+        if (data !== undefined) {
+            if(data.isCapsule){ 
+              var bytes  = CryptoJS.AES.decrypt(data.accounts.toString(), seed);
+              var accounts = JSON.parse(bytes.toString(CryptoJS.enc.Utf8)); 
+              dispatch(AccountAction(accounts)); 
+            }
+            else{
+              dispatch(AccountAction(data.accounts)); 
+            }
           }
-          else{
-            dispatch(AccountAction(session.accounts)); 
-          }
-        }
+      }); 
+      
     } catch (error) {
         // There was an error on the native side
     }

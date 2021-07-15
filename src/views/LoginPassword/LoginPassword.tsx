@@ -21,16 +21,16 @@ const LoginPasswordScreen = ({ navigation, route}) => {
 
   const dispatch = useDispatch(); 
   //const lPassword = useSelector((state: IAppState) => state.loginState.password);  
-  const [seed, setSeed] = useState("");
+  const {accounts, validator_accounts, bank_url, nickname, paramSeed} = route.params; 
+  const [seed, setSeed] = useState(paramSeed == null ? "" : paramSeed);
   const [password, setPassword] = useState(""); 
   const [loading, setLoading] = useState(false); 
   const [isValid, setValid] = useState(false);
-  const {accounts, validator_accounts, bank_url, nickname} = route.params;
   const [lnickName, setlNickName] = useState(nickname);
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false);
 
-  useEffect(() => {  
+  useEffect(() => {   
     getSeedESP() 
   }, []);
 
@@ -49,8 +49,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
     try {   
       const session = await EncryptedStorage.getItem("seed"); 
       if (session !== undefined) {
-           setSeed(session);
-           console.log(session);
+           setSeed(session); 
       }
     } catch (error) {
        console.log(error);
@@ -64,6 +63,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
     } 
     else if (seed == "" || seed == null){
       dispatch(PasswordAction(password)); 
+      setSeedESP(password);
       navigation.navigate('createAccount', { 
         accounts: accounts,
         validator_accounts: validator_accounts,
@@ -73,8 +73,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       }); 
     }
     else if(seed == password){
-      dispatch(PasswordAction(password)); 
-
+      dispatch(PasswordAction(password));  
       setSeedESP(password);
       navigation.navigate('tab', {
         nickname: lnickName,

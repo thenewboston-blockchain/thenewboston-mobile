@@ -11,7 +11,7 @@ import BottomDrawer from "react-native-bottom-drawer-view";
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
-import { AccountAction } from '../../actions/accountActions'
+import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions'
 import Style from "./Style";
 import LinearGradient from 'react-native-linear-gradient';
 import CryptoJS from "crypto-js"
@@ -23,17 +23,20 @@ interface createAccount {
 }
  
 
+
 const CreateAccountScreen = ({ navigation, route}: createAccount) => { 
   const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login, pScreen} = route.params;  
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();     
   const lAccounts = useSelector((state: IAppState) => state.accountState.account);
+  const lIsCapsule = useSelector((state: IAppState) => state.accountState.is_capsule);  
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
+  const [isCapsule, setCapsule] = useState(lIsCapsule == null ? [] : lIsCapsule); 
   const [modalVisible, setModalVisible] = useState(false);   
-  const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : myAccounts[0].name); 
-  const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : myAccounts[0].account_number);
-  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : myAccounts[0].sign_key);  
-  const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
-  const [actCap, setActCap] = useState((myAccounts == null || myAccounts.length == 0) ? false : myAccounts[0].isCapsule); 
+ 
+  const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : 'No Accounts'); //myAccounts[0].name
+  const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : ''); //myAccounts[0].account_number
+  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : '');  //myAccounts[0].sign_key
+  const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : '0.00');  //myAccounts[0].balance
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
   const [addMode, setAddMode] = useState(true); 
   const [prevScreen, setPrevScreen] = useState(pScreen); 
@@ -45,32 +48,39 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
 
   useEffect(() => {  
     getSeedESP();
+
   }, []); 
 
   async function setMyAccountsESP(accounts, isCapsule) {
     try {
       await EncryptedStorage.setItem(
           "myAccounts",
-          JSON.stringify({ 
-            isCapsule: isCapsule,
-            myAccounts : accounts, 
-        })
+          accounts, 
       ); 
     } catch (error) {
        console.log(error);
     }
   } 
+  
 
   async function getSeedESP() {
     try {   
-      const session = await EncryptedStorage.getItem("seed"); 
+      const session = await EncryptedStorage.getItem("seed");  
+     console.log(isCapsule) 
+      
       if (session !== undefined) {
-           setSeed(session); 
+           setSeed(session);  
+            if(isCapsule){ 
+             var bytes  = CryptoJS.AES.decrypt(lAccounts.toString(), session); 
+             let accounts = JSON.parse(bytes.toString(CryptoJS.enc.Utf8)); 
+             console.log(accounts);
+             setMyAccounts(accounts)
+          }   
       }
     } catch (error) {
        console.log(error);
     }
-  }
+  } 
   
   return (
     <View style={Style.container}>
@@ -84,7 +94,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
               setActBalance(account.balance); 
               setAddMode(addMode); 
               var bExist = false;  
-              var bExistName = false;
+              var bExistName = false; 
               myAccounts.map((item)=>{
                 if(item.account_number == account.account_number){
                   bExist = true;
@@ -102,22 +112,34 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
                 setDlgVisible(true);
               }
               else{
-                myAccounts.push(account);
-                dispatch(AccountAction(myAccounts));
-                if(seed != "" && seed != null){
-                  var ciphertext = CryptoJS.AES.encrypt(myAccounts, seed); 
-                  setMyAccountsESP(ciphertext, true)
+                myAccounts.push(account); 
+                if(seed != "" && seed != null){ 
+                  let data = JSON.stringify(myAccounts); 
+                  var ciphertext = CryptoJS.AES.encrypt(data, seed);  
+                  console.log(ciphertext)
+                  dispatch(ISCAPSULEAction(true));  
+                  dispatch(AccountAction(ciphertext)); 
+                  navigation.navigate("loginPassword", { 
+                    accounts: accounts,
+                    validator_accounts: validator_accounts,
+                    bank_url: bank_url, 
+                    nickname: route.params.nickname,
+                    paramSeed: seed,
+                  }); 
                 }
                 else{
-                  setMyAccountsESP(accounts, false)
-                }
-                setMyAccounts(myAccounts);
-                navigation.navigate("loginPassword", { 
-                  accounts: myAccounts,
-                  validator_accounts: validator_accounts,
-                  bank_url: bank_url, 
-                  nickname: route.params.nickname,
-                }); 
+                  dispatch(AccountAction(myAccounts)); 
+                  setMyAccounts(myAccounts);
+                  dispatch(ISCAPSULEAction(false));   
+                  navigation.navigate("loginPassword", { 
+                    accounts: accounts,
+                    validator_accounts: validator_accounts,
+                    bank_url: bank_url, 
+                    nickname: route.params.nickname,
+                    paramSeed: seed,
+                  }); 
+                } 
+                
               }
               
             }} 

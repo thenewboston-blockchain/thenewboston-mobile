@@ -49,8 +49,7 @@ const OverviewScreen = ({ route, navigation }) => {
   const [dlgVisible, setDlgVisible] = useState(false); 
   const [removeVisible, setRemoveVisible] = useState(false);
   const [spinVisible, setSpinVisible] = useState(false)
-  
- 
+   
   const handleSendCoins = () => { 
     console.log("send coins");
   };

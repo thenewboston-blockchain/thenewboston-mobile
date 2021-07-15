@@ -4,10 +4,12 @@ import { AccountActionTypes, AccountActions} from '../actions/accountActions';
 
 export interface IAccountState {
     account: []; 
+    is_capsule: boolean;
 }
 
 const initialAccountState: IAccountState = {
-  account: null
+  account: null,
+  is_capsule: false,
 };
 
 export const accountReducer: Reducer<IAccountState, AccountActions> = (
@@ -19,6 +21,12 @@ export const accountReducer: Reducer<IAccountState, AccountActions> = (
         return {
           ...state,
           account: action.account
+        };
+      } 
+      case AccountActionTypes.IS_CAPSULE: {
+        return {
+          ...state,
+          is_capsule: action.is_capsule
         };
       } 
       default:
