@@ -1,6 +1,6 @@
 import { Colors, Custom, Typography} from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View, Modal} from "react-native";
+import { ScrollView, Text, View, Modal, NativeModules} from "react-native";
 
 // components
 import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
@@ -15,7 +15,8 @@ import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions'
 import Style from "./Style";
 import LinearGradient from 'react-native-linear-gradient';
 import CryptoJS from "crypto-js"
-import EncryptedStorage from 'react-native-encrypted-storage';
+import EncryptedStorage from 'react-native-encrypted-storage'; 
+var Aes = NativeModules.Aes
 
 interface createAccount {
   navigation: any; // TODO use navigation props type
@@ -46,6 +47,15 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
   const [spinVisible, setSpinVisible] = useState(false); 
   const [seed, setSeed] = useState(""); 
 
+  
+  const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
+  const decryptData = (encryptedData: { cipher: any; iv: any; }, key: any) => Aes.decrypt(encryptedData.cipher, key, encryptedData.iv)
+  const iv_string = '0123456789abcdef0123456789abcdef'; 
+  let encrypt_key:any = "";
+  let encrypt_string:any = "";
+  let plain_string:any = "";
+  let encrypt_iv:any = "";
+
   useEffect(() => {  
     getSeedESP();
 
@@ -70,11 +80,19 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
       
       if (session !== undefined) {
            setSeed(session);  
+           
             if(isCapsule){ 
-             var bytes  = CryptoJS.AES.decrypt(lAccounts.toString(), session); 
-             let accounts = JSON.parse(bytes.toString(CryptoJS.enc.Utf8)); 
-             console.log(accounts);
-             setMyAccounts(accounts)
+              generateKey(session, 'SALT', 1000, 256).then((key: any) => {
+                encrypt_key = key;
+                if(isCapsule){ 
+                  const key = encrypt_key;
+                  const iv = encrypt_iv;
+                  const cipher = encrypt_string;
+                  var decrypt_string = decryptData({ cipher, iv }, key); 
+                  var accounts = JSON.parse(decrypt_string)
+                  setMyAccounts(accounts)
+                }
+              })    
           }   
       }
     } catch (error) {

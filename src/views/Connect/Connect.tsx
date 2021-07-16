@@ -1,6 +1,6 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View, Modal} from "react-native";
+import { ScrollView, Text, View, Modal, NativeModules, Platform} from "react-native";
 import {Account, Bank} from 'thenewboston' 
 import CustomButton from "../../components/CustomButton";
 // components
@@ -22,6 +22,7 @@ interface connects {
   navigation: any; // TODO use navigation props type
 }
  
+var Aes = NativeModules.Aes
 
 const connectScreen = ({navigation: {navigate}}: connects) => { 
 
@@ -49,6 +50,30 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [isCapsule, setCapsule] = useState(lIsCapsule == null ? false : lIsCapsule); 
 
+  const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
+  const decryptData = (encryptedData: { cipher: any; iv: any; }, key: any) => Aes.decrypt(encryptedData.cipher, key, encryptedData.iv)
+  const iv_string = '0123456789abcdef0123456789abcdef'; 
+  let encrypt_key:any = "";
+  let encrypt_string:any = "";
+  let plain_string:any = "";
+  let encrypt_iv:any = "";
+
+  const encryptData = (text: string, key: any) => {
+      return Aes.randomKey(16).then((iv: any) => {
+          return Aes.encrypt(text, key, iv).then((cipher: any) => ({
+              cipher,
+              iv,
+          }))
+      })
+  }
+  
+  const encryptDataIV = (text: string, key: any, iv:any) => {
+    return Aes.encrypt(text, key, iv).then((cipher: any) => ({
+      cipher,
+      iv,
+    }))      
+  }  
+
   useEffect(() => {  
     getSeedESP();
   }, []); 
@@ -56,19 +81,25 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   async function getSeedESP() {
     try {   
       const session = await EncryptedStorage.getItem("seed");  
-      if (session !== undefined) {
+      if (session !== undefined) { 
            setSeed(session);   
-           if(isCapsule){ 
-            var bytes  = CryptoJS.AES.decrypt(lAccounts.toString(), session);
-            let accounts = JSON.parse(bytes.toString(CryptoJS.enc.Utf8)); 
-            console.log(accounts);
-            setMyAccounts(accounts)
+            generateKey(session, 'SALT', 1000, 256).then((key: any) => {
+              encrypt_key = key;
+              if(isCapsule){ 
+                const key = encrypt_key;
+                const iv = encrypt_iv;
+                const cipher = encrypt_string;
+                var decrypt_string = decryptData({ cipher, iv }, key); 
+                var accounts = JSON.parse(decrypt_string)
+                setMyAccounts(accounts)
+              }
+            })   
            }  
-      }
-    } catch (error) {
+      } 
+      catch (error) {
        console.log(error);
     }
-  }
+  } 
   
   async function getMyAccountsESP() {
     try {   

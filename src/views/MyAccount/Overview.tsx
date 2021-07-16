@@ -1,7 +1,7 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState,} from "react";
 
-import { ScrollView, Text, TouchableOpacity, View, Modal, ActivityIndicator} from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, Modal, ActivityIndicator, NativeModules} from "react-native";
 import Style from "./Style";
 
 
@@ -30,6 +30,8 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 const TAB_BAR_HEIGHT = 20;
 const DOWN_DISPLAY = 50;
 
+var Aes = NativeModules.Aes
+
 const OverviewScreen = ({ route, navigation }) => {
  
   const [loading, setLoading] = useState(false);
@@ -49,6 +51,30 @@ const OverviewScreen = ({ route, navigation }) => {
   const [dlgVisible, setDlgVisible] = useState(false); 
   const [removeVisible, setRemoveVisible] = useState(false);
   const [spinVisible, setSpinVisible] = useState(false)
+
+  const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
+  const decryptData = (encryptedData: { cipher: any; iv: any; }, key: any) => Aes.decrypt(encryptedData.cipher, key, encryptedData.iv)
+  const iv_string = '0123456789abcdef0123456789abcdef'; 
+  let encrypt_key:any = "";
+  let encrypt_string:any = "";
+  let plain_string:any = "";
+  let encrypt_iv:any = "";
+
+  const encryptData = (text: string, key: any) => {
+      return Aes.randomKey(16).then((iv: any) => {
+          return Aes.encrypt(text, key, iv).then((cipher: any) => ({
+              cipher,
+              iv,
+          }))
+      })
+  }
+  
+  const encryptDataIV = (text: string, key: any, iv:any) => {
+    return Aes.encrypt(text, key, iv).then((cipher: any) => ({
+      cipher,
+      iv,
+    }))      
+  }  
    
   const handleSendCoins = () => { 
     console.log("send coins");
@@ -123,8 +149,16 @@ const OverviewScreen = ({ route, navigation }) => {
         }); 
         return account 
       }) 
-     var ciphertext = CryptoJS.AES.encrypt(cusAccounts, seed); 
+     var ciphertext = CryptoJS.AES.encrypt(cusAccounts, seed);  
      setMyAccountsESP(ciphertext, true)
+     generateKey(seed, 'SALT', 1000, 256).then((key: any) => {
+      encrypt_key = key; 
+        const iv = encrypt_iv;
+        const cipher = encrypt_string;
+        var decrypt_string = decryptData({ cipher, iv }, key); 
+        var accounts = JSON.parse(decrypt_string)
+        setMyAccounts(accounts)
+    }) 
      dispatch(AccountAction(cusAccounts)); 
      setMyAccounts(cusAccounts);
      setSpinVisible(false);
@@ -260,7 +294,15 @@ const OverviewScreen = ({ route, navigation }) => {
                 myAccounts.push(account);
                 dispatch(AccountAction(myAccounts));
                 setMyAccounts(myAccounts);
-                var ciphertext = CryptoJS.AES.encrypt(myAccounts, seed); 
+                var ciphertext = CryptoJS.AES.encrypt(myAccounts, seed);   
+                generateKey(seed, 'SALT', 1000, 256).then((key: any) => {
+                 encrypt_key = key; 
+                   const iv = encrypt_iv;
+                   const cipher = encrypt_string;
+                   var decrypt_string = encryptData({ JSON.stringify(myAccounts), iv }, key); 
+                   var accounts = JSON.parse(decrypt_string)
+                   setMyAccountsESP(accounts)
+               }) 
                 setMyAccountsESP(ciphertext, true)
                 setModalVisible(false);
                 setDoneVisible(true);
