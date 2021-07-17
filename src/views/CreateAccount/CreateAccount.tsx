@@ -12,6 +12,7 @@ import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
 import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions'
+import { SigningKeyAction, AccountNumberAction } from '../../actions/loginActions';
 import Style from "./Style";
 import LinearGradient from 'react-native-linear-gradient';
 import CryptoJS from "crypto-js"
@@ -45,8 +46,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
   const [dlgVisible, setDlgVisible] = useState(false); 
   const [removeVisible, setRemoveVisible] = useState(false);
   const [spinVisible, setSpinVisible] = useState(false); 
-  const [seed, setSeed] = useState(""); 
-
+  const [seed, setSeed] = useState("");  
   
   const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
   const decryptData = (encryptedData: { cipher: any; iv: any; }, key: any) => Aes.decrypt(encryptedData.cipher, key, encryptedData.iv)
@@ -61,6 +61,22 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
 
   }, []); 
 
+  const encryptData = (text: string, key: any) => {
+      return Aes.randomKey(16).then((iv: any) => {
+          return Aes.encrypt(text, key, iv).then((cipher: any) => ({
+              cipher,
+              iv,
+          }))
+      })
+  }
+  
+  const encryptDataIV = (text: string, key: any, iv:any) => {
+    return Aes.encrypt(text, key, iv).then((cipher: any) => ({
+      cipher,
+      iv,
+    }))      
+  }  
+
   async function setMyAccountsESP(accounts, isCapsule) {
     try {
       await EncryptedStorage.setItem(
@@ -72,28 +88,35 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
     }
   } 
   
+  async function encryptAndLogin(account){
+    generateKey(seed, 'SALT', 1000, 256).then((key: any) => {    
+      account.sign_key = account.sign_key.toString(CryptoJS.enc.Utf8);  
+      let encryptString = CryptoJS.AES.encrypt(account.sign_key, key);  
+      account.sign_key = encryptString.toString();  
+      // let decryptString = CryptoJS.AES.decrypt(account.sign_key.toString(), key);  
+      // var plaintext = decryptString.toString(CryptoJS.enc.Utf8); 
+      account.isEncrypt = true;
+      dispatch(SigningKeyAction(account.sign_key)); 
+      dispatch(AccountNumberAction(account.account_number));  
+      myAccounts.push(account);  
+      dispatch(ISCAPSULEAction(true));  
+      dispatch(AccountAction(myAccounts)); 
+      navigation.navigate("loginPassword", { 
+        accounts: accounts,
+        validator_accounts: validator_accounts,
+        bank_url: bank_url, 
+        nickname: route.params.nickname,
+        paramSeed: seed,
+      }); 
+    }) 
+  }
 
   async function getSeedESP() {
     try {   
-      const session = await EncryptedStorage.getItem("seed");  
-     console.log(isCapsule) 
+      const session = await EncryptedStorage.getItem("seed");   
       
       if (session !== undefined) {
-           setSeed(session);  
-           
-            if(isCapsule){ 
-              generateKey(session, 'SALT', 1000, 256).then((key: any) => {
-                encrypt_key = key;
-                if(isCapsule){ 
-                  const key = encrypt_key;
-                  const iv = encrypt_iv;
-                  const cipher = encrypt_string;
-                  var decrypt_string = decryptData({ cipher, iv }, key); 
-                  var accounts = JSON.parse(decrypt_string)
-                  setMyAccounts(accounts)
-                }
-              })    
-          }   
+           setSeed(session);   
       }
     } catch (error) {
        console.log(error);
@@ -129,23 +152,12 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
                 setDlgMessage("This account name exists in your accounts");
                 setDlgVisible(true);
               }
-              else{
-                myAccounts.push(account); 
-                if(seed != "" && seed != null){ 
-                  let data = JSON.stringify(myAccounts); 
-                  var ciphertext = CryptoJS.AES.encrypt(data, seed);  
-                  console.log(ciphertext)
-                  dispatch(ISCAPSULEAction(true));  
-                  dispatch(AccountAction(ciphertext)); 
-                  navigation.navigate("loginPassword", { 
-                    accounts: accounts,
-                    validator_accounts: validator_accounts,
-                    bank_url: bank_url, 
-                    nickname: route.params.nickname,
-                    paramSeed: seed,
-                  }); 
+              else{ 
+                if(seed != "" && seed != null){  
+                  encryptAndLogin(account);  
                 }
                 else{
+                  myAccounts.push(account); 
                   dispatch(AccountAction(myAccounts)); 
                   setMyAccounts(myAccounts);
                   dispatch(ISCAPSULEAction(false));   

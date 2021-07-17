@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Style from "./Style";
-import { View, Text, ScrollView, Modal} from "react-native";
+import { View, Text, ScrollView, Modal, NativeModules} from "react-native";
 import { Custom, Typography, Colors } from "styles";
 
 // components
@@ -10,12 +10,12 @@ import CustomButton from "../../components/CustomButton";
 import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston/dist/index.js';
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
-import { PasswordAction } from '../../actions/loginActions';
+import { PasswordAction} from '../../actions/loginActions';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";  
-import CryptoJS from "crypto-js"
-import EncryptedStorage from 'react-native-encrypted-storage';
+import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";   
+import EncryptedStorage from 'react-native-encrypted-storage';  
+var Aes = NativeModules.Aes
 
 const LoginPasswordScreen = ({ navigation, route}) => {
 
@@ -28,7 +28,12 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   const [isValid, setValid] = useState(false);
   const [lnickName, setlNickName] = useState(nickname);
   const [dlgMessage, setDlgMessage] = useState("");
-  const [dlgVisible, setDlgVisible] = useState(false);
+  const [dlgVisible, setDlgVisible] = useState(false); 
+  const lSigningKey = useSelector((state: IAppState) => state.loginState.signing_key);
+  const lAccountNumber = useSelector((state: IAppState) => state.loginState.account_number);  
+  const [mySigningKey, setMySigningKey] = useState(lSigningKey == null ? "" : lSigningKey); 
+  const [myAccountNumber, setMyAccountNumber] = useState(lAccountNumber == null ? "" : lAccountNumber); 
+  const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
 
   useEffect(() => {   
     getSeedESP() 
@@ -61,7 +66,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       setDlgMessage("Input your Password")
       setDlgVisible(true);
     } 
-    else if (seed == "" || seed == null){
+    else if ((seed == "" || seed == null) && mySigningKey == ""){
       dispatch(PasswordAction(password)); 
       setSeedESP(password);
       navigation.navigate('createAccount', { 
@@ -73,19 +78,23 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       }); 
     }
     else if(seed == password){
-      dispatch(PasswordAction(password));  
-      setSeedESP(password);
-      navigation.navigate('tab', {
-        nickname: lnickName,
-        signingKeyHex: "",
-        accountNumber: "", 
-        signingKey: password,
-        accounts: accounts,
-        validator_accounts: validator_accounts,
-        bank_url: bank_url,
-        login: 'login',
-        pScreen:'password'
+      generateKey(seed, 'SALT', 1000, 256).then((key: any) => { 
+        dispatch(PasswordAction(password));  
+        setSeedESP(password); 
+        navigation.navigate('tab', {
+          nickname: lnickName,
+          signingKeyHex: "",
+          accountNumber: "", 
+          signingKey: password,
+          accounts: accounts,
+          validator_accounts: validator_accounts,
+          bank_url: bank_url,
+          login: 'login',
+          pScreen:'password',
+          genKey: key,
+        });
       });
+      
     }
     else{ 
       setDlgMessage("Your password is not correct.")

@@ -56,7 +56,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   let encrypt_key:any = "";
   let encrypt_string:any = "";
   let plain_string:any = "";
-  let encrypt_iv:any = "";
+  let encrypt_iv:any = ""; 
 
   const encryptData = (text: string, key: any) => {
       return Aes.randomKey(16).then((iv: any) => {
@@ -80,21 +80,10 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
 
   async function getSeedESP() {
     try {   
-      const session = await EncryptedStorage.getItem("seed");  
+      const session = await EncryptedStorage.getItem("seed");   
       if (session !== undefined) { 
-           setSeed(session);   
-            generateKey(session, 'SALT', 1000, 256).then((key: any) => {
-              encrypt_key = key;
-              if(isCapsule){ 
-                const key = encrypt_key;
-                const iv = encrypt_iv;
-                const cipher = encrypt_string;
-                var decrypt_string = decryptData({ cipher, iv }, key); 
-                var accounts = JSON.parse(decrypt_string)
-                setMyAccounts(accounts)
-              }
-            })   
-           }  
+           setSeed(session);    
+        }  
       } 
       catch (error) {
        console.log(error);
@@ -105,16 +94,23 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
     try {   
       await EncryptedStorage.getItem("myAccounts").then((data)=>{ 
         if (data !== undefined) {
-            if(data.isCapsule){ 
-              var bytes  = CryptoJS.AES.decrypt(data.accounts.toString(), seed);
-              var accounts = JSON.parse(bytes.toString(CryptoJS.enc.Utf8)); 
+          generateKey(seed, 'SALT', 1000, 256).then((key: any) => {
+            encrypt_key = key;
+            if(isCapsule){ 
+              const key = encrypt_key;
+              const iv = encrypt_iv;
+              const cipher = data;
+              console.log(data)
+              var decrypt_string = decryptData({ cipher, iv }, key); 
+              var accounts = JSON.parse(decrypt_string)
               dispatch(AccountAction(accounts)); 
-            }
+            } 
             else{
               dispatch(AccountAction(data.accounts)); 
-            }
-          }
-      }); 
+            } 
+          }); 
+        }
+       }); 
       
     } catch (error) {
         // There was an error on the native side
