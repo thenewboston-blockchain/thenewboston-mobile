@@ -95,9 +95,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
       account.sign_key = encryptString.toString();  
       // let decryptString = CryptoJS.AES.decrypt(account.sign_key.toString(), key);  
       // var plaintext = decryptString.toString(CryptoJS.enc.Utf8); 
-      account.isEncrypt = true;
-      dispatch(SigningKeyAction(account.sign_key)); 
-      dispatch(AccountNumberAction(account.account_number));  
+      account.isEncrypt = true; 
       myAccounts.push(account);  
       dispatch(ISCAPSULEAction(true));  
       dispatch(AccountAction(myAccounts)); 

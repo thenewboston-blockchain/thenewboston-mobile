@@ -25,12 +25,13 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   const [seed, setSeed] = useState(paramSeed == null ? "" : paramSeed);
   const [password, setPassword] = useState(""); 
   const [loading, setLoading] = useState(false); 
+  const [loadingPwd, setLoadingPwd] = useState(false); 
   const [isValid, setValid] = useState(false);
   const [lnickName, setlNickName] = useState(nickname);
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false); 
   const lSigningKey = useSelector((state: IAppState) => state.loginState.signing_key);
-  const lAccountNumber = useSelector((state: IAppState) => state.loginState.account_number);  
+  const lAccountNumber = useSelector((state: IAppState) => state.loginState.account_number); 
   const [mySigningKey, setMySigningKey] = useState(lSigningKey == null ? "" : lSigningKey); 
   const [myAccountNumber, setMyAccountNumber] = useState(lAccountNumber == null ? "" : lAccountNumber); 
   const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
@@ -61,7 +62,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
     }
   }
 
-  const login = async ()  => { 
+  const login = async ()  => {  
     if(password == ""){
       setDlgMessage("Input your Password")
       setDlgVisible(true);
@@ -78,9 +79,11 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       }); 
     }
     else if(seed == password){
+      setLoading(true);
       generateKey(seed, 'SALT', 1000, 256).then((key: any) => { 
         dispatch(PasswordAction(password));  
         setSeedESP(password); 
+        setLoading(false);
         navigation.navigate('tab', {
           nickname: lnickName,
           signingKeyHex: "",
@@ -103,6 +106,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   };
 
   const handleSubmit = () => {  
+    setLoadingPwd(true);
     navigation.navigate('createAccount', { 
       accounts: accounts,
       validator_accounts: validator_accounts,
@@ -110,6 +114,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       login: 'create',
       pScreen:'password'
     }); 
+    setLoadingPwd(false); 
   };
 
   return (
@@ -166,7 +171,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
             onPress={handleSubmit}
             disabled={!isValid}
             buttonColor={Colors.WHITE}
-            loading={loading}
+            loading={loadingPwd}
             customStyle={{ backgroundColor: "transparent", marginTop: 0 }}
           />
         </View>
