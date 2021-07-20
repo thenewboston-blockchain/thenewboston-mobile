@@ -36,26 +36,14 @@ const OverviewScreen = ({ route, navigation }) => {
  
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch(); 
-  var lAccounts = useSelector((state: IAppState) => state.accountState.account); 
-  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login, genKey} = route.params; 
-  var _lAccounts = lAccounts == null ? [] : lAccounts 
-  console.log('lAccounts', _lAccounts);
-  if(_lAccounts != null && _lAccounts.length > 0 && genKey != null){   
-    let cusAccounts = _lAccounts.map((account)=>{ 
-      if(account.isEncrypt != null && account.isEncrypt == true){ 
-        let bytes = CryptoJS.AES.decrypt(account.sign_key.toString(), genKey);   
-        account.sign_key = bytes.toString(); 
-      } 
-      return account 
-    })   
-    _lAccounts = cusAccounts;  
-  }
-  const [myAccounts, setMyAccounts] = useState(_lAccounts == null ? [] : _lAccounts); 
+  const lAccounts = useSelector((state: IAppState) => state.accountState.account); 
+  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login, genKey} = route.params;  
+  const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [modalVisible, setModalVisible] = useState(false);   
   const [viewRef, setViewRef] = useState(null);  
   const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : myAccounts[0].name); 
   const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : (myAccounts[0].account_number)); 
-  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : (myAccounts[0].sign_key));  
+  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : toDecrypt(myAccounts[0].sign_key));  
   const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
   const [addMode, setAddMode] = useState(false); 
@@ -67,6 +55,11 @@ const OverviewScreen = ({ route, navigation }) => {
   const handleSendCoins = () => { 
     console.log("send coins");
   };
+
+  function toDecrypt(cipher){
+    let bytes = CryptoJS.AES.decrypt(cipher, genKey);    
+    return bytes.toString(); 
+  }
 
   function toHexString(byteArray) {
     return Array.prototype.map.call(byteArray, function(byte) {
@@ -107,15 +100,8 @@ const OverviewScreen = ({ route, navigation }) => {
 
   const deleteAccount = () => {   
     let _myAccounts = myAccounts.filter(item => item.account_number !== actNumber);
-    setMyAccounts(_myAccounts);
-    let cusAccounts = _myAccounts.map((account)=>{ 
-      account.sign_key = account.sign_key.toString();  
-      let encryptString = CryptoJS.AES.encrypt(account.sign_key, genKey);      
-      account.sign_key = encryptString.toString();    
-      account.isEncrypt = true; 
-      return account 
-    })  
-    dispatch(AccountAction(cusAccounts)); 
+    setMyAccounts(_myAccounts);  
+    dispatch(AccountAction(_myAccounts)); 
     
     if(_myAccounts != [] && _myAccounts.length > 0){
       setActName(_myAccounts[0].name);
@@ -142,8 +128,7 @@ const OverviewScreen = ({ route, navigation }) => {
           }
         }); 
         return account 
-      }) 
-     
+      })  
      dispatch(AccountAction(cusAccounts));  
      setMyAccounts(cusAccounts);
      setSpinVisible(false);
@@ -160,8 +145,8 @@ const OverviewScreen = ({ route, navigation }) => {
       else{
         setActName(myAccounts[index].name);
       } 
-      setActNumber((myAccounts[index].account_number));
-      setActSignKey((myAccounts[index].sign_key));
+      setActNumber((myAccounts[index].account_number));   
+      setActSignKey(toDecrypt(myAccounts[index].sign_key));
       setActBalance(myAccounts[index].balance);  
     } 
   }
@@ -268,29 +253,21 @@ const OverviewScreen = ({ route, navigation }) => {
                 }
               })
               if(bExist != false){ 
-                setDlgMessage("This signning key exists in your accounts");
+                setDlgMessage("This signing key exists in your accounts");
                 setDlgVisible(true);
               }
               else if(bExistName != false){ 
                 setDlgMessage("This account name exists in your accounts");
                 setDlgVisible(true);
               }
-              else{
-                myAccounts.push(account); 
-                if(seed != "" && seed != null){   
-                  let cusAccounts = myAccounts.map((account)=>{ 
-                    account.sign_key = account.sign_key.toString();  
-                    let encryptString = CryptoJS.AES.encrypt(account.sign_key, genKey);      
-                    account.sign_key = encryptString.toString();    
-                    account.isEncrypt = true; 
-                    return account 
-                  })   
-                  dispatch(AccountAction(cusAccounts));
-                } 
+              else{  
+                let encryptString = CryptoJS.AES.encrypt(account.sign_key, genKey);  
+                account.sign_key = encryptString.toString(); 
+                myAccounts.push(account);   
+                dispatch(AccountAction(myAccounts));
                 setMyAccounts(myAccounts); 
                 setModalVisible(false);
-                setDoneVisible(true);
-                
+                setDoneVisible(true); 
               }
               
             }} 

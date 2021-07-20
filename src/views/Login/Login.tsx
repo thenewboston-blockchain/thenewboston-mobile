@@ -38,16 +38,24 @@ const LoginScreen = ({ navigation, route }:login) => {
     FingerprintScanner
     .authenticate({ description: 'Scan your fingerprint on the device scanner to continue' })
     .then(() => {
-      setFingerAuth(true)
+      setFingerAuth(true) 
+      onFingerprint();
     })
     .catch((error) => { 
       setErrorMessage(error.message)
-    });
-     
+      setFingerAuth(false) 
+      onFingerprint();
+      console.log(error.message)
+    }); 
     FingerprintScanner
     .isSensorAvailable()
     .then(biometryType => setFingerPrint(true))
-    .catch(error=> setErrorMessage(error.message));
+    .catch(error=> {
+      setErrorMessage(error.message);
+      setFingerAuth(false) 
+      onFingerprint();
+      console.log(error.message);
+    });
     
   }, []);
  

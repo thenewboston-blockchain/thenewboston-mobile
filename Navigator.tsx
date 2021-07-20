@@ -63,7 +63,7 @@ const Navigator = ({route}) => {
           <Stack.Screen
             name="qrCodeScreen"
             component={QRCodeScreen}
-            options={authHeaderOptions}
+            options={nonHeaderOptions}
           />
           <Stack.Screen
             name="login"
@@ -237,6 +237,16 @@ const authHeaderOptions = {
   },
   headerTitle: "",
   headerLeft: () => <TNBLogo />,
+}; 
+
+const nonHeaderOptions = {
+  headerStyle: {
+    backgroundColor: "transparent",
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  headerTitle: "", 
+  headerLeft: "", 
 }; 
 
 const qrCodeHeaderOptions = (title, navigation) => {

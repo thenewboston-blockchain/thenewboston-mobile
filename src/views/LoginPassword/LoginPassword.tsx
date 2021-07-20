@@ -67,7 +67,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       setDlgMessage("Input your Password")
       setDlgVisible(true);
     } 
-    else if ((seed == "" || seed == null) && mySigningKey == ""){
+    else if ((seed == "" || seed == null) && (mySigningKey == "" && global.mySigningKey == false)){
       dispatch(PasswordAction(password)); 
       setSeedESP(password);
       navigation.navigate('createAccount', { 

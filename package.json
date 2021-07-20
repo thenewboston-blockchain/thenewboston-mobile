@@ -46,7 +46,6 @@
         "react-native-bottom-drawer-view": "^1.0.2",
         "react-native-camera": "^3.44.1",
         "react-native-crypto": "^2.2.0",
-        "react-native-crypto-js": "^1.0.0",
         "react-native-dotenv": "^2.5.5",
         "react-native-elements": "^3.4.1",
         "react-native-encrypted-storage": "^4.0.2",

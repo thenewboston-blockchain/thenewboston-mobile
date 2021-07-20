@@ -88,37 +88,10 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
       catch (error) {
        console.log(error);
     }
-  } 
-  
-  async function getMyAccountsESP() {
-    try {   
-      await EncryptedStorage.getItem("myAccounts").then((data)=>{ 
-        if (data !== undefined) {
-          generateKey(seed, 'SALT', 1000, 256).then((key: any) => {
-            encrypt_key = key;
-            if(isCapsule){ 
-              const key = encrypt_key;
-              const iv = encrypt_iv;
-              const cipher = data;
-              console.log(data)
-              var decrypt_string = decryptData({ cipher, iv }, key); 
-              var accounts = JSON.parse(decrypt_string)
-              dispatch(AccountAction(accounts)); 
-            } 
-            else{
-              dispatch(AccountAction(data.accounts)); 
-            } 
-          }); 
-        }
-       }); 
-      
-    } catch (error) {
-        // There was an error on the native side
-    }
-  } 
+  }  
 
   const handleSubmit = async()=>{  
- 
+  
     if(lIpAddress == "" || lProtocol == null || lProtocol != "http") {
       return;
     } 

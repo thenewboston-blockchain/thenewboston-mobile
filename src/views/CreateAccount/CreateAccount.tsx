@@ -88,9 +88,9 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
     }
   } 
   
-  async function encryptAndLogin(account){
+  async function encryptAndLogin(account){ 
     generateKey(seed, 'SALT', 1000, 256).then((key: any) => {    
-      account.sign_key = account.sign_key.toString(CryptoJS.enc.Utf8);  
+      account.sign_key = account.sign_key.toString();  
       let encryptString = CryptoJS.AES.encrypt(account.sign_key, key);  
       account.sign_key = encryptString.toString();  
       // let decryptString = CryptoJS.AES.decrypt(account.sign_key.toString(), key);  
