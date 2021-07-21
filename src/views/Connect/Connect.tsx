@@ -1,6 +1,6 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View, Modal, NativeModules, Platform} from "react-native";
+import { ScrollView, Text, View, Modal, NativeModules, Dimensions} from "react-native";
 import {Account, Bank} from 'thenewboston' 
 import CustomButton from "../../components/CustomButton";
 // components
@@ -16,18 +16,21 @@ import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";
 import CryptoJS from "crypto-js"
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions'
+import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions' 
+import RNSingleSelect, {
+  ISingleSelectDataType,
+} from "@freakycoder/react-native-single-select";
 
 interface connects { 
   navigation: any; // TODO use navigation props type
-}
+} 
  
 var Aes = NativeModules.Aes
 
 const connectScreen = ({navigation: {navigate}}: connects) => { 
 
   const dispatch = useDispatch(); 
-
+  const { width: ScreenWidth } = Dimensions.get("window");
   const port = useSelector((state: IAppState) => state.loginState.port);
   const nickname = useSelector((state: IAppState) => state.loginState.nickName); 
   const protocol = useSelector((state: IAppState) => state.loginState.protocol);
@@ -35,6 +38,13 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
  
   const [lPort, setlPort] = useState<string>(port)
   const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)
+  const protocolData: Array<ISingleSelectDataType> = [
+    { id: 0, value: "HTTP" },
+    { id: 1, value: "PROTOCOL" }, 
+  ];
+  const [dynamicData, setDynamicData] = React.useState<
+    Array<ISingleSelectDataType>
+  >([]);
   const [lNickName, setlNickName] = useState<string>(nickname)
   const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == null ? "" : ipAddress)
   const validator_IpAddress = "54.219.183.128"
@@ -88,11 +98,14 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
       catch (error) {
        console.log(error);
     }
+    setTimeout(() => {
+      setDynamicData(protocolData);
+    }, 20000);
   }  
 
   const handleSubmit = async()=>{  
-  
-    if(lIpAddress == "" || lProtocol == null || lProtocol != "http") {
+    
+    if(lIpAddress == "" || lProtocol == null || !(lProtocol == "http" || lProtocol == "HTTP")) {
       return;
     } 
     let bank_url = lProtocol + '://' + lIpAddress + ':' + port;
@@ -149,7 +162,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
             Please enter the address of a bank
           </Text>
 
-          <CustomSelect
+          {/* <CustomSelect
             options={protocols}
             selected={lProtocol}
             required={true}
@@ -158,7 +171,25 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
             }}
             customStyle={[Custom.mb20]}
             placeholder={{ label: "HTTP", value: "http" }}
-          />
+          /> */}
+          <RNSingleSelect
+            data={dynamicData}
+            arrowImageStyle={{width: 15, height: 10}}
+            buttonContainerStyle={Style.buttonContainerStyle}
+            menuItemTextStyle={Style.menuItemTextStyle}
+            menuBarContainerStyle={Style.menuBarContainerStyle}
+            placeholderTextStyle={Style.placeholderTextStyle}
+            darkMode={true}
+            width={ScreenWidth - 20}
+            searchEnabled={false}
+            menuBarContainerWidth={ScreenWidth - 20}
+            menuBarContainerHeight={55 * 2}
+            onSelect={(selectedItem: ISingleSelectDataType) => 
+              setlProtocol(selectedItem.value) 
+            }
+            >
+
+          </RNSingleSelect>
 
           <CustomInput
             name="ipAddress"

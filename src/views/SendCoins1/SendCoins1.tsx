@@ -1,6 +1,6 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View, Dimensions } from "react-native";
 
 import CustomButton from "../../components/CustomButton";
 // components
@@ -10,7 +10,9 @@ import Style from "./Style";
 //redux
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux'; 
-
+import RNSingleSelect, {
+  ISingleSelectDataType,
+} from "@freakycoder/react-native-single-select";
 
 
 const SendCoins1Screen = (props) => {
@@ -20,8 +22,10 @@ const SendCoins1Screen = (props) => {
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [friends, setFriends] = useState(lFriends == null ? [] : lFriends); 
   const {validator_accounts, bank_url} = props.route.params; 
-  
+  const [fromData, setFromData] = React.useState<Array<ISingleSelectDataType>>([]);
+  const [toData, setToData] = React.useState<Array<ISingleSelectDataType>>([]);
   const [memo, setMemo] = useState(""); 
+  const { width: ScreenWidth } = Dimensions.get("window");
 
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
@@ -50,9 +54,23 @@ const SendCoins1Screen = (props) => {
   const [from, setFrom] = useState("Select"); 
   const [to, setTo] = useState("To"); 
 
-  useEffect(() => { 
-     
-    
+  useEffect(() => {  
+    setTimeout(() => {
+      var fromDatas: Array<ISingleSelectDataType> = [];
+      froms.map((item, i) => {
+        let oneData :ISingleSelectDataType = {id: i, value: item.label}
+        fromDatas.push(oneData);
+      });  
+      setFromData(fromDatas);
+
+      var toDatas: Array<ISingleSelectDataType> = [];
+      froms.map((item, i) => {
+        let oneData :ISingleSelectDataType = {id: i, value: item.label}
+        toDatas.push(oneData);
+      });  
+      setToData(toDatas);
+
+    }, 2000);
   }, []);
 
   const handleSubmit = () => {
@@ -83,24 +101,56 @@ const SendCoins1Screen = (props) => {
     <View style={Style.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={Style.formView}>
-          <CustomSelect
+          {/* <CustomSelect
             options={froms}
             selected={from}
             required={true}
             updateSelected={(selected: any) => setFrom(selected)}
             customStyle={[Custom.mb20]}
             placeholder={{ label: "Select" }}
-          />
-
-          <CustomSelect
+          /> */}
+          <RNSingleSelect
+            data={fromData}
+            arrowImageStyle={{width: 15, height: 10}}
+            buttonContainerStyle={Style.buttonContainerStyle}
+            menuItemTextStyle={Style.menuItemTextStyle}
+            menuBarContainerStyle={Style.menuBarContainerStyle}
+            placeholderTextStyle={Style.placeholderTextStyle}
+            darkMode={true}
+            width={ScreenWidth - 20}
+            searchEnabled={false}
+            menuBarContainerWidth={ScreenWidth - 20}
+            menuBarContainerHeight={55 * fromData.length}
+            onSelect={(selectedItem: ISingleSelectDataType) =>   
+              setFrom(selectedItem.value)
+            }
+            >
+            </RNSingleSelect>
+          {/* <CustomSelect
             options={tos}
             selected={to}
             required={true}
             updateSelected={(selected: any) => setTo(selected)}
             customStyle={[Custom.mb20]}
             placeholder={{ label: "To" }}
-          />
-
+          /> */}
+          <RNSingleSelect
+            data={toData}
+            arrowImageStyle={{width: 15, height: 10}}
+            buttonContainerStyle={Style.buttonContainerStyle}
+            menuItemTextStyle={Style.menuItemTextStyle}
+            menuBarContainerStyle={Style.menuBarContainerStyle}
+            placeholderTextStyle={Style.placeholderTextStyle}
+            darkMode={true}
+            width={ScreenWidth - 20}
+            searchEnabled={false}
+            menuBarContainerWidth={ScreenWidth - 20}
+            menuBarContainerHeight={55 * toData.length}
+            onSelect={(selectedItem: ISingleSelectDataType) =>   
+              setFrom(selectedItem.value)
+            }
+            > 
+            </RNSingleSelect>
           <CustomInput
             name="memo"
             value={memo}
