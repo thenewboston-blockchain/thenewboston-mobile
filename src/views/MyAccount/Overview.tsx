@@ -25,10 +25,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import Refresh from "../../assets/svg/Refresh.svg";
 import CryptoJS from "crypto-js"
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { virgilCrypto } from 'react-native-virgil-crypto';
 
 
 const TAB_BAR_HEIGHT = 20;
-const DOWN_DISPLAY = 50;
+const DOWN_DISPLAY = 50; 
 
 var Aes = NativeModules.Aes
 
@@ -51,14 +52,16 @@ const OverviewScreen = ({ route, navigation }) => {
   const [dlgVisible, setDlgVisible] = useState(false); 
   const [removeVisible, setRemoveVisible] = useState(false);
   const [spinVisible, setSpinVisible] = useState(false) 
+  const [privateKey, setPrivateKey] = useState(null);  
+  const [publicKey, setPublicKey] = useState(null); 
     
   const handleSendCoins = () => { 
     console.log("send coins");
   };
 
-  function toDecrypt(cipher){
-    let bytes = CryptoJS.AES.decrypt(cipher, genKey);    
-    return bytes.toString(); 
+  function toDecrypt(encryptedData){
+    const decryptedData = virgilCrypto.decrypt(encryptedData, privateKey); 
+    return decryptedData; 
   }
 
   function toHexString(byteArray) {
@@ -71,27 +74,18 @@ const OverviewScreen = ({ route, navigation }) => {
 
   useEffect(() => {  
     getSeedESP();
-  }, []); 
-
-  async function setMyAccountsESP(accounts, isCapsule) {
-    try {
-      await EncryptedStorage.setItem(
-          "myAccounts",
-          JSON.stringify({ 
-            isCapsule: isCapsule,
-            myAccounts : accounts, 
-        })
-      ); 
-    } catch (error) {
-       console.log(error);
-    }
-  } 
+  }, []);  
 
   async function getSeedESP() {
     try {   
-      const session = await EncryptedStorage.getItem("seed"); 
+      const session = await EncryptedStorage.getItem("seed");    
       if (session !== undefined) {
-           setSeed(session); 
+           setSeed(session);   
+      }
+      const keyPair = await EncryptedStorage.getItem("keyPair");     
+      if (keyPair !== undefined) {  
+        setPrivateKey(keyPair.privateKey);   
+        setPublicKey(keyPair.publicKey);   
       }
     } catch (error) {
        console.log(error);
@@ -106,7 +100,7 @@ const OverviewScreen = ({ route, navigation }) => {
     if(_myAccounts != [] && _myAccounts.length > 0){
       setActName(_myAccounts[0].name);
       setActNumber((_myAccounts[0].account_number));
-      setActSignKey((_myAccounts[0].sign_key));
+      setActSignKey(toDecrypt(_myAccounts[0].sign_key));
       setActBalance(_myAccounts[0].balance);
     }
     else{
@@ -261,9 +255,10 @@ const OverviewScreen = ({ route, navigation }) => {
                 setDlgVisible(true);
               }
               else{  
-                let encryptString = CryptoJS.AES.encrypt(account.sign_key, genKey);  
-                account.sign_key = encryptString.toString(); 
-                myAccounts.push(account);   
+                const encryptedData = virgilCrypto.encrypt(account.sign_key, publicKey); 
+                account.sign_key = encryptedData
+                account.isEncrypt = true; 
+                myAccounts.push(account); 
                 dispatch(AccountAction(myAccounts));
                 setMyAccounts(myAccounts); 
                 setModalVisible(false);

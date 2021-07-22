@@ -17,6 +17,7 @@ import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";
 import CryptoJS from "crypto-js"
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions' 
+import { virgilCrypto } from 'react-native-virgil-crypto';
 import RNSingleSelect, {
   ISingleSelectDataType,
 } from "@freakycoder/react-native-single-select";
@@ -54,35 +55,12 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false); 
   const protocols = [{ label: "PROTPCOL", value: "Protocol" }];
-  const [seed, setSeed] = useState(""); 
-  const lIsCapsule = useSelector((state: IAppState) => state.accountState.isCapsule);
-  const lAccounts = useSelector((state: IAppState) => state.accountState.account);
-  const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
-  const [isCapsule, setCapsule] = useState(lIsCapsule == null ? false : lIsCapsule); 
+  const [seed, setSeed] = useState("");  
+  const [privateKey, setPrivateKey] = useState(null);  
+  const [publicKey, setPublicKey] = useState(null);  
+    
 
-  const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
-  const decryptData = (encryptedData: { cipher: any; iv: any; }, key: any) => Aes.decrypt(encryptedData.cipher, key, encryptedData.iv)
-  const iv_string = '0123456789abcdef0123456789abcdef'; 
-  let encrypt_key:any = "";
-  let encrypt_string:any = "";
-  let plain_string:any = "";
-  let encrypt_iv:any = ""; 
-
-  const encryptData = (text: string, key: any) => {
-      return Aes.randomKey(16).then((iv: any) => {
-          return Aes.encrypt(text, key, iv).then((cipher: any) => ({
-              cipher,
-              iv,
-          }))
-      })
-  }
-  
-  const encryptDataIV = (text: string, key: any, iv:any) => {
-    return Aes.encrypt(text, key, iv).then((cipher: any) => ({
-      cipher,
-      iv,
-    }))      
-  }  
+  const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length) 
 
   useEffect(() => {  
     getSeedESP();
@@ -93,15 +71,43 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
       const session = await EncryptedStorage.getItem("seed");   
       if (session !== undefined) { 
            setSeed(session);    
-        }  
+      }   
+
+      const keyPair = await EncryptedStorage.getItem("keyPair");
+      if (keyPair !== null) {   
+        setPrivateKey(keyPair.privateKey);   
+        setPublicKey(keyPair.publicKey);   
       } 
-      catch (error) {
+      else{   
+        const genKeyPair = virgilCrypto.generateKeys();
+        console.log(keyPair)  
+        setPrivateKey(genKeyPair.privateKey);   
+        setPublicKey(genKeyPair.publicKey);  
+        setKeyPair(genKeyPair)
+      }
+       
+    }
+    catch (error) {
        console.log(error);
     }
     setTimeout(() => {
       setDynamicData(protocolData);
     }, 20000);
   }  
+
+  async function setKeyPair(keyPair) {
+    try {
+      await EncryptedStorage.setItem(
+          "keyPair",
+          JSON.stringify({ 
+            privateKey: keyPair.privateKey,
+            publicKey : keyPair.publicKey, 
+        })
+      ); 
+    } catch (error) {
+       console.log(error);
+    }
+  } 
 
   const handleSubmit = async()=>{  
     

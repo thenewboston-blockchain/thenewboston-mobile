@@ -29,7 +29,7 @@ const createFriendWidget = (props: createFriend) => {
     const [isValid,setValid] = useState(false);
     const [data, setData] = useState<createFriendPayload>({
         nickname: "",
-        key:"f111e3eaa9d04fbc9352b1f33e5e672793ae06e4b79e6c73457327431df5ddc5"
+        key:""
     })
     const [loading, setLoading] = useState<boolean>(false)   
     const [dlgMessage, setDlgMessage] = useState("");

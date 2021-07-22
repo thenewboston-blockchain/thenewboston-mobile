@@ -17,8 +17,8 @@ import Style from "./Style";
 import LinearGradient from 'react-native-linear-gradient';
 import CryptoJS from "crypto-js"
 import EncryptedStorage from 'react-native-encrypted-storage'; 
-var Aes = NativeModules.Aes
-
+import { virgilCrypto } from 'react-native-virgil-crypto';
+ 
 interface createAccount {
   navigation: any; // TODO use navigation props type
   route: any;
@@ -47,74 +47,28 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
   const [removeVisible, setRemoveVisible] = useState(false);
   const [spinVisible, setSpinVisible] = useState(false); 
   const [seed, setSeed] = useState("");  
+  const [privateKey, setPrivateKey] = useState(null);  
+  const [publicKey, setPublicKey] = useState(null); 
+
+  var Aes = NativeModules.Aes
   
-  const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
-  const decryptData = (encryptedData: { cipher: any; iv: any; }, key: any) => Aes.decrypt(encryptedData.cipher, key, encryptedData.iv)
-  const iv_string = '0123456789abcdef0123456789abcdef'; 
-  let encrypt_key:any = "";
-  let encrypt_string:any = "";
-  let plain_string:any = "";
-  let encrypt_iv:any = "";
+  const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length) 
 
   useEffect(() => {  
     getSeedESP();
 
-  }, []); 
-
-  const encryptData = (text: string, key: any) => {
-      return Aes.randomKey(16).then((iv: any) => {
-          return Aes.encrypt(text, key, iv).then((cipher: any) => ({
-              cipher,
-              iv,
-          }))
-      })
-  }
-  
-  const encryptDataIV = (text: string, key: any, iv:any) => {
-    return Aes.encrypt(text, key, iv).then((cipher: any) => ({
-      cipher,
-      iv,
-    }))      
-  }  
-
-  async function setMyAccountsESP(accounts, isCapsule) {
-    try {
-      await EncryptedStorage.setItem(
-          "myAccounts",
-          accounts, 
-      ); 
-    } catch (error) {
-       console.log(error);
-    }
-  } 
-  
-  async function encryptAndLogin(account){ 
-    generateKey(seed, 'SALT', 1000, 256).then((key: any) => {    
-      account.sign_key = account.sign_key.toString();  
-      let encryptString = CryptoJS.AES.encrypt(account.sign_key, key);  
-      account.sign_key = encryptString.toString();  
-      // let decryptString = CryptoJS.AES.decrypt(account.sign_key.toString(), key);  
-      // var plaintext = decryptString.toString(CryptoJS.enc.Utf8); 
-      account.isEncrypt = true; 
-      myAccounts.push(account);  
-      dispatch(ISCAPSULEAction(true));  
-      dispatch(AccountAction(myAccounts)); 
-      navigation.navigate("loginPassword", { 
-        accounts: accounts,
-        validator_accounts: validator_accounts,
-        bank_url: bank_url, 
-        nickname: route.params.nickname,
-        paramSeed: seed,
-      }); 
-    }) 
-  }
+  }, []);    
 
   async function getSeedESP() {
     try {   
-      const session = await EncryptedStorage.getItem("seed");   
-      
+      const session = await EncryptedStorage.getItem("seed");    
       if (session !== undefined) {
            setSeed(session);   
+      }
+      const keyPair = await EncryptedStorage.getItem("keyPair");    
+      if (keyPair !== undefined) { 
+        setPrivateKey(keyPair.privateKey);   
+        setPublicKey(keyPair.publicKey);   
       }
     } catch (error) {
        console.log(error);
@@ -151,22 +105,19 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
                 setDlgVisible(true);
               }
               else{ 
-                if(seed != "" && seed != null){  
-                  encryptAndLogin(account);  
-                }
-                else{
-                  myAccounts.push(account); 
-                  dispatch(AccountAction(myAccounts)); 
-                  setMyAccounts(myAccounts);
-                  dispatch(ISCAPSULEAction(false));   
-                  navigation.navigate("loginPassword", { 
-                    accounts: accounts,
-                    validator_accounts: validator_accounts,
-                    bank_url: bank_url, 
-                    nickname: route.params.nickname,
-                    paramSeed: seed,
-                  }); 
-                } 
+
+                const encryptedData = virgilCrypto.encrypt(account.sign_key, publicKey); 
+                account.sign_key = encryptedData
+                account.isEncrypt = true; 
+                myAccounts.push(account);     
+                dispatch(AccountAction(myAccounts)); 
+                navigation.navigate("loginPassword", { 
+                  accounts: accounts,
+                  validator_accounts: validator_accounts,
+                  bank_url: bank_url, 
+                  nickname: route.params.nickname,
+                  paramSeed: seed,
+                });  
                 
               }
               
