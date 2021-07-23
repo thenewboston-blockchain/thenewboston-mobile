@@ -18,7 +18,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import CryptoJS from "crypto-js"
 import EncryptedStorage from 'react-native-encrypted-storage'; 
 import { virgilCrypto } from 'react-native-virgil-crypto';
- 
+import { Base64, nacl } from "react-native-tweetnacl";
+
 interface createAccount {
   navigation: any; // TODO use navigation props type
   route: any;
@@ -65,10 +66,10 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
       if (session !== undefined) {
            setSeed(session);   
       }
-      const keyPair = await EncryptedStorage.getItem("keyPair");    
-      if (keyPair !== undefined) { 
-        setPrivateKey(keyPair.privateKey);   
-        setPublicKey(keyPair.publicKey);   
+      const keyPair = await EncryptedStorage.getItem("keyPair");     
+      if (keyPair !== null) {  
+        setPrivateKey(JSON.parse(keyPair).privateKey);   
+        setPublicKey(JSON.parse(keyPair).publicKey);   
       }
     } catch (error) {
        console.log(error);
@@ -104,9 +105,13 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
                 setDlgMessage("This account name exists in your accounts");
                 setDlgVisible(true);
               }
-              else{ 
-
-                const encryptedData = virgilCrypto.encrypt(account.sign_key, publicKey); 
+              else{   
+                
+                virgilCrypto.importPublicKey((publicKey.value)) 
+                console.log((privateKey.data))
+                //virgilCrypto.importPrivateKey(privateKey.data.toString('base64')) 
+                const encryptedData = virgilCrypto.encrypt(account.sign_key, publicKey.value); 
+                 
                 account.sign_key = encryptedData
                 account.isEncrypt = true; 
                 myAccounts.push(account);     

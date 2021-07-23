@@ -17,16 +17,18 @@ import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";
 import CryptoJS from "crypto-js"
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions' 
-import { virgilCrypto } from 'react-native-virgil-crypto';
+import { virgilCrypto, KeyPairType} from 'react-native-virgil-crypto';
 import RNSingleSelect, {
   ISingleSelectDataType,
 } from "@freakycoder/react-native-single-select";
+import { Base64, nacl } from "react-native-tweetnacl";
 
 interface connects { 
   navigation: any; // TODO use navigation props type
 } 
  
 var Aes = NativeModules.Aes
+const { Ed25519JavaBridge } = NativeModules;
 
 const connectScreen = ({navigation: {navigate}}: connects) => { 
 
@@ -74,16 +76,18 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
       }   
 
       const keyPair = await EncryptedStorage.getItem("keyPair");
-      if (keyPair !== null) {   
-        setPrivateKey(keyPair.privateKey);   
-        setPublicKey(keyPair.publicKey);   
+      if (keyPair == null) {   
+        setPrivateKey(JSON.parse(keyPair).privateKey);   
+        setPublicKey(JSON.parse(keyPair).publicKey);    
       } 
-      else{   
-        const genKeyPair = virgilCrypto.generateKeys();
-        console.log(keyPair)  
-        setPrivateKey(genKeyPair.privateKey);   
-        setPublicKey(genKeyPair.publicKey);  
-        setKeyPair(genKeyPair)
+      else{    
+        //const genKeyPair = nacl.box.keyPair() 
+        const genKeyPair = virgilCrypto.generateKeys(KeyPairType.CURVE25519_ED25519);   
+        const exportPubKey = (genKeyPair.publicKey);
+        const exportPriKey = (genKeyPair.privateKey); //virgilCrypto.exportPrivateKey
+        setPrivateKey(exportPriKey);   
+        setPublicKey(exportPubKey);  
+        setKeyPair(exportPubKey, exportPriKey);
       }
        
     }
@@ -95,13 +99,13 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
     }, 20000);
   }  
 
-  async function setKeyPair(keyPair) {
+  async function setKeyPair(exportPubKey, exportPriKey) {
     try {
       await EncryptedStorage.setItem(
           "keyPair",
           JSON.stringify({ 
-            privateKey: keyPair.privateKey,
-            publicKey : keyPair.publicKey, 
+            privateKey: exportPriKey,
+            publicKey : exportPubKey, 
         })
       ); 
     } catch (error) {

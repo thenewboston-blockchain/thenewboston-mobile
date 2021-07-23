@@ -60,7 +60,7 @@ const OverviewScreen = ({ route, navigation }) => {
   };
 
   function toDecrypt(encryptedData){
-    const decryptedData = virgilCrypto.decrypt(encryptedData, privateKey); 
+    const decryptedData = virgilCrypto.decrypt(encryptedData, privateKey.data); 
     return decryptedData; 
   }
 
@@ -84,8 +84,8 @@ const OverviewScreen = ({ route, navigation }) => {
       }
       const keyPair = await EncryptedStorage.getItem("keyPair");     
       if (keyPair !== undefined) {  
-        setPrivateKey(keyPair.privateKey);   
-        setPublicKey(keyPair.publicKey);   
+        setPrivateKey(JSON.parse(keyPair).privateKey);   
+        setPublicKey(JSON.parse(keyPair).publicKey);     
       }
     } catch (error) {
        console.log(error);
