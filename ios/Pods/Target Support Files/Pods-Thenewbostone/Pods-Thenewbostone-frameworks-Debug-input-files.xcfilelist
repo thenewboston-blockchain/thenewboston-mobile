@@ -1,0 +1,5 @@
+${PODS_ROOT}/Target Support Files/Pods-Thenewbostone/Pods-Thenewbostone-frameworks.sh
+${PODS_ROOT}/VSCCrypto/Carthage/iOS/VSCCommon.framework
+${PODS_ROOT}/VSCCrypto/Carthage/iOS/VSCFoundation.framework
+${PODS_ROOT}/VSCCrypto/Carthage/iOS/VSCPythia.framework
+${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL

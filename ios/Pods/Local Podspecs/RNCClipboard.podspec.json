@@ -3,7 +3,10 @@
   "version": "1.5.1",
   "summary": "React Native Clipboard API for macOS, iOS, Android, and Windows",
   "license": "MIT",
-  "authors": "M.Haris Baig <harisbaig100@gmail.com>",
+  "authors": {
+    "name": "M.Haris Baig",
+    "email": "harisbaig100@gmail.com"
+  },
   "homepage": "https://github.com/react-native-community/clipboard#readme",
   "platforms": {
     "ios": "9.0",

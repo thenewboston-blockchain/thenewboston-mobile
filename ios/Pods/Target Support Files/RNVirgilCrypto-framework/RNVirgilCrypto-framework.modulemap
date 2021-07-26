@@ -1,0 +1,6 @@
+framework module RNVirgilCrypto {
+  umbrella header "RNVirgilCrypto-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}

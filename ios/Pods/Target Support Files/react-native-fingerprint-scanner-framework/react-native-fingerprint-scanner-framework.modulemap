@@ -1,0 +1,6 @@
+framework module react_native_fingerprint_scanner {
+  umbrella header "react-native-fingerprint-scanner-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}

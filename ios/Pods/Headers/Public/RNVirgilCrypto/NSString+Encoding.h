@@ -1,0 +1,1 @@
+../../../../../node_modules/react-native-virgil-crypto/ios/NSString+Encoding.h

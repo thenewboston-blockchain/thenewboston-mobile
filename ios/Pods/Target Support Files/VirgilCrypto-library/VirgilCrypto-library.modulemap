@@ -1,0 +1,6 @@
+module VirgilCrypto {
+  umbrella header "VirgilCrypto-library-umbrella.h"
+
+  export *
+  module * { export * }
+}

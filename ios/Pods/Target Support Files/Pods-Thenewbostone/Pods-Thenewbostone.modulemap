@@ -1,0 +1,6 @@
+module Pods_Thenewbostone {
+  umbrella header "Pods-Thenewbostone-umbrella.h"
+
+  export *
+  module * { export * }
+}

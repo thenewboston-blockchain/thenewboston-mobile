@@ -1,0 +1,6 @@
+framework module react_native_spinkit {
+  umbrella header "react-native-spinkit-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}

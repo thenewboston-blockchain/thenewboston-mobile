@@ -1,0 +1,6 @@
+framework module RNScreens {
+  umbrella header "RNScreens-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,6 @@
+framework module Pods_Thenewbostone_ThenewbostoneTests {
+  umbrella header "Pods-Thenewbostone-ThenewbostoneTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

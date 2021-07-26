@@ -1,0 +1,6 @@
+framework module RNFS {
+  umbrella header "RNFS-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}

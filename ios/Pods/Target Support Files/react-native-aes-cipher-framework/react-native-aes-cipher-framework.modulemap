@@ -1,0 +1,6 @@
+framework module react_native_aes_cipher {
+  umbrella header "react-native-aes-cipher-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}

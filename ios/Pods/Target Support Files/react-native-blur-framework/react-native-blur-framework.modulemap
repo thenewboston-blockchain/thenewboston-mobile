@@ -1,0 +1,6 @@
+framework module react_native_blur {
+  umbrella header "react-native-blur-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}

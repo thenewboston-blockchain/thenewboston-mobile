@@ -3,7 +3,10 @@
   "version": "6.0.0",
   "summary": "React Native Biometrics Scanner for Android and iOS",
   "license": "MIT",
-  "authors": "Hieu Van (https://github.com/hieuvp)",
+  "authors": {
+    "name": "Hieu Van",
+    "url": "https://github.com/hieuvp"
+  },
   "homepage": "https://github.com/hieuvp/react-native-fingerprint-scanner#readme",
   "platforms": {
     "ios": "9.0"

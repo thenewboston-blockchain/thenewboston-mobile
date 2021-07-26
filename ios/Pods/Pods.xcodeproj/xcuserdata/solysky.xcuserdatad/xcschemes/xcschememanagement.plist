@@ -4,316 +4,698 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>BVLinearGradient.xcscheme_^#shared#^_</key>
+		<key>BVLinearGradient-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>12</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>CocoaAsyncSocket.xcscheme_^#shared#^_</key>
+		<key>BVLinearGradient-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>30</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>DoubleConversion.xcscheme_^#shared#^_</key>
+		<key>CocoaAsyncSocket-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>25</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>FBLazyVector.xcscheme_^#shared#^_</key>
+		<key>CocoaAsyncSocket-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>19</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>FBReactNativeSpec.xcscheme_^#shared#^_</key>
+		<key>DoubleConversion-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>8</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>Flipper-DoubleConversion.xcscheme_^#shared#^_</key>
+		<key>DoubleConversion-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>10</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>Flipper-Folly.xcscheme_^#shared#^_</key>
+		<key>FBLazyVector-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>28</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>Flipper-Glog.xcscheme_^#shared#^_</key>
+		<key>FBLazyVector-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>23</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>Flipper-PeerTalk.xcscheme_^#shared#^_</key>
+		<key>FBReactNativeSpec-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>57</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>Flipper-RSocket.xcscheme_^#shared#^_</key>
+		<key>FBReactNativeSpec-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>33</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>Flipper.xcscheme_^#shared#^_</key>
+		<key>Flipper-DoubleConversion-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>3</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>FlipperKit.xcscheme_^#shared#^_</key>
+		<key>Flipper-DoubleConversion-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>4</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>OpenSSL-Universal.xcscheme_^#shared#^_</key>
+		<key>Flipper-Folly-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>47</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>Pods-newthebostonapp-newthebostonappTests.xcscheme_^#shared#^_</key>
+		<key>Flipper-Folly-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>26</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>Pods-newthebostonapp.xcscheme_^#shared#^_</key>
+		<key>Flipper-Glog-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>39</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RCT-Folly.xcscheme_^#shared#^_</key>
+		<key>Flipper-Glog-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>48</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RCTRequired.xcscheme_^#shared#^_</key>
+		<key>Flipper-PeerTalk-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>5</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RCTTypeSafety.xcscheme_^#shared#^_</key>
+		<key>Flipper-PeerTalk-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>40</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNCAsyncStorage.xcscheme_^#shared#^_</key>
+		<key>Flipper-RSocket-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>49</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNCClipboard.xcscheme_^#shared#^_</key>
+		<key>Flipper-RSocket-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>43</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNCMaskedView.xcscheme_^#shared#^_</key>
+		<key>Flipper-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>52</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNCPicker.xcscheme_^#shared#^_</key>
+		<key>Flipper-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>17</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNFS.xcscheme_^#shared#^_</key>
+		<key>FlipperKit-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>29</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNGestureHandler.xcscheme_^#shared#^_</key>
+		<key>FlipperKit-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>14</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNPermissions.xcscheme_^#shared#^_</key>
+		<key>OpenSSL-Universal-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>45</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNReanimated.xcscheme_^#shared#^_</key>
+		<key>OpenSSL-Universal-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>54</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNSVG.xcscheme_^#shared#^_</key>
+		<key>Pods-Thenewbostone-ThenewbostoneTests.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>16</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNScreens.xcscheme_^#shared#^_</key>
+		<key>Pods-Thenewbostone.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>60</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNSecureRandom.xcscheme_^#shared#^_</key>
+		<key>RCT-Folly-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>7</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>RNVectorIcons.xcscheme_^#shared#^_</key>
+		<key>RCT-Folly-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>11</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-Core-AccessibilityResources.xcscheme_^#shared#^_</key>
+		<key>RCTRequired-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>42</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-Core.xcscheme_^#shared#^_</key>
+		<key>RCTRequired-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>6</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-CoreModules.xcscheme_^#shared#^_</key>
+		<key>RCTTypeSafety-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>31</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-RCTActionSheet.xcscheme_^#shared#^_</key>
+		<key>RCTTypeSafety-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>22</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-RCTAnimation.xcscheme_^#shared#^_</key>
+		<key>RNCAsyncStorage-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>51</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-RCTBlob.xcscheme_^#shared#^_</key>
+		<key>RNCAsyncStorage-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>21</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-RCTImage.xcscheme_^#shared#^_</key>
+		<key>RNCClipboard-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>50</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-RCTLinking.xcscheme_^#shared#^_</key>
+		<key>RNCClipboard-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>62</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-RCTNetwork.xcscheme_^#shared#^_</key>
+		<key>RNCMaskedView-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>15</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-RCTSettings.xcscheme_^#shared#^_</key>
+		<key>RNCMaskedView-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>1</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-RCTText.xcscheme_^#shared#^_</key>
+		<key>RNCPicker-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>56</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-RCTVibration.xcscheme_^#shared#^_</key>
+		<key>RNCPicker-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>20</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-callinvoker.xcscheme_^#shared#^_</key>
+		<key>RNFS-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>13</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-cxxreact.xcscheme_^#shared#^_</key>
+		<key>RNFS-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>38</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-jsi.xcscheme_^#shared#^_</key>
+		<key>RNGestureHandler-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>59</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-jsiexecutor.xcscheme_^#shared#^_</key>
+		<key>RNGestureHandler-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>35</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-jsinspector.xcscheme_^#shared#^_</key>
+		<key>RNPermissions-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>34</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-perflogger.xcscheme_^#shared#^_</key>
+		<key>RNPermissions-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React-runtimeexecutor.xcscheme_^#shared#^_</key>
+		<key>RNReanimated-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>27</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>React.xcscheme_^#shared#^_</key>
+		<key>RNReanimated-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>41</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>ReactCommon.xcscheme_^#shared#^_</key>
+		<key>RNSVG-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>36</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>Yoga.xcscheme_^#shared#^_</key>
+		<key>RNSVG-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>18</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>YogaKit.xcscheme_^#shared#^_</key>
+		<key>RNScreens-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>53</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>boost-for-react-native.xcscheme_^#shared#^_</key>
+		<key>RNScreens-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>32</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>glog.xcscheme_^#shared#^_</key>
+		<key>RNSecureRandom-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>24</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>libevent.xcscheme_^#shared#^_</key>
+		<key>RNSecureRandom-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>37</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>react-native-blur.xcscheme_^#shared#^_</key>
+		<key>RNVectorIcons-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>58</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>react-native-camera.xcscheme_^#shared#^_</key>
+		<key>RNVectorIcons-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>46</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>react-native-fingerprint-scanner.xcscheme_^#shared#^_</key>
+		<key>RNVirgilCrypto-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>55</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>react-native-floating-label-input.xcscheme_^#shared#^_</key>
+		<key>RNVirgilCrypto-library.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>61</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>react-native-randombytes.xcscheme_^#shared#^_</key>
+		<key>React-Core-framework-AccessibilityResources.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>9</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>react-native-safe-area-context.xcscheme_^#shared#^_</key>
+		<key>React-Core-framework.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>44</integer>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-Core-library-AccessibilityResources.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-Core-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-CoreModules-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-CoreModules-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTActionSheet-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTActionSheet-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTAnimation-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTAnimation-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTBlob-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTBlob-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTImage-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTImage-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTLinking-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTLinking-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTNetwork-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTNetwork-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTSettings-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTSettings-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTText-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTText-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTVibration-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-RCTVibration-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-callinvoker-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-callinvoker-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-cxxreact-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-cxxreact-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-jsi-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-jsi-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-jsiexecutor-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-jsiexecutor-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-jsinspector-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-jsinspector-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-perflogger-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-perflogger-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-runtimeexecutor-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>React-runtimeexecutor-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>ReactCommon-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>ReactCommon-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>VSCCrypto-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>VSCCrypto-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>VirgilCrypto-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>VirgilCrypto-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>VirgilCryptoFoundation-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>VirgilCryptoFoundation-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>VirgilCryptoPythia-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>VirgilCryptoPythia-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Yoga-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Yoga-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>YogaKit-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>YogaKit-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>boost-for-react-native-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>boost-for-react-native-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>glog-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>glog-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>libevent-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>libevent-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-aes-cipher-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-aes-cipher-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-blur-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-blur-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-camera-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-camera-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-encrypted-storage-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-encrypted-storage-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-fingerprint-scanner-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-fingerprint-scanner-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-floating-label-input-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-floating-label-input-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-randombytes-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-randombytes-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-safe-area-context-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-safe-area-context-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-spinkit-framework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-spinkit-library.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
 		</dict>
 	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict/>
 </dict>
 </plist>

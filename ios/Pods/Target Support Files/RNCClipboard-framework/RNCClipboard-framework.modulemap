@@ -1,0 +1,6 @@
+framework module RNCClipboard {
+  umbrella header "RNCClipboard-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}

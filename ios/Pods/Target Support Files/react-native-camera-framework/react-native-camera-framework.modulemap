@@ -1,0 +1,6 @@
+framework module react_native_camera {
+  umbrella header "react-native-camera-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}
