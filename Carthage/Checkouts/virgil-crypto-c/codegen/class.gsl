@@ -1,0 +1,346 @@
+.template 0
+#   Copyright (C) 2015-2020 Virgil Security, Inc.
+#
+#   All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are
+#   met:
+#
+#       (1) Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#
+#       (2) Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in
+#       the documentation and/or other materials provided with the
+#       distribution.
+#
+#       (3) Neither the name of the copyright holder nor the names of its
+#       contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission.
+#
+#   THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+#   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+#   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#   DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+#   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+#   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+#   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+#   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+#   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+#
+#   Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+
+# ---------------------------------------------------------------------------
+#   Perform resolution for item 'class' and all children.
+#
+#   Resolution includes several steps:
+#       1. Validate - check that required attributes and items are defined.
+#       2. Define default values to the optional class attributes.
+#       3. Append optional items.
+#
+#    Private function prefix is: B18.
+#
+# ---------------------------------------------------------------------------
+#   This is a code generator built using the iMatix GSL code generation
+#   language. See https://github.com/zeromq/gsl for details.
+# ---------------------------------------------------------------------------
+
+gsl from "common.gsl"
+gsl from "component.gsl"
+gsl from "meta.gsl"
+
+# ---------------------------------------------------------------------------
+#   Return class as shortened XML string with required attributes.
+# ---------------------------------------------------------------------------
+function class_dump (class)
+    check_argument (my, "class", my)
+
+    my.class_info = ""
+    my.class_info += " name=\"$(my.class.name)\"" ? ""
+    my.class_info += " of_class=\"$(my.class.of_class)\"" ? ""
+    my.class_info += " c_prefix=\"$(my.class.c_prefix)\"" ? ""
+    my.class_info += " context=\"$(my.class.context)\"" ? ""
+    my.class_info += " lifecycle=\"$(my.class.lifecycle)\"" ? ""
+    my.class_dump = "<$(name (my.class))$(my.class_info)/>"
+
+    return my.class_dump
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve attribute: class.context.
+# ---------------------------------------------------------------------------
+function class_resolve_attr_context (class, project)
+    check_arguments (my, "class, project", my)
+
+    my.has_context = (count (my.class.property) + count (my.class.dependency)) > 0
+    my.class.context ?= my.has_context ?? "private" ? "none"
+
+    if my.class.context = "private" & string_equal (my.class.scope ?, "internal")
+        my.class.context = "internal"
+    endif
+
+    my.valid_contexts = "none, public, private, internal"
+
+    if ! string_in (my.class.context, my.valid_contexts)
+        my.class_dump = class_dump (my.class)
+
+        echo_fatal ("Invalid class attribute context '$(my.class_dump:)'. " + \
+                    "Expected {$(my.valid_contexts)}", my)
+    endif
+
+    if count (my.class.property) & my.class.context = "none"
+        my.class_dump = class_dump (my.class)
+
+        echo_fatal ("Class attribute context is explicitly 'none'," + \
+                    " when context's 'property' defined as well." + \
+                    "Expected {$(my.valid_contexts)}", my)
+    endif
+
+    if count (my.class.dependency) & my.class.context = "none"
+        my.class_dump = class_dump (my.class)
+
+        echo_fatal ("Class attribute context is explicitly 'none'," + \
+                    " when context's 'dependency' defined as well." + \
+                    "Expected {$(my.valid_contexts)}", my)
+    endif
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve attribute: class.is_value_type.
+# ---------------------------------------------------------------------------
+function class_resolve_attr_is_value_type (class, project)
+    check_arguments (my, "class, project", my)
+
+    my.class.is_value_type ?= "0"
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve attribute: class.lifecycle.
+# ---------------------------------------------------------------------------
+function class_resolve_attr_lifecycle (class, project)
+    check_arguments (my, "class, project", my)
+
+    my.class.lifecycle ?= "default"
+
+    my.valid_lifecycles = "none, default"
+
+    if ! string_in (my.class.lifecycle, my.valid_lifecycles)
+        my.class_dump = class_dump (my.class)
+
+        echo_fatal ("Invalid class attribute lifecycle '$(my.class_dump:)'. " + \
+                    "Expected {$(my.valid_lifecycles)}", my)
+    endif
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve attribute: class.of_class.
+# ---------------------------------------------------------------------------
+function class_resolve_attr_of_class (class, project)
+    check_arguments (my, "class, project", my)
+
+    my.class.of_class ?= my.class.name
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve attribute: class.c_prefix.
+# ---------------------------------------------------------------------------
+function class_resolve_attr_c_prefix (class, project)
+    check_arguments (my, "class, project", my)
+
+    my.class.c_prefix ?= my.project.prefix
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve attribute: class.uid.
+# ---------------------------------------------------------------------------
+function class_resolve_attr_uid (class, project)
+    check_arguments (my, "class, project", my)
+
+    my.class.uid = make_id ("class", my.class.name)
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve attribute: class.scope.
+# ---------------------------------------------------------------------------
+function class_resolve_attr_scope (class, project)
+    check_arguments (my, "class, project", my)
+
+    my.class.scope ?= "public"
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve entity: property.
+# ---------------------------------------------------------------------------
+function class_resolve_property (property, class)
+    check_arguments (my, "property, class", my)
+
+    my.property.access ?= "readwrite"
+
+    if string_equal (my.property.class ?, "self")
+        my.property.class = my.class.name
+        my.property. ?= "Class specific context."
+    endif
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve entity: method.
+# ---------------------------------------------------------------------------
+function class_resolve_method (method, class)
+    check_arguments (my, "method, class", my)
+
+    if string_equal (my.class.context, "none")
+        my.method.is_static = "1"
+
+        for my.method.argument
+            for argument.length
+                length.class ?= "self"
+            endfor
+        endfor
+    endif
+
+    for my.method.argument where string_equal (0.class ?, "self")
+        .name ?= "ctx"
+        .access ?= "readwrite"
+        .class = my.class.name
+    endfor
+
+    for my.method.argument
+        for argument.length where defined(length.class)
+            if length.class = "self"
+                length.class = my.class.name
+            endif
+        endfor
+    endfor
+
+    for my.method.return where string_equal (0.class ?, "self")
+        .access ?= "disown"
+        .class = my.class.name
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve entity: constructor.
+# ---------------------------------------------------------------------------
+function class_resolve_constructor (constructor, class)
+    check_arguments (my, "constructor, class", my)
+
+    my.constructor.is_static = "1"
+    component_resolve_method (my.constructor, my.class)
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve entity: require.
+# ---------------------------------------------------------------------------
+function class_resolve_require (require, class)
+    check_arguments (my, "require, class", my)
+
+    my.require.scope ?= "private"
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve component: class.
+# ---------------------------------------------------------------------------
+function class_resolve (class, project)
+    check_arguments (my, "class, project", my)
+
+    echo_trace ("Resolving class: $(my.class.name:)", my)
+
+    assert_attribute (my.class, "name", my)
+
+    component_resolve_attr_scope (my.class)
+    component_resolve_attr_visibility (my.class, my.project)
+    class_resolve_attr_context (my.class, my.project)
+    class_resolve_attr_is_value_type (my.class, my.project)
+    class_resolve_attr_lifecycle (my.class, my.project)
+    class_resolve_attr_c_prefix (my.class, my.project)
+    class_resolve_attr_uid (my.class, my.project)
+    class_resolve_attr_scope (my.class, my.project)
+
+    for my.class.constructor
+        class_resolve_constructor (constructor, my.class)
+    endfor
+
+    for my.class.method
+        class_resolve_method (method, my.class)
+    endfor
+
+    for my.class.property
+        class_resolve_property (property, my.class)
+    endfor
+
+    for my.class.require
+        class_resolve_require (require, my.class)
+    endfor
+
+    foreach_component_resolve (my.class)
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Resolve all 'class' entries within 'source'
+# ---------------------------------------------------------------------------
+function foreach_class_resolve (source, project)
+    check_arguments (my, "source, project", my)
+
+    for my.source.class
+        class_resolve (class, my.project)
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Create 'meta entity' for each class within source.
+# ---------------------------------------------------------------------------
+function foreach_class_update_meta (source, meta)
+    check_arguments (my, "source, meta", my)
+
+    for my.source.class
+        meta_add_class (my.meta, class)
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Create 'feature' for given 'class'.
+# ---------------------------------------------------------------------------
+function class_create_feature (class, project, destination)
+    check_arguments (my, "class, project, destination", my)
+
+    my.class_feature = my.class->feature(feature.name = my.class.name) ?
+    if !defined(my.class_feature)
+        new feature to my.destination
+            .name = my.class.name
+            my.class_feature = feature
+        endnew
+    else
+        my.class_feature = item_copy_to(my.class_feature, my.destination)
+    endif
+    my.class_feature. ?= "Enable class '$(my.class.name)'."
+    my.class_feature.project = my.project.name
+
+    for my.class.require where defined (0.feature)
+        copy require to my.class_feature
+    endfor
+
+    for my.class.require where has_one_of_attribute (require, "class, interface, impl")
+        new require to my.class_feature
+            .feature = -1.class ? -1.interface ? -1.impl
+            .scope = -1.scope ?
+            .project = -1.project ?
+            .is_optional = -1.is_optional ?
+        endnew
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   For each 'class' within 'source' create 'feature'.
+# ---------------------------------------------------------------------------
+function foreach_class_create_feature (source, project, destination)
+    check_arguments (my, "source, project, destination", my)
+
+    for my.source.class
+        class_create_feature (class, project, my.destination)
+    endfor
+endfunction
+
+.endtemplate

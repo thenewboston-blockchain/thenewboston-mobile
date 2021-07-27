@@ -1,0 +1,92 @@
+<implementor name="ed25519 pk" is_default="1">
+    Provide implementation based on the library ed25519
+
+    <implementation name="ed25519">
+        This is implementation of Ed25519 elliptic curve algorithms.
+
+        <require library="ed25519" feature="library"/>
+        <require header="ed25519/ed25519.h" scope="context"/>
+        <require class="simple alg info"/>
+        <require interface="alg info"/>
+        <require interface="public key"/>
+        <require interface="private key"/>
+        <require impl="ctr drbg"/>
+        <require module="buffer defs" project="common"/>
+        <require module="raw public key defs" scope="private"/>
+        <require module="raw private key defs" scope="private"/>
+
+        <dependency name="random" interface="random"/>
+        <dependency name="ecies" class="ecies" has_observers="1"/>
+
+        <interface name="key alg">
+            <constant name="can import public key" value="true"/>
+            <constant name="can export public key" value="true"/>
+            <constant name="can import private key" value="true"/>
+            <constant name="can export private key" value="true"/>
+        </interface>
+        <interface name="key cipher"/>
+        <interface name="key signer"/>
+        <interface name="compute shared key"/>
+        <interface name="kem"/>
+
+        <method name="setup defaults" declaration="public">
+            Setup predefined values to the uninitialized class dependencies.
+
+            <return enum="status"/>
+        </method>
+
+
+        <method name="generate key" declaration="public" is_const="1">
+            Generate new private key.
+            Note, this operation might be slow.
+
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="private key" access="disown"/>
+        </method>
+    </implementation>
+
+
+    <implementation name="curve25519">
+        This is implementation of Curve25519 elliptic curve algorithms.
+
+        <require library="ed25519" feature="library"/>
+        <require header="ed25519/ed25519.h" scope="context"/>
+        <require class="simple alg info"/>
+        <require interface="alg info"/>
+        <require interface="public key"/>
+        <require interface="private key"/>
+        <require impl="ctr drbg"/>
+        <require module="buffer defs" project="common"/>
+        <require module="raw public key defs" scope="private"/>
+        <require module="raw private key defs" scope="private"/>
+
+        <dependency name="random" interface="random"/>
+        <dependency name="ecies" class="ecies" has_observers="1"/>
+
+        <interface name="key alg">
+            <constant name="can import public key" value="true"/>
+            <constant name="can export public key" value="true"/>
+            <constant name="can import private key" value="true"/>
+            <constant name="can export private key" value="true"/>
+        </interface>
+        <interface name="key cipher"/>
+        <interface name="compute shared key"/>
+        <interface name="kem"/>
+
+        <method name="setup defaults" declaration="public">
+            Setup predefined values to the uninitialized class dependencies.
+
+            <return enum="status"/>
+        </method>
+
+        <method name="generate key" declaration="public" is_const="1">
+            Generate new private key.
+            Note, this operation might be slow.
+
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="private key" access="disown"/>
+        </method>
+    </implementation>
+</implementor>

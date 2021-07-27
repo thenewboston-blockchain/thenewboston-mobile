@@ -1,0 +1,203 @@
+.template 0
+#   Copyright (C) 2015-2020 Virgil Security, Inc.
+#
+#   All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are
+#   met:
+#
+#       (1) Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#
+#       (2) Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in
+#       the documentation and/or other materials provided with the
+#       distribution.
+#
+#       (3) Neither the name of the copyright holder nor the names of its
+#       contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission.
+#
+#   THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+#   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+#   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#   DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+#   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+#   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+#   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+#   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+#   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+#
+#   Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+
+# ---------------------------------------------------------------------------
+#   Perform resolution for item 'module' and all children.
+#
+#   Resolution includes several steps:
+#       1. Validate - check that required attributes and items are defined.
+#       2. Define default values to the optional component attributes.
+#       3. Append optional items.
+#
+#    Private function prefix is: K24.
+#
+# ---------------------------------------------------------------------------
+#   This is a code generator built using the iMatix GSL code generation
+#   language. See https://github.com/zeromq/gsl for details.
+# ---------------------------------------------------------------------------
+
+gsl from "common.gsl"
+gsl from "component.gsl"
+
+# TODO ---- NEED TO SAFE REMOVE ----- START ----
+function _K24_resolve_dependency_to_inner_class(instance, scope, module, source)
+    check_arguments (my, "instance, module, source", my)
+
+
+
+    my.class = my.source->class(class.name = my.instance.class) ?
+
+    if ! defined (my.class)
+        return
+    endif
+
+    my.instance.class = ref (make_id ("class", my.class.name, "struct", my.class.name))
+
+    my.require = my.module->require (string_equal(require.class ?, my.class.name)) ?
+
+    if ! defined (my.require)
+        new require to my.module
+            .class = my.class.name
+            .scope = my.scope ?
+        endnew
+    endif
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   If one of the module inner components refer to other module, then perform
+#   name resolution and add 'require' component.
+# ---------------------------------------------------------------------------
+function module_resolve_inner_dependencies (module, source)
+    check_arguments (my, "module, source", my)
+
+    for my.module.method where !string_equal(method.declaration, "external")
+        for method.argument where defined(0.class)
+            _K24_resolve_dependency_to_inner_class(argument, method.declaration, my.module, my.source)
+        endfor
+
+        for method.return where defined(0.class)
+            _K24_resolve_dependency_to_inner_class(return, method.declaration, my.module, my.source)
+        endfor
+    endfor
+
+    for my.module.callback where !string_equal(callback.declaration, "external")
+        for callback.argument where defined(0.class)
+            _K24_resolve_dependency_to_inner_class(argument, callback.declaration, my.module, my.source)
+        endfor
+
+        for callback.return where defined(0.class)
+            _K24_resolve_dependency_to_inner_class(return, callback.declaration, my.module, my.source)
+        endfor
+    endfor
+
+    for my.module.struct
+        for struct.property where defined(0.class)
+            _K24_resolve_dependency_to_inner_class(property, struct.definition ? "private", my.module, my.source)
+        endfor
+    endfor
+endfunction
+
+
+function module_resolve_header (module)
+    check_arguments (my, "module", my)
+
+    my.header = my.module->header ?
+
+    if ! count (my.module.header)
+        new header to my.module
+            .name = my.module.name
+        endnew
+    endif
+
+    assert_attribute (my.module->header, "name", my)
+    assert_attribute (my.module, "c_prefix", my)
+
+    scope my.module->header
+        .c_prefix ?= my.module.c_prefix
+        .uid = make_id ("header", 0.name)
+        .scope = my.module.scope ?
+    endscope
+endfunction
+# TODO ---- NEED TO SAFE REMOVE ----- END ----
+
+
+# ---------------------------------------------------------------------------
+#   Resolve component: module.
+# ---------------------------------------------------------------------------
+function module_resolve (module, project)
+    check_arguments (my, "module, project", my)
+
+    echo_trace ("Resolving module: $(my.module.name:)", my)
+
+    assert_attribute (my.module, "name", my)
+
+    my.module.of_class ?= my.module.name
+    my.module.c_prefix ?= my.project.prefix
+    my.module.uid = make_id (name (my.module), my.module.name)
+    my.module.has_cmakedefine ?= "0"
+
+    component_resolve_attr_scope (my.module)
+
+    foreach_component_resolve (my.module)
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Resolve all 'module' entries within 'source'
+# ---------------------------------------------------------------------------
+function foreach_module_resolve (source, project)
+    check_arguments (my, "source, project", my)
+
+    for my.source.module
+        module_resolve (module, my.project)
+    endfor
+
+    for my.source.module
+        module_resolve_inner_dependencies (module, my.source)
+    endfor
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Create 'feature' for given 'module'.
+# ---------------------------------------------------------------------------
+function module_create_feature (module, project, destination)
+    check_arguments (my, "module, project, destination", my)
+
+    new feature to my.destination
+        . = "Enable module '$(my.module.name)'."
+        .name = my.module.feature
+        .project = my.project.name
+
+        for my.module.require where defined (0.project) | defined (0.library)
+            copy require to feature
+        endfor
+    endnew
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   For each 'module' within 'source' create 'feature'.
+# ---------------------------------------------------------------------------
+function foreach_module_create_feature (source, project, destination)
+    check_arguments (my, "source, project, destination", my)
+
+    for my.source.module where defined (module.feature)
+        module_create_feature (module, my.project, my.destination)
+    endfor
+endfunction
+
+.endtemplate

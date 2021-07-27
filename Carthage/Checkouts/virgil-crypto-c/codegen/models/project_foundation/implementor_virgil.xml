@@ -1,0 +1,352 @@
+<implementor name="virgil" is_default="1">
+    Provide implementation based on the Virgil Security implementations.
+
+    <implementation name="hmac">
+        Virgil Security implementation of HMAC algorithm (RFC 2104) (FIPS PUB 198-1).
+
+        <interface name="alg"/>
+        <interface name="mac"/>
+
+        <require interface="alg"/>
+        <require interface="alg info"/>
+        <require class="alg factory"/>
+        <require impl="hash based alg info"/>
+
+        <dependency name="hash" interface="hash"/>
+
+        <property name="ipad" class="buffer" access="readwrite"/>
+    </implementation>
+
+
+    <implementation name="hkdf">
+        Virgil Security implementation of the HKDF (RFC 6234) algorithm.
+
+        <interface name="alg"/>
+        <interface name="kdf"/>
+        <interface name="salted kdf"/>
+
+        <require interface="alg"/>
+        <require interface="alg info"/>
+        <require class="alg factory"/>
+        <require impl="hash based alg info"/>
+
+        <dependency name="hash" interface="hash" has_observers="1"/>
+
+        <property name="salt" class="buffer"/>
+        <property name="context info" class="buffer"/>
+        <property name="hmac" impl="hmac" access="readwrite" is_reference="0" require_definition="public"/>
+
+        <constant name="hash counter max" value="255"/>
+
+        <method name="extract" scope="private" declaration="public" visibility="private">
+            Extracts fixed-length pseudorandom key from keying material.
+
+            <argument name="data" class="data"/>
+            <argument name="salt" class="data"/>
+            <argument name="pr key" class="buffer"/>
+        </method>
+
+        <method name="expand" scope="private" declaration="public" visibility="private">
+            Expands the pseudorandom key to the desired length.
+
+            <argument name="pr key" class="data"/>
+            <argument name="info" class="data"/>
+            <argument name="key" class="buffer"/>
+            <argument name="key len" type="size"/>
+        </method>
+    </implementation>
+
+
+    <implementation name="kdf1">
+        Virgil Security implementation of the KDF1 (ISO-18033-2) algorithm.
+
+        <interface name="alg"/>
+        <interface name="kdf"/>
+
+        <require interface="alg"/>
+        <require interface="alg info"/>
+        <require class="alg factory"/>
+        <require impl="hash based alg info"/>
+
+        <dependency name="hash" interface="hash"/>
+    </implementation>
+
+
+    <implementation name="kdf2">
+        Virgil Security implementation of the KDF2 (ISO-18033-2) algorithm.
+
+        <interface name="alg"/>
+        <interface name="kdf"/>
+
+        <require interface="alg"/>
+        <require interface="alg info"/>
+        <require class="alg factory"/>
+        <require impl="hash based alg info"/>
+
+        <dependency name="hash" interface="hash"/>
+    </implementation>
+
+
+    <implementation name="fake random">
+        Random number generator that is used for test purposes only.
+
+        <interface name="random"/>
+        <interface name="entropy source"/>
+
+        <context>
+            <property name="data source" class="buffer"/>
+            <property name="byte source" type="byte"/>
+            <property name="pos" type="size"/>
+        </context>
+
+        <method name="setup source byte" declaration="public">
+            Configure random number generator to generate sequence filled with given byte.
+
+            <argument name="byte source" type="byte"/>
+        </method>
+
+        <method name="setup source data" declaration="public">
+            Configure random number generator to generate random sequence from given data.
+            Note, that given data is used as circular source.
+
+            <argument name="data source" class="data"/>
+        </method>
+    </implementation>
+
+
+    <implementation name="pkcs5 pbkdf2">
+        Virgil Security implementation of the PBKDF2 (RFC 8018) algorithm.
+
+        <interface name="alg"/>
+        <interface name="kdf"/>
+        <interface name="salted kdf"/>
+
+        <require interface="alg"/>
+        <require interface="alg info"/>
+        <require class="alg factory"/>
+        <require impl="hmac"/>
+        <require impl="sha384"/>
+        <require impl="salted kdf alg info"/>
+
+        <dependency name="hmac" interface="mac"/>
+
+        <property name="salt" class="buffer"/>
+        <property name="iteration count" type="size"/>
+
+        <method name="setup defaults" declaration="public">
+            Setup predefined values to the uninitialized class dependencies.
+        </method>
+    </implementation>
+
+
+    <implementation name="pkcs5 pbes2">
+        Virgil Security implementation of the PBES2 (RFC 8018) algorithm.
+
+        <interface name="alg"/>
+        <interface name="encrypt"/>
+        <interface name="decrypt"/>
+
+        <require interface="alg"/>
+        <require interface="alg info"/>
+        <require interface="encrypt"/>
+        <require class="alg factory"/>
+        <require impl="pkcs5 pbkdf2"/>
+        <require impl="aes256 gcm"/>
+        <require impl="pbe alg info"/>
+
+        <dependency name="kdf" interface="salted kdf"/>
+        <dependency name="cipher" interface="cipher"/>
+
+        <property name="password" class="buffer"/>
+
+        <method name="reset" declaration="public">
+            Configure cipher with a new password.
+
+            <argument name="pwd" class="data"/>
+        </method>
+    </implementation>
+
+
+    <implementation name="seed entropy source">
+        Deterministic entropy source that is based only on the given seed.
+
+        <interface name="entropy source"/>
+
+        <require impl="kdf2"/>
+        <require impl="sha512"/>
+        <require interface="hash"/>
+        <require interface="kdf"/>
+
+        <constant name="gather len max" value="48" definition="private">
+            The maximum length of the entropy requested at once.
+        </constant>
+
+        <property name="entropy" class="buffer"/>
+        <property name="counter" type="size"/>
+        <property name="used len" type="size"/>
+        <property name="hash" interface="hash"/>
+        <property name="kdf" interface="kdf"/>
+
+        <method name="reset seed" declaration="public">
+            Set a new seed as an entropy source.
+
+            <argument name="seed" class="data"/>
+        </method>
+
+        <method name="move forward">
+            Current source is exhausted and must be refreshed.
+        </method>
+    </implementation>
+
+
+    <implementation name="key material rng">
+        Random number generator that generate deterministic sequence based
+        on a given seed.
+        This RNG can be used to transform key material rial to the private key.
+
+        <interface name="random"/>
+
+        <require impl="ctr drbg"/>
+        <require impl="seed entropy source"/>
+
+        <constant name="key material len min" value="32" definition="public">
+            Minimum length in bytes for the key material.
+        </constant>
+
+        <constant name="key material len max" value="512" definition="public">
+            Maximum length in bytes for the key material.
+        </constant>
+
+        <property name="ctr drbg" impl="ctr drbg"/>
+        <property name="seed entropy source" impl="seed entropy source"/>
+
+        <method name="reset key material" declaration="public">
+            Set a new key material.
+
+            <argument name="key material" class="data"/>
+        </method>
+    </implementation>
+
+
+    <implementation name="raw public key">
+        Handles interchangeable public key representation.
+
+        <require interface="alg info" scope="public"/>
+
+        <property name="buffer" class="buffer"/>
+        <property name="alg info" interface="alg info"/>
+        <property name="impl tag" enum="impl/tag"/>
+
+        <interface name="key"/>
+        <interface name="public key"/>
+
+        <constructor name="with data" visibility="private">
+            Creates raw key defined with data and algorithm.
+            Note, data is copied.
+
+            <argument name="key data" class="data"/>
+            <argument name="alg info" interface="alg info" access="disown"/>
+        </constructor>
+
+        <constructor name="with buffer" visibility="private">
+            Creates raw key defined with buffer and algorithm.
+            Note, data is not copied.
+
+            <argument name="key data" class="buffer" access="disown"/>
+            <argument name="alg info" interface="alg info" access="disown"/>
+        </constructor>
+
+        <constructor name="with redefined impl tag" visibility="private">
+            Creates raw key defined another raw key and new impl tag.
+            Note, data is not copied, but new instance of key is created.s
+
+            <argument name="other" class="self" access="readonly"/>
+            <argument name="impl tag" enum="impl/tag"/>
+        </constructor>
+
+        <constructor name="with members" visibility="private">
+            Creates a fully defined raw key.
+
+            <argument name="key data" class="data"/>
+            <argument name="alg info" interface="alg info"/>
+            <argument name="impl tag" enum="impl/tag"/>
+        </constructor>
+
+        <method name="data" is_const="1" declaration="public">
+            Return key data.
+
+            <return class="data"/>
+        </method>
+    </implementation>
+
+
+    <implementation name="raw private key">
+        Handles interchangeable private key representation.
+
+        <require interface="alg info" scope="public"/>
+
+        <property name="buffer" class="buffer"/>
+        <property name="alg info" interface="alg info"/>
+        <property name="public key" impl="raw public key"/>
+        <property name="impl tag" enum="impl/tag"/>
+
+        <interface name="key"/>
+        <interface name="private key"/>
+
+        <constructor name="with data" visibility="private">
+            Creates raw key defined with data and algorithm.
+            Note, data is copied.
+
+            <argument name="key data" class="data"/>
+            <argument name="alg info" interface="alg info" access="disown"/>
+        </constructor>
+
+        <constructor name="with buffer" visibility="private">
+            Creates raw key defined with buffer and algorithm.
+            Note, data is not copied.
+
+            <argument name="key data" class="buffer" access="disown"/>
+            <argument name="alg info" interface="alg info" access="disown"/>
+        </constructor>
+
+        <constructor name="with redefined impl tag" visibility="private">
+            Creates raw key defined another raw key and new impl tag.
+            Note, data is not copied, but new instance of key is created.s
+
+            <argument name="other" class="self" access="readonly"/>
+            <argument name="impl tag" enum="impl/tag"/>
+        </constructor>
+
+        <constructor name="with members" visibility="private">
+            Creates a fully defined raw key.
+
+            <argument name="key data" class="data"/>
+            <argument name="alg info" interface="alg info"/>
+            <argument name="impl tag" enum="impl/tag"/>
+        </constructor>
+
+        <method name="data" is_const="1" declaration="public">
+            Return key data.
+
+            <return class="data"/>
+        </method>
+
+        <method name="has public key" is_const="1" declaration="public">
+            Return true if private key contains public key.
+
+            <return type="boolean"/>
+        </method>
+
+        <method name="set public key" declaration="public">
+            Setup public key related to the private key.
+
+            <argument name="raw public key" impl="raw public key" access="disown"/>
+        </method>
+
+        <method name="get public key" declaration="public" is_const="1">
+            Return public key related to the private key.
+
+            <return impl="raw public key"/>
+        </method>
+    </implementation>
+</implementor>

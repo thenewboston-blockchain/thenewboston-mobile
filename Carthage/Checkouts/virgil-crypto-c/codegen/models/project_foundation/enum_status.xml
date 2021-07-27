@@ -1,0 +1,305 @@
+<enum name="status" definition="public">
+    Defines the library status codes.
+
+    <constant name="success" value="0">
+        No errors was occurred.
+    </constant>
+
+    <constant name="error bad arguments" value="-1">
+        This error should not be returned if assertions is enabled.
+    </constant>
+
+    <constant name="error uninitialized" value="-2">
+        Can be used to define that not all context prerequisites are satisfied.
+        Note, this error should not be returned if assertions is enabled.
+    </constant>
+
+    <constant name="error unhandled thirdparty error" value="-3">
+        Define that error code from one of third-party module was not handled.
+        Note, this error should not be returned if assertions is enabled.
+    </constant>
+
+    <constant name="error small buffer" value="-101">
+        Buffer capacity is not enough to hold result.
+    </constant>
+
+    <constant name="error unsupported algorithm" value="-200">
+        Unsupported algorithm.
+    </constant>
+
+    <constant name="error auth failed" value="-201">
+        Authentication failed during decryption.
+    </constant>
+
+    <constant name="error out of data" value="-202">
+        Attempt to read data out of buffer bounds.
+    </constant>
+
+    <constant name="error bad asn1" value="-203">
+        ASN.1 encoded data is corrupted.
+    </constant>
+
+    <constant name="error asn1 lossy type narrowing" value="-204">
+        Attempt to read ASN.1 type that is bigger then requested C type.
+    </constant>
+
+    <constant name="error bad pkcs1 public key" value="-205">
+        ASN.1 representation of PKCS#1 public key is corrupted.
+    </constant>
+
+    <constant name="error bad pkcs1 private key" value="-206">
+        ASN.1 representation of PKCS#1 private key is corrupted.
+    </constant>
+
+    <constant name="error bad pkcs8 public key" value="-207">
+        ASN.1 representation of PKCS#8 public key is corrupted.
+    </constant>
+
+    <constant name="error bad pkcs8 private key" value="-208">
+        ASN.1 representation of PKCS#8 private key is corrupted.
+    </constant>
+
+    <constant name="error bad encrypted data" value="-209">
+        Encrypted data is corrupted.
+    </constant>
+
+    <constant name="error random failed" value="-210">
+        Underlying random operation returns error.
+    </constant>
+
+    <constant name="error key generation failed" value="-211">
+        Generation of the private or secret key failed.
+    </constant>
+
+    <constant name="error entropy source failed" value="-212">
+        One of the entropy sources failed.
+    </constant>
+
+    <constant name="error rng requested data too big" value="-213">
+        Requested data to be generated is too big.
+    </constant>
+
+    <constant name="error bad base64" value="-214">
+        Base64 encoded string contains invalid characters.
+    </constant>
+
+    <constant name="error bad pem" value="-215">
+        PEM data is corrupted.
+    </constant>
+
+    <constant name="error shared key exchange failed" value="-216">
+        Exchange key return zero.
+    </constant>
+
+    <constant name="error bad ed25519 public key" value="-217">
+        Ed25519 public key is corrupted.
+    </constant>
+
+    <constant name="error bad ed25519 private key" value="-218">
+        Ed25519 private key is corrupted.
+    </constant>
+
+    <constant name="error bad curve25519 public key" value="-219">
+        CURVE25519 public key is corrupted.
+    </constant>
+
+    <constant name="error bad curve25519 private key" value="-220">
+        CURVE25519 private key is corrupted.
+    </constant>
+
+    <constant name="error bad sec1 public key" value="-221">
+        Elliptic curve public key format is corrupted see RFC 5480.
+    </constant>
+
+    <constant name="error bad sec1 private key" value="-222">
+        Elliptic curve public key format is corrupted see RFC 5915.
+    </constant>
+
+    <constant name="error bad der public key" value="-223">
+        ASN.1 representation of a public key is corrupted.
+    </constant>
+
+    <constant name="error bad der private key" value="-224">
+        ASN.1 representation of a private key is corrupted.
+    </constant>
+
+    <constant name="error mismatch public key and algorithm" value="-225">
+        Key algorithm does not accept given type of public key.
+    </constant>
+
+    <constant name="error mismatch private key and algorithm" value="-226">
+        Key algorithm does not accept given type of private key.
+    </constant>
+
+    <constant name="error bad falcon public key" value="-227">
+        Post-quantum Falcon-Sign public key is corrupted.
+    </constant>
+
+    <constant name="error bad falcon private key" value="-228">
+        Post-quantum Falcon-Sign private key is corrupted.
+    </constant>
+
+    <constant name="error round5" value="-229">
+        Generic Round5 library error.
+    </constant>
+
+    <constant name="error bad round5 public key" value="-230">
+        Post-quantum NIST Round5 public key is corrupted.
+    </constant>
+
+    <constant name="error bad round5 private key" value="-231">
+        Post-quantum NIST Round5 private key is corrupted.
+    </constant>
+
+    <constant name="error bad compound public key" value="-232">
+        Compound public key is corrupted.
+    </constant>
+
+    <constant name="error bad compound private key" value="-233">
+        Compound private key is corrupted.
+    </constant>
+
+    <constant name="error bad hybrid public key" value="-234">
+        Compound public hybrid key is corrupted.
+    </constant>
+
+    <constant name="error bad hybrid private key" value="-235">
+        Compound private hybrid key is corrupted.
+    </constant>
+
+    <constant name="error bad asn1 algorithm" value="-236">
+        ASN.1 AlgorithmIdentifer is corrupted.
+    </constant>
+
+    <constant name="error bad asn1 algorithm ecc" value="-237">
+        ASN.1 AlgorithmIdentifer with ECParameters is corrupted.
+    </constant>
+
+    <constant name="error bad asn1 algorithm compound key" value="-238">
+        ASN.1 AlgorithmIdentifer with CompoundKeyParams is corrupted.
+    </constant>
+
+    <constant name="error bad asn1 algorithm hybrid key" value="-239">
+        ASN.1 AlgorithmIdentifer with HybridKeyParams is corrupted.
+    </constant>
+
+    <constant name="error no message info" value="-301">
+        Decryption failed, because message info was not given explicitly,
+        and was not part of an encrypted message.
+    </constant>
+
+    <constant name="error bad message info" value="-302">
+        Message Info is corrupted.
+    </constant>
+
+    <constant name="error key recipient is not found" value="-303">
+        Recipient defined with id is not found within message info
+        during data decryption.
+    </constant>
+
+    <constant name="error key recipient private key is wrong" value="-304">
+        Content encryption key can not be decrypted with a given private key.
+    </constant>
+
+    <constant name="error password recipient password is wrong" value="-305">
+        Content encryption key can not be decrypted with a given password.
+    </constant>
+
+    <constant name="error message info custom param not found" value="-306">
+        Custom parameter with a given key is not found within message info.
+    </constant>
+
+    <constant name="error message info custom param type mismatch" value="-307">
+        A custom parameter with a given key is found, but the requested value
+        type does not correspond to the actual type.
+    </constant>
+
+    <constant name="error bad signature" value="-308">
+        Signature format is corrupted.
+    </constant>
+
+    <constant name="error bad message info footer" value="-309">
+        Message Info footer is corrupted.
+    </constant>
+
+    <constant name="error invalid brainkey password len" value="-401">
+        Brainkey password length is out of range.
+    </constant>
+
+    <constant name="error invalid brainkey factor len" value="-402">
+        Brainkey number length should be 32 byte.
+    </constant>
+
+    <constant name="error invalid brainkey point len" value="-403">
+        Brainkey point length should be 65 bytes.
+    </constant>
+
+    <constant name="error invalid brainkey key name len" value="-404">
+        Brainkey name is out of range.
+    </constant>
+
+    <constant name="error brainkey internal" value="-405">
+        Brainkey internal error.
+    </constant>
+
+    <constant name="error brainkey invalid point" value="-406">
+        Brainkey point is invalid.
+    </constant>
+
+    <constant name="error invalid brainkey factor buffer len" value="-407">
+        Brainkey number buffer length capacity should be >= 32 byte.
+    </constant>
+
+    <constant name="error invalid brainkey point buffer len" value="-408">
+        Brainkey point buffer length capacity should be >= 32 byte.
+    </constant>
+
+    <constant name="error invalid brainkey seed buffer len" value="-409">
+        Brainkey seed buffer length capacity should be >= 32 byte.
+    </constant>
+
+    <constant name="error invalid identity secret" value="-410">
+        Brainkey identity secret is invalid.
+    </constant>
+
+    <constant name="error invalid kem encapsulated key" value="-411">
+        KEM encapsulated key is invalid or does not correspond to the private key.
+    </constant>
+
+    <constant name="error invalid padding" value="-501">
+        Invalid padding.
+    </constant>
+
+    <constant name="error protobuf" value="-601">
+        Protobuf error.
+    </constant>
+
+    <constant name="error session id doesnt match" value="-701">
+        Session id doesnt match.
+    </constant>
+
+    <constant name="error epoch not found" value="-702">
+        Epoch not found.
+    </constant>
+
+    <constant name="error wrong key type" value="-703">
+        Wrong key type.
+    </constant>
+
+    <constant name="error invalid signature" value="-704">
+        Invalid signature.
+    </constant>
+
+    <constant name="error ed25519" value="-705">
+        Ed25519 error.
+    </constant>
+
+    <constant name="error duplicate epoch" value="-706">
+        Duplicate epoch.
+    </constant>
+
+    <constant name="error plain text too long" value="-707">
+        Plain text too long.
+    </constant>
+
+</enum>

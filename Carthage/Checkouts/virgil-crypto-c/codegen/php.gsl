@@ -1,0 +1,491 @@
+.template 0
+#   Copyright (C) 2015-2020 Virgil Security, Inc.
+#
+#   All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are
+#   met:
+#
+#       (1) Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#
+#       (2) Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in
+#       the documentation and/or other materials provided with the
+#       distribution.
+#
+#       (3) Neither the name of the copyright holder nor the names of its
+#       contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission.
+#
+#   THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+#   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+#   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#   DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+#   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+#   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+#   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+#   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+#   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+#
+#   Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+
+# ---------------------------------------------------------------------------
+#   Contains API for PHP wrapper generation.
+# ---------------------------------------------------------------------------
+#   This is a code generator built using the iMatix GSL code generation
+#   language. See https://github.com/zeromq/gsl for details.
+# ---------------------------------------------------------------------------
+
+gsl from "common.gsl"
+gsl from "interface.gsl"
+gsl from "component.gsl"
+gsl from "c_component.gsl"
+gsl from "php_codegen.gsl"
+gsl from "php_derive.gsl"
+gsl from "php_map_high_level.gsl"
+gsl from "php_map_low_level.gsl"
+gsl from "php_map_custom.gsl"
+gsl from "php_resolve.gsl"
+gsl from "php_format.gsl"
+
+# ---------------------------------------------------------------------------
+#   
+# ---------------------------------------------------------------------------
+function php_create_toplevel_modules(wrapper)
+endfunction
+
+# ---------------------------------------------------------------------------
+#   
+# ---------------------------------------------------------------------------
+function php_create_project_module (project, wrapper)
+    check_arguments (my, "project, wrapper", my)
+
+    echo_info ("Create PHP project for project: '$(my.project.name:)'", my)
+
+    new php_project to my.wrapper
+        . = my.project. ?
+        .name = my.project.name
+        .name0 = my.project.name
+        .description = my.project.brief
+        .prefix = my.project.prefix
+        .version = my.project.version_string
+        .namespace = my.wrapper.namespace
+        .main_project0 = my.wrapper.project
+        .main_project = "$(0.main_project0:Pascal)"
+        .project0 = my.project.name
+        .project = "$(0.project0:Pascal)"
+        .source_dir = cat_path (my.wrapper.dir, php_project.main_project, "src", php_project.project)
+        .source_dir0 = cat_path (my.wrapper.dir, php_project.main_project)
+
+        copy my.project->license to php_project
+
+        new require_projects to php_project
+            for my.project.require as require0 where defined(require0.project) & require0.project <> "common"
+
+                if require0.project = "foundation"
+                    my._prefix = "vscf"
+                else
+                    echo_debug_item(my.project)
+                    echo_debug_item(require0)
+                    echo_fatal("Not implemented (AE1001)")
+                endif
+
+                new require_project to require_projects
+                    .name0 = require0.project
+                    .prefix0 = my._prefix
+                endnew
+            endfor
+        endnew
+
+        if count(my.project.interface)
+            new interfaces to php_project
+                for my.project.interface as interface0
+                    new interface to interfaces
+                        .name0 = interface0.name
+                    endnew
+                endfor
+            endnew
+        endif
+
+        new require to php_project
+            for my.project.require as require0 where defined (require0.project)
+                new project to require
+                    .name0 = require0.project
+                endnew
+            endfor
+        endnew
+
+        new php_uid to php_project
+            .name = "$(my.project.namespace:c)"
+        endnew
+
+        if directory.create (php_project.source_dir) = -1
+            echo_fatal ("Can not create directory: $(.source_dir:). ", my)
+        endif
+
+        return php_project
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   
+# ---------------------------------------------------------------------------
+function php_create_class_module (class, php_project, meta)
+    check_arguments (my, "class, php_project, meta", my)
+
+    echo_info ("Create <php_module/> from class: '$(my.class.name:)'", my)
+        
+    if my.class.scope <> "public" | my.class.name = "error"
+        return
+    endif
+
+    my._type = "class"
+
+    new php_module to my.php_project
+        .name = "$(my.class.name:Pascal)"
+        .name0 = "$(my.class.name:c)"
+        .source_file_name = 0.name + ".php"
+        .source_dir = cat_path (my.php_project.source_dir)
+        .source_file_path = cat_path (0.source_dir, 0.source_file_name)
+        .prefix = my.php_project.prefix
+        .type = my._type
+        .namespace = my.php_project.namespace
+        .main_project0 = my.php_project.main_project0
+        .project0 = my.php_project.project0
+        .implementation_class0 = "$(my.php_project.name0:) implementation"
+
+        my._con = 1
+        if my.class.context = "none"
+            my._con = 0
+        endif
+        .context = "$(my._con:)"
+
+        new php_license to php_module
+            . = php_format_comment (my.php_project->license.)
+        endnew
+
+        new high_level to php_module
+            php_map_high_level(my.class, php_module, my.php_project, high_level, my._type)
+        endnew
+
+        new low_level to php_module
+            php_map_low_level(my.class, my.php_project, low_level, my._type)
+        endnew
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   
+# ---------------------------------------------------------------------------
+function php_create_interface_module (interface, php_project, meta)
+    check_arguments (my, "interface, php_project, meta", my)
+
+    echo_info ("Create <php_module/> from interface: '$(my.interface.name:)'", my)
+
+    my._type = "interface"
+
+    new php_module to my.php_project
+        .name = "$(my.interface.name:Pascal)"
+        .name0 = "$(my.interface.name:c)"
+        .source_file_name = 0.name + ".php"
+        .source_dir = cat_path (my.php_project.source_dir)
+        .source_file_path = cat_path (0.source_dir, 0.source_file_name)
+        .prefix = my.php_project.prefix
+        .type = my._type
+        .namespace = my.php_project.namespace
+        .main_project0 = my.php_project.main_project0
+        .project0 = my.php_project.project0
+        .implementation_class0 = "$(my.php_project.name0:) implementation"
+
+        new php_license to php_module
+            . = php_format_comment (my.php_project->license)
+        endnew
+
+        new high_level to php_module
+            php_map_high_level(my.interface, php_module, my.php_project, high_level, my._type)
+        endnew
+
+        new low_level to php_module
+        endnew
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   
+# ---------------------------------------------------------------------------
+function php_create_implementation_module (implementation, php_project, meta)
+    check_arguments (my, "implementation, php_project, meta", my)
+
+    if defined (my.implementation)
+        my.php_project.with_implementation = "1"
+    endif
+
+    echo_info("Create <php_module/> from implementation: '$(my.implementation.name:)'", my)
+
+    my._type = "implementation"
+
+    new php_module to my.php_project
+        .name = "$(my.implementation.name:Pascal)"
+        .name0 = "$(my.implementation.name:c)"
+        .name_ = my.implementation.name
+        .source_file_name = 0.name + ".php"
+        .source_dir = cat_path (my.php_project.source_dir)
+        .source_file_path = cat_path (0.source_dir, 0.source_file_name)
+        .prefix = my.php_project.prefix
+        .type = my._type
+        .namespace = my.php_project.namespace
+        .main_project0 = my.php_project.main_project0
+        .project0 = my.php_project.project0
+        .implementation_class0 = "$(my.php_project.name0:) implementation"
+
+        new php_license to php_module
+            . = php_format_comment (my.php_project->license)
+        endnew
+
+        my.my_implementation = item_copy_to (my.implementation, php_module)
+
+        for my.my_implementation.interface
+            for interface.method
+                copy method to my.my_implementation
+            endfor
+        endfor
+
+        new high_level to php_module
+            php_map_high_level(my.my_implementation, php_module, my.php_project, high_level, my._type)
+        endnew
+
+        new low_level to php_module
+            php_map_low_level(my.my_implementation, my.php_project, low_level, my._type)
+        endnew
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   
+# ---------------------------------------------------------------------------
+function php_create_enum_module (enum, php_project, meta)
+    check_arguments (my, "enum, php_project, meta", my)
+
+    echo_info ("Create <php_module/> from enum: '$(my.enum.name:)'", my)
+
+    if my.enum.scope <> "public"
+        return
+    endif
+
+    if my.enum.name = "status"
+        new php_module to my.php_project
+            .name0 = "extension status"
+            .name = 0.name0
+            .prefix = my.php_project.prefix
+            .namespace = my.php_project.namespace
+            .main_project0 = my.php_project.main_project0
+            .project0 = my.php_project.project0
+            .type = "extension"
+
+            new custom_code to php_module
+                .= php_format_low_level_status_exception (my.enum, php_module)
+            endnew
+        endnew
+    else
+        new php_module to my.php_project
+            .name = "$(my.enum.name:Pascal)"
+            .name0 = "$(0.name:c)"
+            .source_file_name = 0.name + ".php"
+            .source_dir = cat_path (my.php_project.source_dir)
+            .source_file_path = cat_path (0.source_dir, 0.source_file_name)
+            .type = "enum"
+            .namespace = my.php_project.namespace
+            .main_project0 = my.php_project.main_project0
+            .project0 = my.php_project.project0
+
+            new php_license to php_module
+                . = php_format_comment (my.php_project->license)
+            endnew
+
+            new high_level to php_module
+                php_map_high_level_enum(my.enum, php_module, high_level)
+            endnew
+
+            new low_level to php_module
+            endnew
+        endnew
+    endif
+endfunction
+
+# ---------------------------------------------------------------------------
+#   
+# ---------------------------------------------------------------------------
+function php_create_custom_modules (source, php_project, meta)
+
+    check_arguments (my, "source, php_project, meta", my)
+
+    if -1 = directory.create (my.php_project.source_dir)
+        echo_fatal ("Can not create directory: $(.source_dir:). ", my)
+    endif
+
+    if defined(my.php_project->interfaces)
+        echo_info ("Create <php_module/> from interface: 'ctx'", my)
+        my._type = "interface"
+
+        my._ctx = XML.new()
+        new interface to my._ctx
+            .name = "ctx"
+            .c_prefix = "c_prefix_ctx"
+
+            new method to interface
+                .name = "get ctx"
+                .visibility = "public"
+                .declaration = "public"
+                .scope = "public"
+                .is_static = 0
+                .return_type = "resource"
+            endnew
+        endnew
+
+        new php_module to my.php_project
+            .name = "$(my._ctx->interface.name:Pascal)"
+            .name0 = "$(my._ctx->interface.name:c)"
+            .source_file_name = 0.name + ".php"
+            .source_dir = cat_path (my.php_project.source_dir)
+            .source_file_path = cat_path (0.source_dir, 0.source_file_name)
+            .prefix = my.php_project.prefix
+            .type = my._type
+            .namespace = my.php_project.namespace
+            .main_project0 = my.php_project.main_project0
+            .project0 = my.php_project.project0
+
+            new php_license to php_module
+                . = php_format_comment (my.php_project->license)
+            endnew
+
+            new high_level to php_module
+                php_map_high_level(my._ctx->interface, php_module, my.php_project, high_level, my._type)
+            endnew
+
+            new low_level to php_module
+            endnew
+        endnew
+
+        echo_info ("Create <php_module/> from single function: 'impl tag'", my)
+        my._type = "single_function"
+
+        my._impl_tag = XML.new()
+        new single_function to my._impl_tag
+            .name = "single_function"
+            .c_prefix = my.php_project.prefix
+        endnew
+
+        new php_module to my.php_project
+            .name = "single function"
+            .name0 = "$(0.name:c)"
+            .prefix = my.php_project.prefix
+            .type = my._type
+            .namespace = my.php_project.namespace
+            .main_project0 = my.php_project.main_project0
+            .project0 = my.php_project.project0
+
+            new low_level to php_module
+                php_map_low_level(my._impl_tag->single_function, my.php_project, low_level, my._type)
+            endnew
+        endnew  
+    endif
+endfunction
+
+# ---------------------------------------------------------------------------
+#   
+# ---------------------------------------------------------------------------
+function php_finalize_custom_modules (source, php_project, meta)
+    check_arguments (my, "source, php_project, meta", my)
+
+    new php_module to my.php_project
+        .name = "$(my.php_project.prefix:c)_$(my.php_project.name:c)_php"
+        .name0 = 0.name
+        .source_file_name = 0.name + ".h"
+        .source_dir = cat_path (my.php_project.source_dir0, "extensions", "$(my.php_project.project:lower)")
+        .source_file_path = cat_path (0.source_dir, 0.source_file_name)
+        .version = my.php_project.version
+        .type = "extension"
+        .is_header = "1"
+
+        php_map_low_level_extension(my.php_project, php_module)
+    endnew
+
+    new php_module to my.php_project
+        .name = "$(my.php_project.prefix:c)_$(my.php_project.name:c)_php"
+        .name0 = 0.name
+        .source_file_name = 0.name + ".c"
+        .source_dir = cat_path (my.php_project.source_dir0, "extensions", "$(my.php_project.project:lower)")
+        .source_file_path = cat_path (0.source_dir, 0.source_file_name)
+        .version = my.php_project.version
+        .type = "extension"
+
+        php_map_low_level_extension(my.php_project, php_module)
+    endnew
+
+    new php_module to my.php_project
+        .name = "CMakeLists"
+        .name0 = 0.name
+        .source_file_name = 0.name + ".txt"
+        .source_dir = cat_path (my.php_project.source_dir0, "extensions", "$(my.php_project.project:lower)")
+        .source_file_path = cat_path (0.source_dir, 0.source_file_name)
+        .version = my.php_project.version
+        .type = "cmakelists"
+
+        php_map_custom_cmakelists (my.php_project, php_module)
+    endnew
+
+    if defined (my.php_project.with_implementation) & my.php_project.with_implementation = "1"
+
+        my._type = "implementation_class"
+        echo_info ("Create <php_module/> from class '$(my.php_project.project0:) implementation'", my)
+
+        my._i = XML.new()
+        new class to my._i
+            .name = "$(my.php_project.project0:) implementation"
+            .c_prefix = "c_prefix_$(0.name:c)"
+
+            for my.source.implementation as implementation0 by implementation0.name
+                my.counter ?= 1
+
+                if implementation0.[scope] = "public"
+                    new constant to class
+                        .name = php_derive_high_level_constant_name(implementation0)
+                        .value = my.counter
+                    endnew
+                endif
+
+                my.counter += 1
+            endfor
+        endnew
+
+        new php_module to my.php_project
+            .name = "$(my._i->class.name:Pascal)"
+            .name0 = "$(my._i->class.name:c)"
+            .source_file_name = 0.name + ".php"
+            .source_dir = cat_path (my.php_project.source_dir)
+            .source_file_path = cat_path (0.source_dir, 0.source_file_name)
+            .prefix = my.php_project.prefix
+            .type = my._type
+            .namespace = my.php_project.namespace
+            .main_project0 = my.php_project.main_project0
+            .project0 = my.php_project.project0
+
+            new php_license to php_module
+                . = php_format_comment (my.php_project->license)
+            endnew
+
+            new high_level to php_module
+                php_map_high_level(my._i->class, php_module, my.php_project, high_level, my._type)
+            endnew
+
+            new low_level to php_module
+            endnew
+        endnew
+    endif
+endfunction
+
+.endtemplate

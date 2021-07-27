@@ -1,0 +1,429 @@
+<implementor name="alg info der" is_default="1">
+    Implementation of deserialization algorithm information
+
+    <implementation name="alg info der serializer">
+        Provide DER serializer of algorithm information.
+
+        <interface name="alg info serializer"/>
+
+        <require interface="alg info"/>
+        <require enum="asn1 tag"/>
+        <require class="asn1wr"/>
+        <require class="oid"/>
+        <require impl="cipher alg info"/>
+        <require impl="hash based alg info"/>
+        <require impl="simple alg info"/>
+        <require impl="salted kdf alg info"/>
+        <require impl="pbe alg info"/>
+        <require impl="ecc alg info"/>
+        <require impl="compound key alg info"/>
+        <require impl="hybrid key alg info"/>
+        <require module="buffer defs" project="common"/>
+
+        <dependency name="asn1 writer" interface="asn1 writer"/>
+
+        <method name="setup defaults" declaration="public">
+            Setup predefined values to the uninitialized class dependencies.
+        </method>
+
+        <method name="is alg require null params" is_static="1">
+            Return true if algorithm identifier requires that optional
+            parameter will be NULL.
+
+            <argument name="alg id" enum="alg id"/>
+
+            <return type="boolean"/>
+        </method>
+
+        <method name="serialized simple alg info len" is_const="1">
+            Return buffer size enough to hold ASN.1 structure
+            AlgorithmIdentifier with no parameters.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize simple alg info">
+            Serialize class "simple alg info" to the ASN.1 structure
+            AlgorithmIdentifier with no parameters.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialized kdf alg info len" is_const="1">
+            Return buffer size enough to hold ASN.1 structure
+            "KeyDerivationFunction" from the ISO/IEC 18033-2.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize kdf alg info">
+            Serialize class "hash based alg info" to the ASN.1 structure
+            "KeyDerivationFunction" from the ISO/IEC 18033-2.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialized hkdf alg info len" is_const="1">
+            Return buffer size enough to hold ASN.1 structure
+            "KeyDevAlgs" from the https://tools.ietf.org/html/draft-housley-hkdf-oids-00.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize hkdf alg info">
+            Serialize class "hash based alg info" to the ASN.1 structure
+            "KeyDevAlgs" from the https://tools.ietf.org/html/draft-housley-hkdf-oids-00.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialized hmac alg info len" is_const="1">
+            Return buffer size enough to hold ASN.1 structure
+            "DigestAlgorithm" from the RFC 4231.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize hmac alg info">
+            Serialize class "hash based alg info" to the ASN.1 structure
+            "DigestAlgorithm" from the RFC 4231.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialized cipher alg info len" is_const="1">
+            Return buffer size enough to hold ASN.1 structure
+            "AlgorithmIdentifier" with AES parameters:
+                - defined in the RFC 3565;
+                - defined in the RFC 5084.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize cipher alg info">
+            Serialize class "cipher alg info" to the ASN.1 structure
+            "AlgorithmIdentifier" with AES parameters defined in the RFC 5084.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialized pbkdf2 alg info len" is_const="1">
+            Return buffer size enough to hold ASN.1 structure
+            "PBKDF2Algorithm" from the RFC 8018.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize pbkdf2 alg info">
+            Serialize class "salted kdf alg info" to the ASN.1 structure
+            "PBKDF2Algorithm" from the RFC 8018.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialized pbes2 alg info len" is_const="1">
+            Return buffer size enough to hold ASN.1 structure
+            "PBESF2Algorithm" from the RFC 8018.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize pbes2 alg info">
+            Serialize class "salted kdf alg info" to the ASN.1 structure
+            "PBES2Algorithm" from the RFC 8018.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialized ecc alg info len" is_const="1">
+            Return buffer size enough to hold ASN.1 structure
+            "AlgorithmIdentifier" with "ECParameters" from the RFC 5480.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize ecc alg info">
+            Serialize class "ecc alg info" to the ASN.1 structure
+            "AlgorithmIdentifier" with "ECParameters" from the RFC 5480.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialized compound key alg info len" is_const="1">
+            Return buffer size enough to hold ASN.1 structure
+            "AlgorithmIdentifier" with "CompoundKeyParams" parameters.
+
+            CompoundKeyAlgorithms ALGORITHM ::= {
+                { OID id-CompoundKey parameters CompoundKeyParams }
+            }
+
+            id-CompoundKey ::= { 1 3 6 1 4 1 54811 1 1 }
+
+            CompoundKeyParams ::= SEQUENCE {
+                cipherAlgorithm AlgorithmIdentifier,
+                signerAlgorithm AlgorithmIdentifier
+            }
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize compound key alg info">
+            Serialize class "compound key alg info" to the ASN.1 structure
+            "AlgorithmIdentifier" with "CompoundKeyParams" parameters.
+
+            CompoundKeyAlgorithms ALGORITHM ::= {
+                { OID id-CompoundKey parameters CompoundKeyParams }
+            }
+
+            id-CompoundKey ::= { 1 3 6 1 4 1 54811 1 1 }
+
+            CompoundKeyParams ::= SEQUENCE {
+                cipherAlgorithm AlgorithmIdentifier,
+                signerAlgorithm AlgorithmIdentifier
+            }
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialized hybrid key alg info len" is_const="1">
+            Return buffer size enough to hold ASN.1 structure
+            "AlgorithmIdentifier" with "HybridKeyParams" parameters.
+
+            HybridKeyAlgorithms ALGORITHM ::= {
+                { OID id-HybridKey parameters HybridKeyParams }
+            }
+
+            id-HybridKey ::= { 1 3 6 1 4 1 54811 1 2 }
+
+            HybridKeyParams ::= SEQUENCE {
+                firstKeyAlgorithm AlgorithmIdentifier,
+                secondKeyAlgorithm AlgorithmIdentifier
+            }
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize hybrid key alg info">
+            Serialize class "hybrid key alg info" to the ASN.1 structure
+            "AlgorithmIdentifier" with "HybridKeyParams" parameters.
+
+            HybridKeyAlgorithms ALGORITHM ::= {
+                { OID id-HybridKey parameters HybridKeyParams }
+            }
+
+            id-HybridKey ::= { 1 3 6 1 4 1 54811 1 2 }
+
+            HybridKeyParams ::= SEQUENCE {
+                firstKeyAlgorithm AlgorithmIdentifier,
+                secondKeyAlgorithm AlgorithmIdentifier
+            }
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+
+        <method name="serialize inplace" declaration="public">
+            Serialize by using internal ASN.1 writer.
+            Note, that caller code is responsible to reset ASN.1 writer with
+            an output buffer.
+
+            <argument name="alg info" interface="alg info"/>
+
+            <return type="size"/>
+        </method>
+    </implementation>
+
+    <implementation name="alg info der deserializer">
+        Provide DER deserializer of algorithm information.
+
+        <interface name="alg info deserializer"/>
+
+        <require interface="alg info"/>
+        <require class="asn1rd"/>
+        <require class="oid"/>
+        <require enum="asn1 tag"/>
+        <require impl="cipher alg info"/>
+        <require impl="hash based alg info"/>
+        <require impl="simple alg info"/>
+        <require impl="salted kdf alg info"/>
+        <require impl="pbe alg info"/>
+        <require impl="ecc alg info"/>
+        <require impl="compound key alg info"/>
+        <require impl="hybrid key alg info"/>
+
+        <dependency name="asn1 reader" interface="asn1 reader"/>
+
+        <method name="setup defaults" declaration="public">
+            Setup predefined values to the uninitialized class dependencies.
+        </method>
+
+        <method name="deserialize simple alg info">
+            Parse ASN.1 structure "AlgorithmIdentifier" with optional NULL parameter.
+
+            <argument name="oid id" enum="oid id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+
+        <method name="deserialize kdf alg info">
+            Parse ASN.1 structure "KeyDerivationFunction" from the ISO/IEC 18033-2.
+
+            <argument name="oid id" enum="oid id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+
+        <method name="deserialize hkdf alg info">
+            Parse ASN.1 structure "KeyDevAlgs" from the
+            https://tools.ietf.org/html/draft-housley-hkdf-oids-00.
+
+            <argument name="oid id" enum="oid id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+
+        <method name="deserialize hmac alg info">
+            Parse ASN.1 structure "DigestAlgorithm" from the RFC 4231.
+
+            <argument name="oid id" enum="oid id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+
+        <method name="deserialize cipher alg info">
+            Parse ASN.1 structure "AlgorithmIdentifier" with AES parameters:
+                - defined in the RFC 3565;
+                - defined in the RFC 5084.
+
+            <argument name="oid id" enum="oid id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+
+        <method name="deserialize pbkdf2 alg info">
+            Parse ASN.1 structure "AlgorithmIdentifier" with PBKDF2 parameters
+            defined in the RFC 8018.
+
+            <argument name="oid id" enum="oid id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+
+        <method name="deserialize pbes2 alg info">
+            Parse ASN.1 structure "AlgorithmIdentifier" with PBES2 parameters
+            defined in the RFC 8018.
+
+            <argument name="oid id" enum="oid id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+
+        <method name="deserialize ecc alg info">
+            Parse ASN.1 structure "AlgorithmIdentifier" with ECParameters
+            parameters defined in the RFC 5480.
+
+            <argument name="oid id" enum="oid id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+
+        <method name="deserialize compound key alg info">
+            Parse ASN.1 structure "AlgorithmIdentifier" with
+            "CompoundKeyParams" parameters.
+
+            CompoundKeyAlgorithms ALGORITHM ::= {
+                { OID id-CompoundKey parameters CompoundKeyParams }
+            }
+
+            id-CompoundKey ::= { 1 3 6 1 4 1 54811 1 1 }
+
+            CompoundKeyParams ::= SEQUENCE {
+                cipherAlgorithm AlgorithmIdentifier,
+                signerAlgorithm AlgorithmIdentifier
+            }
+
+            <argument name="oid id" enum="oid id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+
+        <method name="deserialize hybrid key alg info">
+            Parse ASN.1 structure "AlgorithmIdentifier" with
+            "HybridKeyParams" parameters.
+
+            HybridKeyAlgorithms ALGORITHM ::= {
+                { OID id-HybridKey parameters HybridKeyParams }
+            }
+
+            id-HybridKey ::= { 1 3 6 1 4 1 54811 1 2 }
+
+            HybridKeyParams ::= SEQUENCE {
+                firstKeyAlgorithm AlgorithmIdentifier,
+                secondKeyAlgorithm AlgorithmIdentifier
+            }
+
+            <argument name="oid id" enum="oid id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+
+        <method name="deserialize inplace" declaration="public">
+            Deserialize by using internal ASN.1 reader.
+            Note, that caller code is responsible to reset ASN.1 reader with
+            an input buffer.
+
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+    </implementation>
+</implementor>

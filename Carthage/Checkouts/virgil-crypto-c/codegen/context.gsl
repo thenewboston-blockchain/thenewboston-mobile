@@ -1,0 +1,200 @@
+.template 0
+#   Copyright (C) 2015-2020 Virgil Security, Inc.
+#
+#   All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are
+#   met:
+#
+#       (1) Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#
+#       (2) Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in
+#       the documentation and/or other materials provided with the
+#       distribution.
+#
+#       (3) Neither the name of the copyright holder nor the names of its
+#       contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission.
+#
+#   THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+#   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+#   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#   DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+#   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+#   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+#   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+#   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+#   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+#
+#   Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+
+# ---------------------------------------------------------------------------
+#   Context resolution
+# ---------------------------------------------------------------------------
+#   This is a code generator built using the iMatix GSL code generation
+#   language. See https://github.com/zeromq/gsl for details.
+# ---------------------------------------------------------------------------
+
+gsl from "common.gsl"
+
+# ---------------------------------------------------------------------------
+#   Read source file then apply resolution map and store result to the
+#   destination file.
+#
+#   Note, resolution map defines variables as key-value pairs defined
+#   as attributes.
+# ---------------------------------------------------------------------------
+.macro resolution_map_apply (resolution_map, source_file, destination_file)
+.   check_arguments (my, "resolution_map, source_file, destination_file", my)
+.   my.default_gsl_substitute = [gsl].substitute
+.   my.default_gsl_ignorecase = [gsl].ignorecase
+.   [gsl].substitute = ".("
+.   [gsl].ignorecase = "0"
+.   output my.destination_file
+.       scope my.resolution_map
+.           gsl from my.source_file
+.       endscope
+.   close
+.   [gsl].substitute = my.default_gsl_substitute
+.   [gsl].ignorecase = my.default_gsl_ignorecase
+.endmacro
+
+
+# ---------------------------------------------------------------------------
+#   Apply resolution map to given model.
+#   Note, this function create temporary files in the work dir.
+# ---------------------------------------------------------------------------
+function resolution_map_apply_to (resolution_map, model, work_dir)
+    check_arguments (my, "resolution_map, model, work_dir", my)
+
+    echo_trace ("Apply resolution map to <$(name (my.model)) name=\"$(my.model.name?:)\"/>", my)
+
+    my.work_dir = directory.resolve (my.work_dir) ?
+
+    if directory.create (my.work_dir) = -1
+        echo_fatal ("Can not create directory: $(my.work_dir:). ", my)
+    endif
+
+    my.init_file_path = cat_path (my.work_dir, "$(name (my.model))_unresolved.xml")
+    my.final_file_path = cat_path (my.work_dir, "$(name (my.model)).xml")
+
+    item_save_to_file (my.model, my.init_file_path)
+
+    resolution_map_apply (my.resolution_map, my.init_file_path, my.final_file_path)
+
+    return item_load_from_file (my.final_file_path)
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Apply resolution map to the '<lang>_module'.
+#   Note, this function create temporary files in the work dir.
+# ---------------------------------------------------------------------------
+function resolution_map_apply_to_lang_module (resolution_map, lang_module, work_dir)
+    check_arguments (my, "lang_module, resolution_map, work_dir", my)
+
+    echo_trace ("Apply resolution map to <$(name (my.lang_module)) name=\"$(my.lang_module.name:)\"/>", my)
+
+    if -1 = directory.create (my.work_dir)
+        echo_fatal ("Can not create directory: $(my.work_dir:)")
+    endif
+
+    my.lang_module_id = make_id (name (my.lang_module), my.lang_module.name)
+    my.init_module_file_path = cat_path (my.work_dir, "$(my.lang_module_id:)_unresolved.xml")
+    my.final_module_file_path = cat_path (my.work_dir, "$(my.lang_module_id:).xml")
+
+    item_save_to_file (my.lang_module, my.init_module_file_path)
+
+    resolution_map_apply (my.resolution_map, my.init_module_file_path, my.final_module_file_path)
+
+    return item_load_from_file (my.final_module_file_path)
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Update resolution context with a project information.
+# ---------------------------------------------------------------------------
+function context_append_project (context, project)
+    check_arguments (my, "context, project", my)
+
+    assert_attribute (my.project, "version_major", my)
+    assert_attribute (my.project, "version_minor", my)
+    assert_attribute (my.project, "version_patch", my)
+    assert_attribute (my.project, "version_string", my)
+    assert_attribute (my.project, "prefix", my)
+    assert_attribute (my.project, "framework", my)
+
+    new uid to my.context
+        .uid = "c_global_macros_build_interface"
+        .ref = "$(my.project.prefix:c,UPPER)_BUILD_INTERFACE"
+    endnew
+
+    new uid to my.context
+        .uid = "project_version_major"
+        .ref = my.project.version_major
+    endnew
+
+    new uid to my.context
+        .uid = "project_version_minor"
+        .ref = my.project.version_minor
+    endnew
+
+    new uid to my.context
+        .uid = "project_version_patch"
+        .ref = my.project.version_patch
+    endnew
+
+    new uid to my.context
+        .uid = "project_version_string"
+        .ref = my.project.version_string
+    endnew
+
+    new uid to my.context
+        .uid = "namespace"
+        .ref = my.project.namespace
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Foreach item in the hierarchy extract 'uid' and 'name' to the context.
+# ---------------------------------------------------------------------------
+function context_append_hierarchy (context, item)
+    check_arguments (my, "context, item", my)
+
+    #   Extract uid and name for current item
+    if defined (my.item.uid)
+        assert_attribute (my.item, "name", my)
+
+        new uid to my.context
+            .uid = my.item.uid
+            .ref = my.item.name
+            .full_ref = my.item.full_name ?
+        endnew
+    endif
+
+    #   Dive in recursion
+    for my.item. as child_item where is_item (child_item)
+        context_append_hierarchy (my.context, child_item)
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Build resolution context.
+# ---------------------------------------------------------------------------
+function context_build_resolution_map (context)
+    check_arguments (my, "context", my)
+
+    my.resolution_map = XML.new ("resolution_map")
+
+    for my.context.uid
+        my.resolution_map.$(make_id (my.prefix, uid.uid)) = uid.ref
+    endfor
+
+    return my.resolution_map
+endfunction
+
+.endtemplate

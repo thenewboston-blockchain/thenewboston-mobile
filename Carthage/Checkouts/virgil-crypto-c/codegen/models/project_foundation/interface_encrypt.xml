@@ -1,0 +1,34 @@
+<interface name="encrypt">
+    Provide interface for data encryption.
+
+    <method name="encrypt">
+        Encrypt given data.
+
+        <argument name="data" class="data"/>
+        <argument name="out" class="buffer">
+            <length method="encrypted len">
+                <proxy argument="data" to="data len" cast="data_length"/>
+            </length>
+        </argument>
+
+        <return enum="status"/>
+    </method>
+
+
+    <method name="encrypted len" is_const="1">
+        Calculate required buffer length to hold the encrypted data.
+
+        <argument name="data len" type="size"/>
+
+        <return type="size"/>
+    </method>
+
+
+    <method name="precise encrypted len" is_const="1">
+        Precise length calculation of encrypted data.
+
+        <argument name="data len" type="size"/>
+
+        <return type="size"/>
+    </method>
+</interface>

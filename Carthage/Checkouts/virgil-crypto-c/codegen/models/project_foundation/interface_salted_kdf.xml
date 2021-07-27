@@ -1,0 +1,20 @@
+<interface name="salted kdf">
+    Provides interface to the key derivation function (KDF) algorithms
+    that use salt and teration count.
+
+    <inherit interface="kdf"/>
+
+    <method name="reset">
+        Prepare algorithm to derive new key.
+
+        <argument name="salt" class="data"/>
+        <argument name="iteration count" type="size"/>
+    </method>
+
+    <method name="set info">
+        Setup application specific information (optional).
+        Can be empty.
+
+        <argument name="info" class="data"/>
+    </method>
+</interface>

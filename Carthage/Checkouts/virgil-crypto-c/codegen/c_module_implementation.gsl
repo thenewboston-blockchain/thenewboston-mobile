@@ -1,0 +1,1407 @@
+.template 0
+#   Copyright (C) 2015-2020 Virgil Security, Inc.
+#
+#   All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are
+#   met:
+#
+#       (1) Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#
+#       (2) Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in
+#       the documentation and/or other materials provided with the
+#       distribution.
+#
+#       (3) Neither the name of the copyright holder nor the names of its
+#       contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission.
+#
+#   THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+#   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+#   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#   DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+#   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+#   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+#   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+#   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+#   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+#
+#   Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+
+# ---------------------------------------------------------------------------
+#   Create 3 modules with 'Implementation API'.
+#   For details see functions description:
+#       - c_module_implementation_create_module_public ()
+#       - c_module_implementation_create_module_impl ()
+#       - c_module_implementation_create_module_internal ()
+#
+#   Private function prefix is: Z19.
+# ---------------------------------------------------------------------------
+#   This is a code generator helper built using the iMatix GSL code
+#   generation language. See https://github.com/zeromq/gsl for details.
+# ---------------------------------------------------------------------------
+
+
+gsl from "common.gsl"
+gsl from "component.gsl"
+gsl from "scoped_component.gsl"
+gsl from "c_dependency.gsl"
+gsl from "c_module_interface.gsl"
+
+
+# ---------------------------------------------------------------------------
+function _Z19_has_underlying_context (impl)
+    check_argument (my, "impl", my)
+
+    return count (my.impl.context) <> 0 | count (my.impl.property) <> 0
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Return true if impl reuire creating "private" module.
+# ---------------------------------------------------------------------------
+function _Z19_has_module_private (impl)
+    check_arguments (my, "impl", my)
+
+    return class_has_scoped_item_with_scope (my.impl, "private")
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Add instance of 'Interface API' class.
+#   Instance is fulfilled with implementation constants, methods,
+#   and dependencies.
+# ---------------------------------------------------------------------------
+function _Z19_add_instance_interface_api (impl, interface_api, destination, meta)
+    check_arguments (my, "impl, interface_api, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new variable to my.destination
+        . = "Configuration of the interface API '$(my.interface_api.name:)'."
+        .name = my.interface_api.name
+        .class = ref (make_id ("class", my.interface_api.name, "struct", my.interface_api.name))
+        .declaration = "private"
+        .definition = "private"
+        .is_reference = "0"
+
+        for my.interface_api.property
+            my.value = component_clean_copy (property, variable, "value")
+
+            scope my.value
+                if property.tag = "api_tag"
+                    .value = property.value #   Actually this attribute already there
+
+                elsif property.tag = "impl_tag"
+                    .value = my.refs.implementation_constant_tag
+
+                elsif property.tag = "api"
+                    .value = my.refs.implementation_variable_$(make_id (property.name))
+
+                elsif property.tag = "method"
+                    .value = my.refs.implementation_method_$(make_id (property.name))
+                    component_clean_copy (property, value, "cast")
+
+                elsif property.tag = "constant"
+                    .value = my.refs.implementation_constant_$(make_id (property.name))
+
+                else
+                    my.property_dump = my.property_dump = component_instance_dump (property)
+                    echo_fatal ("Can not handle attribute 'tag' of the property $(my.property_dump:).")
+                endif
+            endscope
+        endfor
+
+    endnew
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Add instance for each implemented interface.
+# ---------------------------------------------------------------------------
+function _Z19_add_instances_of_interface_api (impl, source, destination, meta)
+    check_arguments (my, "impl, source, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    for my.impl.interface
+        my.interface_api = c_module_interface_find_api_type (interface.name, my.source, my.meta)
+        _Z19_add_instance_interface_api (my.impl, my.interface_api, my.destination, my.meta)
+    endfor
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Add instance of the 'Implementation Info' class.
+# ---------------------------------------------------------------------------
+function _Z19_add_instance_impl_info (impl, source, destination, meta)
+    check_arguments (my, "impl, source, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    my.impl_info_module = my.source->module (name = my.names.module_impl_private)
+    my.impl_info = my.impl_info_module->struct (name = my.names.struct_info)
+
+    new variable to my.destination
+        . = "Compile-time known information about '$(my.impl.name:)' implementation."
+        .name = my.names.implementation_variable_info
+        .class = my.refs.class_impl_struct_info
+        .declaration = "private"
+        .definition = "private"
+        .is_reference = "0"
+
+        for my.impl_info.property
+            my.value = component_clean_copy (property, variable, "value")
+            scope my.value
+                if property.tag = "impl_tag"
+                    .value = my.refs.implementation_constant_tag
+
+                elsif property.tag = "find_api"
+                    .value = my.refs.implementation_method_find_api
+
+                elsif property.tag = "self_cleanup"
+                    .value = my.refs.implementation_method_cleanup
+                    component_clean_copy (property, value, "cast")
+
+                elsif property.tag = "self_delete"
+                    .value = my.refs.implementation_method_delete
+                    component_clean_copy (property, value, "cast")
+
+                else
+                    my.property_dump = component_instance_dump (property)
+                    echo_fatal ("Unsupported impl info property: $(my.property_dump:).", my)
+                endif
+            endscope
+        endfor
+    endnew
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Add next instances:
+#       - implemented interface api instance
+#       - implemented interface api instances as array
+#       - implementation info instance
+#       - implementation instance
+# ---------------------------------------------------------------------------
+function _Z19_add_instances (impl, source, destination, meta)
+    check_arguments (my, "impl, source, destination, meta", my)
+
+    _Z19_add_instances_of_interface_api (my.impl, my.source, my.destination, my.meta)
+    _Z19_add_instance_impl_info (my.impl, my.source, my.destination, my.meta)
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Add require includes to the implementation public module.
+# ---------------------------------------------------------------------------
+function _Z19_add_includes_for_module_public (impl, destination, meta)
+    check_arguments (my, "impl, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    new require to my.destination
+        .module = my.names.module_library
+    endnew
+
+    new require to my.destination
+        .module = my.names.module_assert
+        .scope = "private"
+    endnew
+
+    new require to my.destination
+        .module = my.names.module_memory
+        .scope = "private"
+    endnew
+
+    for my.impl.require
+        component_clean_copy (require, my.destination)
+    endfor
+
+    c_dependency_add_requirements (my.impl, my.destination)
+
+    if my.impl.context <> "none"
+        new require to my.destination
+            .module = my.names.implementation_module_defs
+            .scope = "private"
+        endnew
+    endif
+
+    if _Z19_has_module_private (my.impl)
+        new require to my.destination
+            .module = my.names.implementation_module_private
+            .scope = "private"
+        endnew
+    endif
+
+    new require to my.destination
+        .module = my.names.implementation_module_internal
+        .scope = "private"
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Add require includes to the implementation public module.
+# ---------------------------------------------------------------------------
+function _Z19_add_includes_for_module_internal (impl, destination, meta)
+    check_arguments (my, "impl, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    new require to my.destination
+        .module = my.names.module_library
+    endnew
+
+    new require to my.destination
+        .module = my.names.module_memory
+        .scope = "private"
+    endnew
+
+    new require to my.destination
+        .module = my.names.module_assert
+        .scope = "private"
+    endnew
+
+    if my.impl.context <> "none"
+        new require to my.destination
+            .module = my.names.implementation_module
+            .scope = "public"
+        endnew
+
+        new require to my.destination
+            .module = my.names.implementation_module_defs
+            .scope = "private"
+        endnew
+    else
+        new require to my.destination
+            .module = my.names.implementation_module
+            .scope = "private"
+        endnew
+    endif
+
+    for my.impl.interface
+        my.entity_names = meta_entity_names (my.meta, interface.name)
+
+        new require to my.destination
+            .module = my.entity_names.interface_module
+            .scope = "private"
+        endnew
+
+        new require to my.destination
+            .module = my.entity_names.interface_module_api
+            .scope = "private"
+        endnew
+    endfor
+
+    c_dependency_add_requirements(my.impl, my.destination)
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_add_argument_impl (impl, method, meta, access)
+    check_arguments (my, "impl, method, meta", my)
+
+    my.access ?= my.method.is_const ?? "readonly" ? "readwrite"
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    my.argument = item_prepend_new ("argument", my.method)
+
+    scope my.argument
+        .name = my.names.implementation_argument_impl
+        .class = my.refs.implementation_struct_impl
+        .access = my.access
+    endscope
+
+    return my.argument
+endfunction
+
+
+# ---------------------------------------------------------------------------
+function _Z19_add_return_impl (destination, meta)
+    check_arguments (my, "destination, meta", my)
+
+    my.refs = meta_refs (my.meta)
+
+    new return to my.destination
+        .class = my.refs.implementation_struct_impl
+        .access = "disown"
+    endnew
+endfunction
+
+
+# ---------------------------------------------------------------------------
+function c_dependency_add_argument (dependency, destination, after_argument, meta)
+    check_arguments (my, "dependency, destination, meta", my)
+
+    my.refs = meta_refs (my.meta)
+
+    my.argument = item_prepend_new ("argument", my.destination, my.after_argument)
+
+    scope my.argument
+        .name = my.dependency.name
+        .class = ref (my.dependency.uid)
+        .access = dependency.access
+    endscope
+
+    return my.argument
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_add_self_tag (impl, enum, meta)
+    check_arguments (my, "impl, enum, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    my.insertion_position = my.enum->constant (name = my.names.enum_constant_end) ?
+    if ! defined (my.insertion_position)
+        echo_fatal ("Enum '$(my.enum.name:)' does not contain value '$(my.names.enum_constant_end:)'.", my)
+    endif
+
+    new constant before my.insertion_position
+        .name = my.impl.name
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Add type that handles implementation details.
+# ---------------------------------------------------------------------------
+function _Z19_add_type_impl (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new struct to my.destination
+        . = "Handles implementation details."
+        .name = my.impl.name
+        .declaration = my.declaration
+        .definition = my.definition
+
+        new property to struct
+            . = "Compile-time known information about this implementation."
+            .name = my.names.property_info
+            .class = my.refs.class_impl_struct_info
+            .access = "readonly"
+        endnew
+
+        new property to struct
+            . = "Reference counter."
+            .name = my.names.property_ref_counter
+            .type = "size"
+            .is_atomic = "1"
+        endnew
+
+        c_dependency_add_properties (my.impl, struct, my.meta)
+
+        for my.impl.context
+            for context.property
+                my.property = component_clean_copy (property, struct)
+                my.property. ?= "Implementation specific context."
+            endfor
+        endfor
+
+        for my.impl.property
+            my.property = component_clean_copy (property, struct)
+            my.property. ?= "Implementation specific context."
+        endfor
+    endnew
+
+    if my.definition <> "external"
+        new require to my.destination
+            .module = my.names.module_atomic
+            .scope = my.definition
+        endnew
+
+        for my.impl.context
+            for context.require
+                my.copied_require = item_copy_to(require, my.destination)
+                my.copied_require.scope = my.definition
+            endfor
+        endfor
+
+        for my.impl.require where 0.scope="context"
+            my.copied_require = item_copy_to(require, my.destination)
+            my.copied_require.scope = my.definition
+        endfor
+    endif
+endfunction
+
+
+# ---------------------------------------------------------------------------
+function _Z19_add_interface_constants (impl, destination, meta)
+    check_arguments (my, "impl, destination, meta", my)
+
+    for my.impl.interface
+        for interface.constant
+            component_clean_copy (constant, my.destination)
+        endfor
+    endfor
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Add function that returns size of implementation context type.
+# ---------------------------------------------------------------------------
+function _Z19_add_method_impl_type_size (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        . = "\
+        Return size of '$(my.refs.c_implementation_struct_impl)' type.
+        "
+        .name = my.names.method_impl_size
+        .declaration = my.declaration
+        .definition = my.definition
+
+        new return
+            .type = "size"
+        endnew
+
+        new code to method
+            . = "return sizeof ($(my.refs.c_implementation_struct_impl));"
+        endnew
+
+        return method
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Add function that cast specific implementation context type to the
+#   common implementation context type.
+# ---------------------------------------------------------------------------
+function _Z19_add_method_impl_type_cast (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    new method to my.destination
+        . = "\
+        Cast to the '.(c_class_impl_struct_impl)' type.
+        "
+        .name = my.names.method_impl
+        .declaration = my.declaration
+        .definition = my.definition
+
+        _Z19_add_argument_impl (my.impl, method, my.meta)
+
+        new return
+            .class = ".(c_class_impl_struct_impl)"
+            .access = "readwrite"
+        endnew
+
+        my.arg_impl = ".(_argument_$(make_id (my.names.implementation_argument_impl)))"
+        new code to method
+            . = "\
+            .(c_class_assert_macros_ptr)($(my.arg_impl));
+            return (.(c_class_impl_struct_impl) *)($(my.arg_impl));
+            "
+        endnew
+
+        return method
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Add function that cast specific implementation context type to the
+#   common implementation context type.
+# ---------------------------------------------------------------------------
+function _Z19_add_method_impl_type_const_cast (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    new method to my.destination
+        . = "\
+        Cast to the const '.(c_class_impl_struct_impl)' type.
+        "
+        .name = my.names.method_impl_const
+        .declaration = my.declaration
+        .definition = my.definition
+        .is_const = "1"
+
+        _Z19_add_argument_impl (my.impl, method, my.meta)
+
+        new return
+            .class = ".(c_class_impl_struct_impl)"
+            .access = "readonly"
+        endnew
+
+        my.arg_impl = ".(_argument_$(make_id (my.names.implementation_argument_impl)))"
+        new code to method
+            . = "\
+            .(c_class_assert_macros_ptr)($(my.arg_impl));
+            return (const .(c_class_impl_struct_impl) *)($(my.arg_impl));
+            "
+        endnew
+
+        return method
+    endnew
+endfunction
+
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_init (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        . = "\
+        Perform initialization of preallocated implementation context.
+        "
+        .name = my.names.method_init
+        .declaration = my.declaration
+        .definition = my.definition
+
+        _Z19_add_argument_impl (my.impl, method, my.meta)
+
+        new code to method
+            my.arg_impl = ".(_argument_$(make_id (my.names.implementation_argument_impl)))"
+            my.type_impl = my.refs.c_implementation_struct_impl
+
+            my.impl_begin = "\
+                .(c_class_assert_macros_ptr)($(my.arg_impl));
+
+                .(c_global_method_zeroize)($(my.arg_impl), sizeof($(my.type_impl)));
+
+                $(my.arg_impl)->$(my.names.c_property_info:) = &$(my.refs.c_implementation_variable_info);
+                $(my.arg_impl)->$(my.names.c_property_ref_counter:) = 1;
+            "
+
+            if _Z19_has_underlying_context (my.impl)
+                my.impl_end = "\
+                    $(my.refs.c_implementation_method_init_ctx)($(my.arg_impl));
+                "
+            endif
+
+            my.method_body = ""
+            my.method_body += format_left (my.impl_begin) + terminator
+            my.method_body += format_left (my.impl_end) + terminator ? ""
+
+            . = my.method_body
+        endnew
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_cleanup (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        .name = my.names.method_cleanup
+        .name = my.names.method_cleanup
+        .declaration = my.declaration
+        .definition = my.definition
+
+        . = "\
+        Cleanup implementation context and release dependencies.
+        This is a reverse action of the function '$(my.refs.c_implementation_method_init)()'.
+        "
+
+        _Z19_add_argument_impl (my.impl, method, my.meta)
+
+        new code to method
+            my.arg_impl = ".(_argument_$(make_id (my.names.implementation_argument_impl)))"
+            my.type_impl = my.refs.c_implementation_struct_impl
+
+            my.impl_check_precondition = "\
+                if ($(my.arg_impl) == NULL) {
+                    return;
+                }
+            "
+
+            for my.impl.dependency
+                my.dependency = my.refs.c_dependency_property_$(make_id (dependency.name))
+                my.method_dependency_release = my.refs.c_dependency_method_release_$(make_id (dependency.name))
+
+                my.impl_cleanup_dependencies ?= ""
+                my.impl_cleanup_dependencies += "\
+                        $(my.method_dependency_release)($(my.arg_impl));$(terminator)"
+            endfor
+
+            if _Z19_has_underlying_context (my.impl)
+                my.impl_cleanup_ctx = "\
+                    $(my.refs.c_implementation_method_cleanup_ctx)($(my.arg_impl));
+                "
+            endif
+
+            my.impl_zeroize = "\
+                .(c_global_method_zeroize)($(my.arg_impl), sizeof($(my.type_impl)));
+            "
+
+            my.method_body = ""
+            my.method_body += format_left (my.impl_check_precondition) + terminator
+            my.method_body += format_left (my.impl_cleanup_dependencies) + terminator ? ""
+            my.method_body += format_left (my.impl_cleanup_ctx) + terminator ? ""
+            my.method_body += format_left (my.impl_zeroize)
+
+            . = my.method_body
+        endnew
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_new (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        .name = my.names.method_new
+        .declaration = my.declaration
+        .definition = my.definition
+
+        . = "\
+        Allocate implementation context and perform it's initialization.
+        Postcondition: check memory allocation result.
+        "
+
+        _Z19_add_return_impl (method, my.meta)
+
+        new code to method
+            my.type_impl = my.refs.c_implementation_struct_impl
+            my.arg_impl = my.names.c_implementation_argument_impl
+
+            . = "\
+            $(my.type_impl) *$(my.arg_impl:) = ($(my.type_impl) *) .(c_global_method_alloc)(sizeof ($(my.type_impl)));
+            .(c_class_assert_macros_alloc)($(my.arg_impl:));
+
+            $(my.refs.c_implementation_method_init)($(my.arg_impl:));
+
+            return $(my.arg_impl:);
+            "
+        endnew
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_format_proxy_arguments (method)
+    check_arguments (my, "method", my)
+
+    for my.method.argument
+        my.proxy_args ?= ""
+        my.proxy_args += make_ref("_argument_$(make_id (argument.name))")
+        if ! last()
+            my.proxy_args += ", "
+        endif
+    endfor
+
+    return my.proxy_args
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_custom_init (impl, constructor, declaration, definition, destination, meta)
+    check_arguments (my, "impl, constructor, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        if defined (my.constructor.)
+            my.comment = format_left (my.constructor.)
+        endif
+        my.comment = format_left("Perform initialization of pre-allocated context.") + (my.comment ? "")
+        . = my.comment
+
+        .name = cat (my.names.method_init, my.constructor.name)
+        .declaration = my.declaration
+        .definition = my.definition
+        .visibility ?= my.constructor.visibility ?
+
+        _Z19_add_argument_impl (my.impl, method, my.meta)
+
+        for my.constructor.argument
+            component_clean_copy (argument, method)
+        endfor
+
+        new code to method
+            my.type_impl = my.refs.c_implementation_struct_impl
+            my.arg_impl = my.names.c_implementation_argument_impl
+            my.method_init_ctx = make_ref_c (make_id ("class", my.impl.name, "method init ctx", my.constructor.name))
+            my.proxy_args = _Z19_format_proxy_arguments (my.constructor)
+
+            . = "\
+                .(c_class_assert_macros_ptr)($(my.arg_impl));
+
+                .(c_global_method_zeroize)($(my.arg_impl), sizeof($(my.type_impl)));
+
+                $(my.arg_impl)->$(my.names.c_property_info:) = &$(my.refs.c_implementation_variable_info);
+                $(my.arg_impl)->$(my.names.c_property_ref_counter:) = 1;
+
+                $(my.method_init_ctx)($(my.arg_impl), $(my.proxy_args:));
+            "
+        endnew
+    endnew
+endfunction
+
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_custom_new (impl, constructor, declaration, definition, destination, meta)
+    check_arguments (my, "impl, constructor, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        if defined (my.constructor.)
+            my.comment = format_left (my.constructor.)
+        endif
+        my.comment = format_left("Allocate implementation context and perform it's initialization.") + (my.comment ? "")
+        . = my.comment
+
+        .name = cat (my.names.method_new, my.constructor.name)
+        .declaration = my.declaration
+        .definition = my.definition
+        .visibility = my.constructor.visibility ?
+
+        _Z19_add_return_impl (method, my.meta)
+
+        for my.constructor.argument
+            component_clean_copy (argument, method)
+        endfor
+
+        new code to method
+            my.type_ctx = my.refs.c_implementation_struct_impl
+            my.arg_ctx = my.names.c_implementation_argument_impl
+            my.method_init = make_ref_c (make_id ("class", my.impl.name, "method init", my.constructor.name))
+            my.proxy_args = _Z19_format_proxy_arguments (my.constructor)
+
+            . = "\
+                $(my.type_ctx) *$(my.arg_ctx:) = $(my.refs.c_implementation_method_new)();
+
+                $(my.method_init)($(my.arg_ctx:), $(my.proxy_args:));
+
+                return $(my.arg_ctx:);
+            "
+        endnew
+    endnew
+endfunction
+
+
+# ---------------------------------------------------------------------------
+function _Z19_add_constructor (impl, constructor, declaration, definition, destination, meta)
+    check_arguments (my, "impl, constructor, declaration, definition, destination, meta", my)
+
+    _Z19_add_method_custom_init(my.impl, my.constructor, my.declaration, my.definition, my.destination, my.meta)
+    _Z19_add_method_custom_new(my.impl, my.constructor, my.declaration, my.definition, my.destination, my.meta)
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Add overloaded constructors.
+# ---------------------------------------------------------------------------
+function _Z19_add_constructors (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    for my.impl.constructor
+        _Z19_add_constructor (my.impl, constructor, my.declaration, my.definition, my.destination, my.meta)
+    endfor
+endfunction
+
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_delete (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        .name = my.names.method_delete
+        .declaration = my.declaration
+        .definition = my.definition
+
+        . = "\
+        Delete given implementation context and it's dependencies.
+        This is a reverse action of the function '$(my.refs.c_implementation_method_new)()'.
+        "
+
+        _Z19_add_argument_impl (my.impl, method, my.meta)
+
+        new code
+            my.arg_impl = ".(_argument_$(make_id (my.names.implementation_argument_impl)))"
+            my.counter = "$(my.arg_impl)->$(my.names.c_property_ref_counter:)"
+
+            . = "
+                if ($(my.arg_impl) == NULL) {
+                    return;
+                }
+
+                size_t old_counter = $(my.counter:);
+                .(c_class_assert_macros_assert)(old_counter != 0);
+                size_t new_counter = old_counter - 1;
+
+                #if defined(.(c_class_atomic_macros_compare_exchange_weak))
+                //  CAS loop
+                while (!.(c_class_atomic_macros_compare_exchange_weak)(&$(my.counter:), &old_counter, new_counter)) {
+                    old_counter = $(my.counter:);
+                    .(c_class_assert_macros_assert)(old_counter != 0);
+                    new_counter = old_counter - 1;
+                }
+                #else
+                $(my.counter:) = new_counter;
+                #endif
+
+                if (new_counter > 0) {
+                    return;
+                }
+
+                $(my.refs.c_implementation_method_cleanup)($(my.arg_impl));
+
+                .(c_global_method_dealloc)($(my.arg_impl));
+            "
+        endnew
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_destroy (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        .name = my.names.method_destroy
+        .declaration = my.declaration
+        .definition = my.definition
+
+        . = "\
+        Destroy given implementation context and it's dependencies.
+        This is a reverse action of the function '$(my.refs.c_implementation_method_new)()'.
+        Given reference is nullified.
+        "
+
+        _Z19_add_argument_impl (my.impl, method, my.meta, "disown")
+
+        new code
+            my.arg_impl_ref = ".(_argument_$(make_id (my.names.implementation_argument_impl)))"
+            my.arg_impl = my.names.c_implementation_argument_impl
+            my.type_impl = my.refs.c_implementation_struct_impl
+
+            . = "\
+            .(c_class_assert_macros_ptr)($(my.arg_impl_ref));
+
+            $(my.type_impl) *$(my.arg_impl:) = *$(my.arg_impl_ref);
+            *$(my.arg_impl_ref) = NULL;
+
+            $(my.refs.c_implementation_method_delete)($(my.arg_impl:));
+            "
+        endnew
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_implement_method_shallow_copy(impl, method, meta)
+    check_arguments(my, "impl, method, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    scope my.method
+        _Z19_add_argument_impl (my.impl, method, my.meta)
+
+        new return to my.method
+            .class = my.refs.implementation_struct_impl
+            .access = is_true (my.method.is_const) ?? "readonly" ? "readwrite"
+            .ownership = "take"
+        endnew
+
+        new code to method
+            my.arg = my.names.c_implementation_argument_impl
+            my.type = my.refs.c_implementation_struct_impl
+
+            . = "\
+                // Proxy to the parent implementation.
+                return ($(my.type) *).(c_class_impl_method_shallow_copy)((.(c_class_impl_struct_impl) *)$(my.arg));
+            "
+        endnew
+    endscope
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_shallow_copy (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        .name = my.names.method_shallow_copy
+        .declaration = my.declaration
+        .definition = my.definition
+        .is_const = "0"
+
+        . = "
+            Copy given implementation context by increasing reference counter.
+        "
+
+        _Z19_implement_method_shallow_copy (my.impl, method, my.meta)
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_find_api (impl, destination, meta)
+    check_arguments (my, "impl, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        .name = my.names.method_find_api
+        .declaration = "private"
+        .definition = "private"
+
+        new argument to method
+            .name = my.names.argument_api_tag
+            .enum = ".(class_api_enum_tag)"
+        endnew
+
+        new return to method
+            .class = ".(class_api_struct_api)"
+        endnew
+
+        new code to method
+            my.impl_switch_api_start = "\
+                switch(.(_argument_api_tag)) {
+            "
+
+            for my.impl.interface by name
+                my.impl_switch_api_case ?= ""
+                my.impl_switch_api_case += "\
+                    case $(my.refs.c_interface_api_tag_$(make_id (interface.name))):
+                        return (const .(c_class_api_struct_api) *)\
+                            &$(my.refs.c_implementation_variable_$(make_id (interface.name))_api);$(terminator)"
+            endfor
+
+            my.impl_switch_api_end = "\
+                    default:
+                        return NULL;
+                }
+            "
+
+            my.method_body = ""
+            my.method_body += format_left (my.impl_switch_api_start)
+            my.method_body += format_left (my.impl_switch_api_case, 1)
+            my.method_body += format_left (my.impl_switch_api_end)
+
+            . = my.method_body
+        endnew
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_add_lifecycle_methods (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    _Z19_add_method_init (my.impl, my.declaration, my.definition, my.destination, my.meta)
+    _Z19_add_method_cleanup (my.impl, my.declaration, my.definition, my.destination, my.meta)
+    _Z19_add_method_new (my.impl, my.declaration, my.definition, my.destination, my.meta)
+    _Z19_add_method_delete (my.impl, my.declaration, my.definition, my.destination, my.meta)
+    _Z19_add_method_destroy (my.impl, my.declaration, my.definition, my.destination, my.meta)
+    _Z19_add_method_shallow_copy (my.impl, my.declaration, my.definition, my.destination, my.meta)
+endfunction
+
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_init_ctx (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        . = "\
+            Provides initialization of the implementation specific context.
+            Note, this method is called automatically when method $(my.refs.c_implementation_method_init)() is called.
+            Note, that context is already zeroed.
+        "
+        .name = my.names.method_init_ctx
+        .declaration = my.declaration
+        .definition = my.definition
+        .visibility = "private"
+
+        _Z19_add_argument_impl (my.impl, method, my.meta)
+    endnew
+endfunction
+
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_cleanup_ctx (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    new method to my.destination
+        . = "\
+            Release resources of the implementation specific context.
+            Note, this method is called automatically once when class is completely cleaning up.
+            Note, that context will be zeroed automatically next this method.
+        "
+        .name = my.names.method_cleanup_ctx
+        .declaration = my.declaration
+        .definition = my.definition
+        .visibility = "private"
+
+        _Z19_add_argument_impl (my.impl, method, my.meta)
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+function _Z19_add_method_custom_init_ctx (impl, constructor, declaration, definition, destination, meta)
+    check_arguments (my, "impl, constructor, declaration, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    new method to my.destination
+        . = my.constructor. ?
+        .name = cat (my.names.method_init_ctx, my.constructor.name)
+        .declaration = my.declaration
+        .definition = my.definition
+
+        _Z19_add_argument_impl (my.impl, method, my.meta)
+
+        for my.constructor.argument
+            component_clean_copy (argument, method)
+        endfor
+    endnew
+endfunction
+
+
+# ---------------------------------------------------------------------------
+function _Z19_add_ctx_lifecycle_methods (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    _Z19_add_method_init_ctx (my.impl, my.declaration, my.definition, my.destination, my.meta)
+    _Z19_add_method_cleanup_ctx (my.impl, my.declaration, my.definition, my.destination, my.meta)
+
+    for my.impl.constructor
+        _Z19_add_method_custom_init_ctx (my.impl, constructor, my.declaration, my.definition, my.destination, my.meta)
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Define interface method that accept 'api' context.
+# ---------------------------------------------------------------------------
+function _Z19_define_interface_static_method (method, impl, meta)
+    check_arguments (my, "method, impl, meta", my)
+
+    for my.impl.dependency
+        my.after_argument = c_dependency_add_argument (dependency, my.method, my.after_argument, my.meta)
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Define interface method that accept 'impl' context.
+# ---------------------------------------------------------------------------
+function _Z19_define_interface_non_static_method (method, impl, meta)
+    check_arguments (my, "method, impl, meta", my)
+
+    _Z19_add_argument_impl (my.impl, my.method, my.meta)
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Add methods that implements interface methods.
+# ---------------------------------------------------------------------------
+function _Z19_add_interface_methods (impl, definition, destination, meta)
+    check_arguments (my, "impl, definition, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    for my.impl.interface
+        for interface.method
+            my.impl_method = component_clean_copy (method, my.destination)
+            my.impl_method.definition = my.definition
+
+            if method.is_static
+                _Z19_define_interface_static_method (my.impl_method, my.impl, my.meta)
+            else
+                _Z19_define_interface_non_static_method (my.impl_method, my.impl, my.meta)
+            endif
+        endfor
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Add dependency management functions.
+# ---------------------------------------------------------------------------
+function _Z19_add_interface_api_methods (impl, declaration, definition, destination, meta)
+    check_arguments (my, "impl, declaration, definition, destination, meta", my)
+
+    for my.impl.interface where ! count (method, method.is_static = "0")
+        meta_activate_entity (my.meta, interface.name)
+
+        my.names = meta_names (my.meta)
+        my.refs = meta_refs (my.meta)
+
+        new method to my.destination
+            . = "Returns instance of the implemented interface '$(interface.name:)'."
+            .name = my.names.interface_struct_api
+            .declaration = my.declaration
+            .definition = my.definition
+
+            new return to method
+                .class = my.refs.interface_struct_api
+            endnew
+
+            new code to method
+                . = "\
+                    return &$(my.refs.c_implementation_variable_$(make_id (interface.name))_api);
+                "
+            endnew
+        endnew
+
+        meta_deactivate_entity (my.meta, interface.name)
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Add functions that are defined in the implementation itself.
+# ---------------------------------------------------------------------------
+function _Z19_add_macroses (impl, destination, meta)
+    check_arguments (my, "impl, destination, meta", my)
+
+    for my.impl.macros
+        component_clean_copy (macros, my.destination)
+    endfor
+
+    for my.impl.macroses
+        component_clean_copy (macroses, my.destination)
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Add functions that are defined in the implementation itself.
+# ---------------------------------------------------------------------------
+function _Z19_add_method (impl, method, module, meta)
+    check_arguments (my, "impl, method, module, meta", my)
+
+    my.copied_method = component_clean_copy (method, my.module)
+
+    if ! my.copied_method.is_static
+        _Z19_add_argument_impl (my.impl, my.copied_method, my.meta)
+    endif
+
+    return my.copied_method
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Create module with:
+#       - opaque declaration of the Implementation API type
+#       - constants that required by interfaces
+#       - lifecycle functions - declaration only
+#       - functions that implements interface
+#       - dependency management functions - declaration only
+#       - function that returns implementation type size - declaration only
+#       - function that cast implementation type to the common
+#         implementation type - declaration only
+# ---------------------------------------------------------------------------
+function c_module_implementation_create_module_public (impl, enum_impl_tag, destination, meta)
+    check_arguments (my, "impl, enum_impl_tag, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    echo_trace ("Create module: $(my.names.implementation_module)", my)
+
+    new module to my.destination
+        . = "\
+        This module contains '$(my.names.implementation_module)' implementation.
+        "
+
+        .name = my.names.implementation_module
+        .of_class = my.names.implementation_class
+        .feature = my.impl.name
+        .scope = my.impl.scope
+
+        _Z19_add_includes_for_module_public (my.impl, module, my.meta)
+        _Z19_add_self_tag (my.impl, my.enum_impl_tag, my.meta)
+        _Z19_add_interface_constants (my.impl, module, my.meta)
+
+        if my.impl.context <> "none"
+            _Z19_add_type_impl (my.impl, "public", "external", module, my.meta)
+            _Z19_add_method_impl_type_size (my.impl, "public", "external", module, my.meta)
+            _Z19_add_method_impl_type_cast (my.impl, "public", "external", module, my.meta)
+            _Z19_add_method_impl_type_const_cast (my.impl, "public", "external", module, my.meta)
+
+            _Z19_add_lifecycle_methods (my.impl, "public", "external", module, my.meta)
+
+            if _Z19_has_underlying_context (my.impl)
+                _Z19_add_ctx_lifecycle_methods (my.impl, "external", "private", module, my.meta)
+                _Z19_add_constructors(my.impl, "public", "external", module, my.meta)
+            endif
+
+            c_dependency_add_lifecycle_methods (my.impl, "public", "external", module, my.meta)
+            c_dependency_add_observer_methods (my.impl, "external", "private", module, my.meta)
+        endif
+
+        _Z19_add_interface_api_methods (my.impl, "public", "external", module, my.meta)
+        _Z19_add_macroses (my.impl, module, my.meta)
+        class_add_scoped_components_to_main_module (my.impl, "_Z19_add_method", module, my.meta)
+        _Z19_add_interface_methods (my.impl, "private", module, my.meta)
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Creates module with:
+#       - Implementation type definition.
+# ---------------------------------------------------------------------------
+function c_module_implementation_create_module_impl (impl, destination, meta)
+    check_arguments (my, "impl, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    echo_trace ("Create module: $(my.names.implementation_module_defs)", my)
+
+    new module to my.destination
+        .= "\
+        Types of the '$(my.impl.name:)' implementation.
+        This types SHOULD NOT be used directly.
+        The only purpose of including this module is to place implementation
+        object in the stack memory.
+        "
+
+        .name = my.names.implementation_module_defs
+        .of_class = my.names.implementation_class
+        .scope = "private"
+        .feature = my.impl.name
+
+        new require to module
+            .module = my.names.module_library
+        endnew
+
+        new require to module
+            .module = my.names.module_impl_private
+        endnew
+
+        new require to module
+            .module = my.names.implementation_module
+        endnew
+
+        _Z19_add_type_impl (my.impl, "external", "public", module, my.meta)
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Create 'module' component with a private API for given implementation.
+# ---------------------------------------------------------------------------
+function c_module_implementation_create_module_private (impl, destination, meta)
+    check_arguments (my, "impl, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    new module to my.destination
+        .name = my.names.implementation_module_private
+        .of_class = my.names.implementation_class
+        .scope = "private"
+        .feature = my.impl.name
+        .is_header_only = "1"
+
+        class_add_scoped_components_to_extended_module (my.impl, "_Z19_add_method", module, my.meta)
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Creates module with fully generated code:
+#       - instantiations of the Interface API objects
+#       - instantiations of the Implementation API objects
+#       - lifecycle functions - definition only
+#       - dependency management functions - definition only
+#       - function that returns implementation type size - definition only
+#       - function that cast implementation type to the common
+#         implementation type - definition only
+# ---------------------------------------------------------------------------
+function c_module_implementation_create_module_internal (impl, source, destination, meta)
+    check_arguments (my, "impl, source, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+
+    echo_trace ("Create module: $(my.names.implementation_module_internal)", my)
+
+    new module to my.destination
+        . = "\
+        This module contains logic for interface/implementation architecture.
+        Do not use this module in any part of the code.
+        "
+
+        .name = my.names.implementation_module_internal
+        .of_class = my.names.implementation_class
+        .scope = "internal"
+        .feature = my.impl.name
+
+        if my.impl.context <> "none"
+            _Z19_add_includes_for_module_internal (my.impl, module, my.meta)
+            _Z19_add_instances (my.impl, my.source, module, my.meta)
+
+            _Z19_add_lifecycle_methods (my.impl, "external", "private", module, my.meta)
+
+            if _Z19_has_underlying_context (my.impl)
+                _Z19_add_ctx_lifecycle_methods (my.impl, "public", "external", module, my.meta)
+                _Z19_add_constructors(my.impl, "external", "private", module, my.meta)
+            endif
+
+            _Z19_add_interface_api_methods (my.impl, "external", "private", module, my.meta)
+            _Z19_add_method_impl_type_size (my.impl, "external", "private", module, my.meta)
+            _Z19_add_method_impl_type_cast (my.impl, "external", "private", module, my.meta)
+            _Z19_add_method_impl_type_const_cast (my.impl, "external", "private", module, my.meta)
+
+            c_dependency_add_lifecycle_methods (my.impl, "external", "private", module, my.meta)
+            c_dependency_add_observer_methods (my.impl, "private", "external", module, my.meta)
+
+        else
+            _Z19_add_includes_for_module_internal (my.impl, module, my.meta)
+            _Z19_add_instances_of_interface_api (my.impl, my.source, module, my.meta)
+            _Z19_add_interface_api_methods (my.impl, "external", "private", module, my.meta)
+        endif
+
+        class_add_scoped_components_to_extended_module (my.impl, "_Z19_add_method", module, my.meta)
+        _Z19_add_method_find_api (my.impl, module, my.meta)
+    endnew
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Create 'Implementation Lifecycle API' module for each 'implementation'
+#   within given source and put it to the destination.
+# ---------------------------------------------------------------------------
+function c_module_implementation_create (source, destination, meta)
+    check_arguments (my, "source, destination, meta", my)
+
+    my.names = meta_names (my.meta)
+    my.refs = meta_refs (my.meta)
+
+    my.module_impl = my.source->module (name = my.names.module_impl)
+    my.enum_impl_tag = my.module_impl->enum (name = my.names.enum_tag)
+
+    for my.source.implementation by name
+        meta_reset_active_entity (my.meta, implementation.name)
+
+        c_module_implementation_create_module_public (implementation, my.enum_impl_tag, my.destination, my.meta)
+        c_module_implementation_create_module_internal (implementation, my.source, my.destination, my.meta)
+
+        if _Z19_has_module_private (implementation)
+            c_module_implementation_create_module_private (implementation, my.destination, my.meta)
+        endif
+
+        if implementation.context <> "none"
+            c_module_implementation_create_module_impl (implementation, my.destination, my.meta)
+        endif
+
+    endfor
+endfunction
+
+.endtemplate

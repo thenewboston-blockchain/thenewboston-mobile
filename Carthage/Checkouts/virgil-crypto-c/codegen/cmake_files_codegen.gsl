@@ -1,0 +1,432 @@
+.template 0
+#   Copyright (C) 2015-2020 Virgil Security, Inc.
+#
+#   All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are
+#   met:
+#
+#       (1) Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#
+#       (2) Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in
+#       the documentation and/or other materials provided with the
+#       distribution.
+#
+#       (3) Neither the name of the copyright holder nor the names of its
+#       contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission.
+#
+#   THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+#   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+#   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#   DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+#   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+#   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+#   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+#   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+#   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+#
+#   Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+
+# ---------------------------------------------------------------------------
+#   Create language "C" specific 'c_features' components from the generic
+#   'feature' components taken from 'project' and 'library' components.
+#
+#   Private function prefix is: Z23.
+# ---------------------------------------------------------------------------
+#   This is a code generator built using the iMatix GSL code generation
+#   language. See https://github.com/zeromq/gsl for details.
+# ---------------------------------------------------------------------------
+
+gsl from "common.gsl"
+gsl from "cmake_codegen.gsl"
+
+
+# ---------------------------------------------------------------------------
+#   Return formatted file path for CMake
+# ---------------------------------------------------------------------------
+function _Z23_derive_cmake_file_path (c_module, project)
+    check_arguments (my, "c_module, project", my)
+
+    my.base_path = my.c_module.has_cmakedefine ?? "${CMAKE_CURRENT_BINARY_DIR}" ? "${CMAKE_CURRENT_LIST_DIR}"
+
+    if my.c_module.scope = "public"
+        return "$(my.base_path:)/include/$(my.project.namespace_dir:)/$(my.c_module.c_include_file:)"
+
+    elsif my.c_module.scope = "private"
+        return "$(my.base_path:)/include/$(my.project.namespace_dir:)/private/$(my.c_module.c_include_file:)"
+
+    elsif my.c_module.scope = "internal"
+        return "$(my.base_path:)/src/$(my.c_module.c_include_file:)"
+
+    else
+        echo_fatal ("Unexpected c_module.scope=$(my.c_module.scope:)", my)
+    endif
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Insert given file path to CMake target_sources() function body.
+#   Note, expected that function scope is already opened.
+# ---------------------------------------------------------------------------
+function _Z23_insert_featured_file_path (file_path, feature, tab_count)
+    check_arguments (my, "file_path", my)
+
+    if defined (my.feature)
+        cmake_insert ("\"$<$<BOOL:${$(my.feature:)}>:$(my.file_path:)>\"", my.tab_count)
+    else
+        cmake_insert ("\"$(my.file_path:)\"", my.tab_count)
+    endif
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Insert header file path.
+# ---------------------------------------------------------------------------
+function _Z23_insert_header_file_path (c_module, project, tab_count)
+    check_arguments (my, "c_module, project", my)
+
+    _Z23_insert_featured_file_path (\
+            _Z23_derive_cmake_file_path (my.c_module, my.project), my.c_module.feature, my.tab_count)
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Insert source file path.
+# ---------------------------------------------------------------------------
+function _Z23_insert_source_file_path (c_module, project, tab_count)
+    check_arguments (my, "c_module, project", my)
+
+    _Z23_insert_featured_file_path ("${CMAKE_CURRENT_LIST_DIR}/src/$(c_module.c_source_file)", \
+            my.c_module.feature, my.tab_count)
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Insert configure_file() command if necessary.
+# ---------------------------------------------------------------------------
+function _Z23_insert_files_configuration (source, project)
+    check_arguments (my, "source, project", my)
+
+    if ! count (my.source.c_module, c_module.has_cmakedefine)
+        return
+    endif
+
+    for my.source.c_module where c_module.has_cmakedefine
+        for c_module.cmake_include_file_check as check
+            cmake_insert_if(first(), "include(CheckIncludeFiles)")
+            cmake_insert("check_include_files($(check.file:) $(check.result_variable:))")
+            newline_if(last())
+        endfor
+
+        cmake_insert_if(first(), "configure_file(")
+
+        if c_module.scope = "public"
+            my.relative_dir = cat_path ("include", my.project.namespace_dir)
+
+        elsif c_module.scope = "private"
+            my.relative_dir = cat_path ("include", my.project.namespace_dir, "private")
+
+        elsif c_module.scope = "internal"
+            my.relative_dir = cat_path ("src", my.project.namespace_dir)
+
+        else
+            echo_fatal ("Unexpected c_module.scope=$(my.c_module.scope:)", my)
+        endif
+
+        cmake_insert ("\
+            \"${CMAKE_CURRENT_LIST_DIR}/$(my.relative_dir)/$(c_module.c_include_file:).in\"
+            \"${CMAKE_CURRENT_BINARY_DIR}/$(my.relative_dir)/$(c_module.c_include_file:)\"
+        ", 2)
+
+        cmake_insert_if(last(), ")", 2)
+    endfor
+
+    newline ()
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Insert set() command if necessary.
+# ---------------------------------------------------------------------------
+function _Z23_insert_files_apple_configuration (source, project)
+    check_arguments (my, "source, project", my)
+
+    for my.source.c_module
+        my.file_path = _Z23_derive_cmake_file_path (c_module, my.project)
+
+        if c_module.scope = "public"
+            cmake_insert ("\
+                set_property(
+                    SOURCE \"$(my.file_path:)\"
+                    PROPERTY MACOSX_PACKAGE_LOCATION \"Headers\"
+                )
+            ")
+            newline ()
+        endif
+    endfor
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   For each 'c_features' entry within source - generate 'features.cmake'
+#   file with available features.
+# ---------------------------------------------------------------------------
+function cmake_generate_features (source, license)
+    check_arguments (my, "source, license", my)
+
+    for my.source.c_features
+        echo_trace ("Generate 'features.cmake' from <$(name (c_features)) name = \"$(c_features.name:)\"/>", my)
+
+        my.cmake_file = "$(directory.resolve (c_features.path))features.cmake"
+
+        output my.cmake_file
+
+        cmake_insert_prologue (my.license)
+
+        for c_features.c_feature
+            cmake_insert ("option($(c_feature.name:) \"$(string_trim (c_feature.?""))\" $(c_feature.DEFAULT))")
+        endfor
+
+        for c_features.c_feature
+            cmake_insert_if (first(), "mark_as_advanced(")
+            cmake_insert ("$(c_feature.name:)", 2)
+            cmake_insert_if (last(), ")", 2)
+        endfor
+
+
+        for c_features.c_require where count (c_require.c_alternative, defined(c_alternative.feature))
+
+            my.alternatives = XML.new("alternatives")
+            for c_require.c_alternative
+                copy c_alternative to my.alternatives
+            endfor
+
+            for my.alternatives.c_alternative as first
+                for my.alternatives.c_alternative as second
+                    if first.feature = second.feature
+                        next
+                    endif
+
+                    newline ()
+
+                    cmake_insert ("\
+                        if($(first.feature:) AND $(second.feature:))
+                            message(\"-- error --\")
+                            message(\"--\")
+                            message(\"Feature $(first.feature:) is enabled and alternative feature:\")
+                            message(\"    $(second.feature:) is enabled too.\")
+                            message(\"--\")
+                            message(FATAL_ERROR)
+                        endif()
+                    ")
+                endfor
+
+                delete first
+            endfor
+
+
+            for c_require.c_alternative
+
+                if first ()
+                    my.alternative_any_enabled = c_alternative.feature
+                    my.alternatives = c_alternative.feature
+                else
+                    my.alternative_any_enabled += " OR " + c_alternative.feature
+                    my.alternatives += ", " + c_alternative.feature
+                endif
+
+                newline_if(last())
+                cmake_insert_if (last(), "\
+                    if(NOT ($(my.alternative_any_enabled:)))
+                        message(\"-- error --\")
+                        message(\"--\")
+                        message(\"One of the features must be enabled:\")
+                        message(\"    $(my.alternatives:).\")
+                        message(\"--\")
+                        message(FATAL_ERROR)
+                    endif()
+                ")
+
+                my.previous_alternative = c_alternative
+            endfor
+        endfor
+
+
+        for c_features.c_feature where count (c_feature.c_require)
+            for c_feature.c_require where is_false(c_require.is_optional)
+                newline ()
+
+                for c_require.c_alternative
+
+                    if first ()
+                        my.alternative_enabled = ""
+                        my.alternatives = c_alternative.feature
+                    else
+                        my.alternatives += ", " + c_alternative.feature
+                    endif
+
+                    my.alternative_enabled += " AND NOT " + c_alternative.feature
+
+                    cmake_insert_if (last(), "\
+                        if($(c_feature.name:)$(my.alternative_enabled:))
+                            message(\"-- error --\")
+                            message(\"--\")
+                            message(\"Feature $(c_feature.name:) depends on one of the features:\")
+                            message(\"    $(my.alternatives:) - which are disabled.\")
+                            message(\"--\")
+                            message(FATAL_ERROR)
+                        endif()
+                    ")
+                else
+                    cmake_insert ("\
+                        if($(c_feature.name:) AND NOT $(c_require.feature:))
+                            message(\"-- error --\")
+                            message(\"--\")
+                            message(\"Feature $(c_feature.name:) depends on the feature:\")
+                            message(\"    $(c_require.feature:) - which is disabled.\")
+                            message(\"--\")
+                            message(FATAL_ERROR)
+                        endif()
+                    ")
+                endfor
+            endfor
+        endfor
+    endfor
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Generate 'sources.cmake' file with project sources.
+#   This file should be included in the project CMakeLists.txt file.
+# ---------------------------------------------------------------------------
+function cmake_generate_sources (source, project)
+    check_arguments (my, "source, project", my)
+
+    my.cmake_file = "$(directory.resolve (my.project.path))sources.cmake"
+
+    echo_trace ("Generate '$(my.cmake_file:)'", my)
+
+    output my.cmake_file
+
+    cmake_insert_prologue (my.project->license.)
+
+    cmake_insert ("\
+        if(NOT TARGET $(my.project.cmake_target:))
+            message(FATAL_ERROR \"Expected target '$(my.project.cmake_target:)' to be defined first.\")
+        endif()
+    ")
+
+    newline ()
+
+
+    _Z23_insert_files_configuration (my.source, my.project)
+
+    _Z23_insert_files_apple_configuration (my.source, my.project)
+
+    cmake_insert ("\
+        target_sources($(my.project.cmake_target:)
+            PRIVATE
+    ")
+
+    for my.source.c_module
+        _Z23_insert_header_file_path (c_module, my.project, 3)
+    endfor
+
+    for my.source.c_module where c_module_need_source (c_module)
+        newline_if (first ())
+        _Z23_insert_source_file_path (c_module, my.project, 3)
+    endfor
+
+    cmake_insert (")", 2)
+
+    newline ()
+
+    cmake_insert("\
+        target_include_directories($(my.project.cmake_target:)
+                PUBLIC
+                    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+                    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/$(my.project.namespace_dir:)>
+                    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/$(my.project.namespace_dir:)/private>
+                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/$(my.project.namespace_dir:)>
+                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/$(my.project.namespace_dir:)/private>
+                    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src>
+                    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+                )
+    ")
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Generate 'definitions.cmake' file with project sources.
+#   This file should be included in the project CMakeLists.txt file.
+# ---------------------------------------------------------------------------
+function cmake_generate_definitions (source, license)
+    check_arguments (my, "source, license", my)
+
+    for my.source.c_features where landlord = "project"
+        echo_trace ("Generate 'definitions.cmake' from <$(name (c_features)) name = \"$(c_features.name:)\"/>", my)
+
+        my.cmake_file = "$(directory.resolve (c_features.path))definitions.cmake"
+
+        output my.cmake_file
+
+        cmake_insert_prologue (my.license)
+
+        cmake_insert ("\
+            if(NOT TARGET $(c_features.cmake_target:))
+                message(FATAL_ERROR \"Expected target '$(c_features.cmake_target:)' to be defined first.\")
+            endif()
+
+            target_compile_definitions($(c_features.cmake_target:)
+                    PUBLIC
+                        $<BUILD_INTERFACE:$(c_features.internal_build:)>
+        ")
+
+        for c_features.c_cmake_compile_definition
+            cmake_insert ("\"$(c_cmake_compile_definition.name:)=$<BOOL:${$(c_cmake_compile_definition.value:)}>\"", 3)
+        endfor
+
+        for c_features.c_feature
+            cmake_insert ("\"$(c_feature.name:)=$<BOOL:${$(c_feature.name:)}>\"", 3)
+        endfor
+
+        cmake_insert (")", 2)
+    endfor
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Generate 'module.modulemap' file with project sources.
+#   This file should be included in the Apple Frameworks.
+# ---------------------------------------------------------------------------
+function cmake_generate_modulemap (source, project)
+    check_arguments (my, "source, project", my)
+
+    my.modulemap_file = "$(directory.resolve (my.project.path))module.modulemap"
+
+    echo_trace ("Generate '$(my.modulemap_file:)'", my)
+
+    output my.modulemap_file
+
+    cmake_insert ("\
+        framework module $(my.project.framework:) {
+    ")
+
+    for my.source.c_module where c_module.scope = "public"
+        cmake_insert ("\
+            header \"$(c_module.c_include_file:)\"
+        ", 1)
+    endfor
+
+    cmake_insert ("\
+            export *
+        }
+    ")
+endfunction
+
+.endtemplate

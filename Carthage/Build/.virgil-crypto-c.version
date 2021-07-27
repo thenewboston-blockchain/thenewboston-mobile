@@ -1,0 +1,72 @@
+{
+  "Mac" : [
+    {
+      "name" : "VSCCommon",
+      "hash" : "87c21461b26887ab5799c64f9c6e7339f1ebb30c11bfbf37d7b5e2684b1257a4",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "VSCFoundation",
+      "hash" : "841f2db46eecb37ee68934ccd207e16bd977cb50eb8cca14be2701a1f76c846f",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "VSCPythia",
+      "hash" : "410490d435d20a01f859d0563cfa24e5dcf4e6d4fdeed9e144f0fd53508208b9",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "VSCRatchet",
+      "hash" : "593a18a552d7ee933cc0ae706207936361af4938c47f5c7b86182af6754a1807",
+      "linking" : "dynamic"
+    }
+  ],
+  "watchOS" : [
+    {
+      "name" : "VSCCommon",
+      "hash" : "aa4defce661ee0e6992ee8f868f386e7181cd90237317392b8002c553c430f9e",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "VSCFoundation",
+      "hash" : "b139c6eb332a756bf02f58a19c2b81bcd81fd68db5a8794e1ceb1d56c9944187",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "VSCPythia",
+      "hash" : "399fdcc22920b7859637a9702c05eb8f469473df3ccb53692314883f0717728c",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "VSCRatchet",
+      "hash" : "7a8a2054577f5f1d8e4848107f2348150241c0c364c57ad81bd459ea7ee337ed",
+      "linking" : "dynamic"
+    }
+  ],
+  "tvOS" : [
+
+  ],
+  "commitish" : "v0.15.2",
+  "iOS" : [
+    {
+      "name" : "VSCCommon",
+      "hash" : "5b26e9a1cbe0b75a08141b9f6edeee28da2c8e74a41c32ff0ec345b54e44a560",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "VSCFoundation",
+      "hash" : "3572f2c4e641e37de0694b09f28abc8b51ea34bd35c216322dc573bfc8f3eae4",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "VSCPythia",
+      "hash" : "1f70cbabe1b801b6890b927791924943f882ef569fe1c919be53b1c1818c8ba9",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "VSCRatchet",
+      "hash" : "a91107acbf191c0dd5b932c476e04e9ceae91c6e2eede01127f21f0b10a20ba1",
+      "linking" : "dynamic"
+    }
+  ]
+}

@@ -1,0 +1,419 @@
+.template 0
+#   Copyright (C) 2015-2020 Virgil Security, Inc.
+#
+#   All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are
+#   met:
+#
+#       (1) Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#
+#       (2) Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in
+#       the documentation and/or other materials provided with the
+#       distribution.
+#
+#       (3) Neither the name of the copyright holder nor the names of its
+#       contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission.
+#
+#   THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+#   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+#   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#   DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+#   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+#   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+#   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+#   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+#   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+#
+#   Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+
+# ---------------------------------------------------------------------------
+#   This is root GSL file which sequentially run all necessary operations to
+#   generate code from the module files.
+# ---------------------------------------------------------------------------
+#   This is a code generator built using the iMatix GSL code generation
+#   language. See https://github.com/zeromq/gsl for details.
+# ---------------------------------------------------------------------------
+
+gsl from "common.gsl"
+gsl from "project.gsl"
+gsl from "library.gsl"
+gsl from "module.gsl"
+gsl from "interface.gsl"
+gsl from "implementor.gsl"
+gsl from "implementation.gsl"
+gsl from "enum.gsl"
+gsl from "class.gsl"
+gsl from "context.gsl"
+gsl from "meta.gsl"
+gsl from "features.gsl"
+gsl from "projects_api.gsl"
+gsl from "wrapper.gsl"
+
+gsl from "c_features.gsl"
+gsl from "c_module.gsl"
+gsl from "c_module_codegen.gsl"
+
+gsl from "c_module_platform.gsl"
+gsl from "c_module_assert.gsl"
+gsl from "c_module_api.gsl"
+gsl from "c_module_api_private.gsl"
+gsl from "c_module_impl.gsl"
+gsl from "c_module_impl_private.gsl"
+gsl from "c_module_umbrella_headers.gsl"
+
+gsl from "c_module_interface.gsl"
+gsl from "c_module_implementation.gsl"
+
+gsl from "c_module_enum.gsl"
+gsl from "c_module_class.gsl"
+
+gsl from "cmake_files_codegen.gsl"
+
+
+# ###########################################################################
+#   Main data processing.
+# ###########################################################################
+
+
+function load_project_model (project, model, destination)
+    check_arguments (my, "project, model", my)
+
+    assert_attribute (my.model, "name", my)
+
+    my.root_path = "models"
+    my.from_path = make_id (my.model.[from] ? "project $(my.project.name)")
+    my.model_file_name = make_id (name (my.model), my.model.name) + ".xml"
+    my.model_file_path = cat_path (my.root_path, my.from_path, my.model_file_name)
+
+    return item_load_from_file (my.model_file_path, my.destination)
+endfunction
+
+
+function load_external_library (library, destination)
+    check_arguments (my, "library", my)
+
+    assert_attribute (my.library, "name", my)
+
+    return item_load_from_file ("models/external/$(make_id ("library", my.library.name)).xml", my.destination)
+endfunction
+
+
+function load_lang_wrapper (wrapper, destination)
+    check_arguments (my, "wrapper", my)
+
+    assert_attribute (my.wrapper, "lang", my)
+
+    return item_load_from_file ("models/wrapper/$(make_id ("wrapper", my.wrapper.lang)).xml", my.destination)
+endfunction
+
+
+function process_project (project, features_list, projects_api, wrappers, echo_level)
+    check_arguments (my, "project, features_list, projects_api, wrappers, echo_level", my)
+
+    #  Expects resolved project.
+
+    #   Create my.root eleement where all models will be created.
+    my.root = XML.new ("my.root")
+
+    #   Load project's components.
+    for my.project.module
+        load_project_model (my.project, module, my.root)
+    endfor
+
+    for my.project.interface
+        load_project_model (my.project, interface, my.root)
+    endfor
+
+    for my.project.implementor
+        load_project_model (my.project, implementor, my.root)
+    endfor
+
+    for my.project.class
+        load_project_model (my.project, class, my.root)
+    endfor
+
+    for my.project.enum
+        load_project_model (my.project, enum, my.root)
+    endfor
+
+    #   Process project.
+    project_generate_structure (my.project)
+    projects_api_reset_project (my.projects_api, my.project)
+
+    #   Process Interface / Implementation.
+    foreach_interface_resolve (my.root, my.project)
+    foreach_implementor_resolve (my.root, my.project)
+    foreach_implementation_resolve (my.root, my.project)
+
+    #   Process enumerations.
+    foreach_enum_resolve (my.root, my.project)
+
+    #   Process classes.
+    foreach_class_resolve (my.root, my.project)
+
+    #   Process libraries.
+    foreach_library_resolve (my.root, my.project)
+
+
+    #   Create feature per high level component.
+    foreach_interface_create_feature (my.root, my.project, my.project)
+    foreach_implementation_create_feature (my.root, my.project, my.project)
+    foreach_module_create_feature (my.root, my.project, my.project)
+    foreach_class_create_feature (my.root, my.project, my.project)
+
+    #   Group features within one component.
+    features_list_update_from_project (my.features_list, my.project)
+
+    #   Create meta information about high level entities.
+    my.meta = meta_create ()
+    meta_add_project (my.meta, my.project)
+    foreach_interface_update_meta (my.root, my.meta)
+    foreach_implementation_update_meta (my.root, my.meta)
+    foreach_class_update_meta (my.root, my.meta)
+
+
+    if my.echo_level = "debug"
+        item_save_to_file (my.meta, "meta.xml", my.project.work_path)
+    endif
+
+    if !my.project.skip_codegen_c
+        #   Create platfrom introspection module.
+        c_module_platform_create (my.project, my.root, my.meta)
+
+        #   Extend assert module, with project specific asserts.
+        for my.root.module where module.name = "assert"
+            c_module_assert_extend (module, my.project, my.projects_api)
+        endfor
+
+        #   Create Interface / Implementation high-level C modules.
+        if count (my.root.interface)
+            c_module_api_create (my.meta, my.root)
+            c_module_api_private_create (my.meta, my.root)
+
+            c_module_impl_create (my.meta, my.root)
+            c_module_impl_private_create (my.meta, my.root)
+
+            c_module_interface_create (my.root, my.root, my.meta)
+            c_module_implementation_create (my.root, my.root, my.meta)
+        endif
+
+        #   Create modules from the classes.
+        c_module_class_create (my.root, my.root, my.meta)
+        c_module_enum_create (my.root, my.root, my.meta)
+
+        #   Create public and private umbrella headers.
+        c_module_umbrella_headers_create (my.root, my.root, my.meta)
+
+
+        #   Process modules.
+        foreach_module_resolve (my.root, my.project)
+        foreach_dump ("module", my.root, my.project.work_path)
+
+        #   Create lang_modules.
+        c_module_create (my.root, my.root, my.project)
+
+        #   Process lang_modules.
+        c_module_resolve (my.root)
+
+        #   Resolve shortcuts for all modules.
+        foreach_component_resolve_shortcut_refs (my.root)
+
+        #   Perform cross projects name resolution.
+        projects_api_cleanup_lang (my.projects_api, "c")
+        projects_api_collect_info (my.projects_api, "c", my.root)
+
+        #   Resolve modules.
+        my.type_resolution_map = projects_api_build_type_resolution_map (my.projects_api)
+        if my.echo_level = "debug"
+            item_save_to_file (my.type_resolution_map, "type_resolution_map.xml", my.project.work_path)
+        endif
+
+        for my.root.c_module
+            my.resolved_c_module = resolution_map_apply_to_lang_module (\
+                        my.type_resolution_map, c_module, my.project.work_path)
+
+            move my.resolved_c_module before c_module
+            delete c_module
+
+            c_module_add_headers (my.resolved_c_module, my.projects_api)
+        endfor
+
+        #   At this point all elements are created and resolved.
+        if my.echo_level = "debug"
+            item_save_to_file (my.root, "root.xml", my.project.work_path)
+        endif
+
+        if my.echo_level = "debug"
+            item_save_to_file (my.project, "project.xml", my.project.work_path)
+        endif
+
+        #   Generate code.
+        c_module_generate_sources (my.root)
+
+        #   Generate CMake files.
+        cmake_generate_sources (my.root, my.project)
+        cmake_generate_modulemap (my.root, my.project)
+    endif
+
+    #   Generate wrappers code.
+    if !my.project.skip_codegen_wrappers
+        for my.project.wrapper as wrapper_link
+            echo_info ("Processing wrapper <wrapper lang=\"$(wrapper_link.lang:)\"/>")
+
+            my.wrapper = wrappers_find_wrapper (my.wrappers, wrapper_link.lang)
+            wrappers_reset_wrapper_project (my.wrapper, my.project)
+
+            my.wrapper_project = wrapper_create_project_module (my.project, my.wrapper)
+            my.wrapper_project.lang ?= wrapper_link.lang
+            wrapper_create_custom_modules (my.root, my.wrapper_project, my.meta)
+            wrapper_foreach_enum_create_module (my.root, my.wrapper_project, my.meta)
+            wrapper_foreach_class_create_module (my.root, my.wrapper_project, my.meta)
+            wrapper_foreach_interface_create_module (my.root, my.wrapper_project, my.meta)
+            wrapper_foreach_implementation_create_module (my.root, my.wrapper_project, my.meta)
+            wrapper_finalize_custom_modules (my.root, my.wrapper_project, my.meta)
+            wrapper_foreach_module_resolve(my.wrapper_project)
+            projects_api_cleanup_lang (my.projects_api, wrapper_link.lang)
+            projects_api_collect_info (my.projects_api, wrapper_link.lang, my.wrapper_project)
+
+            my.type_resolution_map = projects_api_build_type_resolution_map (my.projects_api, wrapper_link.lang)
+            if my.echo_level = "debug"
+                item_save_to_file (my.type_resolution_map, "type_resolution_map.xml", my.project.work_path)
+            endif
+
+            my.wrapper_project_resolved = \
+                    resolution_map_apply_to_lang_module (my.type_resolution_map, my.wrapper_project, my.project.work_path)
+            move my.wrapper_project_resolved before my.wrapper_project
+            delete my.wrapper_project
+
+            wrapper_generate_project (my.wrapper_project_resolved)
+            wrapper_generate_sources (my.wrapper_project_resolved)
+        endfor
+    endif
+endfunction
+
+
+function process_library (library, features_list, projects_api, echo_level)
+    check_arguments (my, "library, features_list, projects_api, echo_level", my)
+
+    projects_api_update_library (my.projects_api, my.library)
+    library_resolve (my.library)
+    features_list_update_from_library (my.features_list, my.library)
+endfunction
+
+
+# ---------------------------------------------------------------------------
+#   Entry point.
+# ---------------------------------------------------------------------------
+function run_main ()
+    main.echo_level ?= "fatal"
+    main.work_path ?= "generated"
+
+    #   Create container where all features will be located.
+    my.features_list = features_list_load (main.work_path)
+
+    #   Create container where projects API will be located.
+    my.projects_api = projects_api_load (main.work_path)
+
+    #   Load and resolve interfaces.
+    #   This is required to generate inherited methods in the wrappers.
+    global.interfaces = XML.new ("interfaces")
+    for main.project
+        my.loaded_project = load_project_model (project, project)
+        project_resolve (my.loaded_project)
+        for my.loaded_project.interface
+            my.loaded_interface = load_project_model (my.loaded_project, interface, global.interfaces)
+            my.loaded_interface.project = my.loaded_project.name
+            interface_resolve (my.loaded_interface, my.loaded_project)
+        endfor
+    endfor
+
+    for global.interfaces.interface
+        for interface.inherit
+            interface_resolve_inherit (inherit, global.interfaces, inherit)
+            inherit.project ?= interface.project
+        endfor
+    endfor
+
+    if main.echo_level = "debug"
+        item_save_to_file (global.interfaces, "interfaces.xml", main.work_path)
+    endif
+
+    #   Process code generation.
+    for main.library
+        my.loaded_library = load_external_library (library)
+        process_library (my.loaded_library, my.features_list, my.projects_api, main.echo_level)
+    endfor
+
+    my.wrappers = wrappers_load(main.work_path)
+    for main.wrapper
+        my.loaded_wrapper = load_lang_wrapper (wrapper)
+        my.loaded_wrapper.source_dir ?= cat_path ("../wrappers", wrapper.lang)
+        copy main->license to my.loaded_wrapper
+        copy main->version to my.loaded_wrapper
+        wrappers_update_wrapper (my.wrappers, my.loaded_wrapper)
+    endfor
+
+    for main.project where is_false (project.skip_codegen)
+        my.loaded_project = load_project_model (project, project)
+        my.loaded_project.skip_codegen_c = is_true (project.skip_codegen_c)
+        my.loaded_project.skip_codegen_wrappers = is_true (project.skip_codegen_wrappers)
+        project_resolve (my.loaded_project)
+
+        for main.wrapper where my.loaded_project.wrappers = "all" | string_in (wrapper.lang, my.loaded_project.wrappers)
+            copy wrapper to my.loaded_project
+        endfor
+
+        process_project (my.loaded_project, my.features_list, my.projects_api, my.wrappers, main.echo_level)
+        projects_api_save (my.projects_api, main.work_path)
+    endfor
+
+    my.type_resolution_map = projects_api_build_type_resolution_map (my.projects_api, wrapper.lang)
+
+    for my.wrappers.wrapper
+        wrapper_create_toplevel_modules (wrapper)
+
+        my.wrapper_work_path = cat_path(main.work_path, wrapper.lang)
+
+        for wrapper.$(make_id (wrapper.lang, "module")) as wrapper_module
+            my.wrapper_module_resolved = \
+                    resolution_map_apply_to_lang_module (my.type_resolution_map, wrapper_module, my.wrapper_work_path)
+            move my.wrapper_module_resolved before wrapper_module
+            delete wrapper_module
+        endfor
+
+        wrapper_generate_sources (wrapper)
+    endfor
+    wrappers_save (my.wrappers, main.work_path)
+    delete my.wrappers
+
+    #   Create context and populate it with features.
+    foreach_features_resolve (my.features_list)
+
+    c_features_create (my.features_list, my.features_list)
+
+    projects_api_save (my.projects_api, main.work_path)
+    features_list_save (my.features_list, main.work_path)
+
+    projects_api_collect_info (my.projects_api, "c", my.features_list)
+    my.resolution_map = projects_api_build_type_resolution_map (my.projects_api)
+
+    my.features_list_resolved = resolution_map_apply_to (my.resolution_map, my.features_list, main.work_path)
+
+    #   Generate cmake files for features.
+    cmake_generate_features (my.features_list_resolved, main->license)
+    cmake_generate_definitions (my.features_list_resolved, main->license)
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Generate bloat code. Make life easier.
+# ---------------------------------------------------------------------------
+run_main ()
+
+.endtemplate

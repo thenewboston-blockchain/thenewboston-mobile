@@ -1,0 +1,195 @@
+<project
+        name="foundation"
+        brief="Virgil Security Crypto Foundation"
+        namespace="virgil crypto foundation"
+        framework="VSCFoundation"
+        prefix="vscf"
+        path="../library/foundation/"
+        work_path="generated/foundation/"
+        wrappers="swift,java,python,wasm,go,php"
+        >
+
+    <version major="0" minor="15" patch="2"/>
+
+    <license>
+        Copyright (C) 2015-2020 Virgil Security, Inc.
+
+        All rights reserved.
+
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are
+        met:
+
+            (1) Redistributions of source code must retain the above copyright
+            notice, this list of conditions and the following disclaimer.
+
+            (2) Redistributions in binary form must reproduce the above copyright
+            notice, this list of conditions and the following disclaimer in
+            the documentation and/or other materials provided with the
+            distribution.
+
+            (3) Neither the name of the copyright holder nor the names of its
+            contributors may be used to endorse or promote products derived from
+            this software without specific prior written permission.
+
+        THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+        IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+        WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+        INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+        (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+        HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+        STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+        IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+        POSSIBILITY OF SUCH DAMAGE.
+
+        Lead Maintainer: Virgil Security Inc. &lt;support@virgilsecurity.com&gt;
+    </license>
+
+    <require project="common" feature="library"/>
+    <require library="mbedtls" feature="library"/>
+
+    <cgo_link platform="darwin" libraries="-lvsc_foundation -lvsc_foundation_pb -led25519 -lprotobuf-nanopb -lvsc_common -lmbedcrypto -lround5 -lfalcon"/>
+    <cgo_link platform="linux,!legacy" path="linux_amd64" libraries="-lvsc_foundation -lvsc_foundation_pb -led25519 -lprotobuf-nanopb -lvsc_common -lmbedcrypto -lround5 -lfalcon -lpthread"/>
+    <cgo_link platform="linux,legacy" path="linux_amd64__legacy_os" libraries="-lvsc_foundation -lvsc_foundation_pb -led25519 -lprotobuf-nanopb -lvsc_common -lmbedcrypto -lround5 -lfalcon -lpthread"/>
+    <cgo_link platform="windows" libraries="-lvsc_foundation -lvsc_foundation_pb -led25519 -lprotobuf-nanopb -lvsc_common -lmbedcrypto -lround5 -lfalcon"/>
+
+    <feature name="multi threading" default="on">
+        Enable multi-threading safety for foundation library.
+
+        <require feature="THREADING C" library="mbedtls"/>
+    </feature>
+
+    <feature name="post quantum" default="${VIRGIL_POST_QUANTUM}">
+        Enable post-quantum cryptography for foundation library [experimental].
+
+        <require library="round5" feature="library"/>
+        <require library="falcon" feature="library"/>
+    </feature>
+
+    <module name="assert" from="shared"/>
+    <module name="library" from="shared"/>
+    <module name="memory" from="shared"/>
+    <module name="atomic" from="shared"/>
+
+    <module name="group session typedefs"/>
+
+    <enum name="status"/>
+    <enum name="asn1 tag"/>
+    <enum name="alg id"/>
+    <enum name="oid id"/>
+    <enum name="recipient cipher decryption state"/>
+    <enum name="group msg type"/>
+    <enum name="cipher state"/>
+
+    <interface name="cipher"/>
+    <interface name="auth encrypt"/>
+    <interface name="auth decrypt"/>
+    <interface name="cipher auth"/>
+    <interface name="cipher auth info"/>
+    <interface name="cipher info"/>
+    <interface name="decrypt"/>
+    <interface name="encrypt"/>
+    <interface name="salted kdf"/>
+    <interface name="hash"/>
+    <interface name="mac"/>
+    <interface name="kdf"/>
+    <interface name="random"/>
+    <interface name="entropy source"/>
+
+    <interface name="key"/>
+    <interface name="key alg"/>
+    <interface name="public key"/>
+    <interface name="private key"/>
+    <interface name="key cipher"/>
+    <interface name="key signer"/>
+    <interface name="compute shared key"/>
+    <interface name="key serializer"/>
+    <interface name="key deserializer"/>
+
+    <interface name="asn1 reader"/>
+    <interface name="asn1 writer"/>
+
+    <interface name="alg"/>
+    <interface name="alg info"/>
+    <interface name="alg info serializer"/>
+    <interface name="alg info deserializer"/>
+    <interface name="message info serializer"/>
+    <interface name="message info footer serializer"/>
+    <interface name="padding"/>
+    <interface name="kem"/>
+
+    <class name="error"/>
+    <class name="mbedtls bignum asn1 writer"/>
+    <class name="mbedtls bignum asn1 reader"/>
+    <class name="mbedtls md"/>
+    <class name="mbedtls ecp"/>
+    <class name="oid"/>
+    <class name="base64"/>
+    <class name="pem"/>
+    <class name="pem title"/>
+    <class name="message info"/>
+    <class name="key recipient info"/>
+    <class name="key recipient info list"/>
+    <class name="password recipient info"/>
+    <class name="password recipient info list"/>
+    <class name="alg factory"/>
+    <class name="key alg factory"/>
+    <class name="ecies"/>
+    <class name="ecies envelope"/>
+    <class name="recipient cipher"/>
+    <class name="key recipient list"/>
+    <class name="list key value node"/>
+    <class name="message info custom params"/>
+    <class name="key provider"/>
+    <class name="signer"/>
+    <class name="verifier"/>
+    <class name="simple swu"/>
+    <class name="brainkey client"/>
+    <class name="brainkey server"/>
+    <class name="message padding"/>
+    <class name="message cipher"/>
+    <class name="group session message"/>
+    <class name="group session ticket"/>
+    <class name="group session"/>
+    <class name="group session epoch"/>
+    <class name="group session epoch node"/>
+    <class name="message info editor"/>
+    <class name="signer info"/>
+    <class name="signer info list"/>
+    <class name="signer list"/>
+    <class name="message info footer"/>
+    <class name="signed data info"/>
+    <class name="footer info"/>
+    <class name="key info"/>
+    <class name="tail filter"/>
+    <class name="padding params"/>
+    <class name="padding cipher"/>
+
+    <implementor name="mbedtls"/>
+    <implementor name="mbedtls pk"/>
+    <implementor name="mbedtls rng"/>
+    <implementor name="virgil"/>
+    <implementor name="virgil key serializer"/>
+    <implementor name="ed25519"/>
+    <implementor name="post quantum"/>
+    <implementor name="compound key"/>
+    <implementor name="hybrid key"/>
+
+    <implementor name="alg info"/>
+    <implementor name="alg info der"/>
+    <implementor name="message info der serializer"/>
+    <implementor name="padding"/>
+
+    <module name="mbedtls bridge random"/>
+    <module name="mbedtls bridge entropy"/>
+    <module name="mbedtls bridge entropy poll"/>
+
+    <error_message_getter success="0">
+        <require enum="status"/>
+
+        char error_message[48] = {0x00};
+        snprintf(error_message, sizeof(error_message), "Unhandled vsc::foundation error -0x%04x", error);
+    </error_message_getter>
+</project>

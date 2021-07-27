@@ -1,0 +1,441 @@
+.template 0
+#   Copyright (C) 2015-2020 Virgil Security, Inc.
+#
+#   All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are
+#   met:
+#
+#       (1) Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#
+#       (2) Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in
+#       the documentation and/or other materials provided with the
+#       distribution.
+#
+#       (3) Neither the name of the copyright holder nor the names of its
+#       contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission.
+#
+#   THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+#   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+#   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#   DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+#   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+#   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+#   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+#   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+#   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+#
+#   Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+
+# ---------------------------------------------------------------------------
+#   This is GSL file that maintain information about projects API and
+#   projects resolution context.
+#
+#   Private function prefix is: F17.
+# ---------------------------------------------------------------------------
+#   This is a code generator built using the iMatix GSL code generation
+#   language. See https://github.com/zeromq/gsl for details.
+# ---------------------------------------------------------------------------
+
+
+gsl from "common.gsl"
+gsl from "context.gsl"
+
+
+# ---------------------------------------------------------------------------
+#   Return active project.
+# ---------------------------------------------------------------------------
+function _F17_get_active_project (projects_api)
+    check_arguments (my, "projects_api", my)
+
+    assert_attribute (my.projects_api, "active_project", my)
+
+    my.project = my.projects_api->project (name = my.projects_api.active_project) ?
+
+    if ! defined (my.project)
+        echo_fatal ("Active project is defined, but missed within 'projects_api'.", my)
+    endif
+
+    return my.project
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Return active project.
+# ---------------------------------------------------------------------------
+function _F17_get_project_lang (project, lang_name)
+    check_arguments (my, "project, lang_name", my)
+
+    my.lang_id = make_id (my.lang_name)
+    my.lang = my.project->lang (id = my.lang_id) ?
+
+    if ! defined (my.lang)
+        new lang to my.project
+            .id = my.lang_id
+            return lang
+        endnew
+    endif
+
+    return my.lang
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Load existing <projects_api/> entity or create new one.
+# ---------------------------------------------------------------------------
+function projects_api_load (work_path)
+    my.dir_path = directory.resolve (my.work_path) ?
+    my.file_path = "$(my.dir_path?:)projects_api.xml"
+
+    if file.exists (my.file_path)
+        my.projects_api = item_load_from_file(my.file_path)
+    else
+        my.projects_api = XML.new("projects_api")
+    endif
+
+    return my.projects_api
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Save <projects_api/> entity to the file at given path.
+# ---------------------------------------------------------------------------
+function projects_api_save (projects_api, work_path)
+    check_arguments (my, "projects_api", my)
+
+    item_save_to_file(my.projects_api, "projects_api.xml", my.work_path)
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Reset all information about given project and set this project as active.
+# ---------------------------------------------------------------------------
+function projects_api_reset_project (projects_api, project)
+    check_arguments (my, "projects_api, project", my)
+
+    #   Find / Create
+    my.project_info = my.projects_api->project (name = my.project.name) ?
+
+    if ! defined (my.project_info)
+        new project to my.projects_api
+            my.project_info = project
+        endnew
+    endif
+
+    #   Cleanup
+    for my.project_info.require
+        delete require
+    endfor
+
+    for my.project_info.uid
+        delete uid
+    endfor
+
+    for my.project_info.error_message_getter
+        delete error_message_getter
+    endfor
+
+    #   Redefine
+    for my.project.error_message_getter
+        copy error_message_getter to my.project_info
+    endfor
+
+    scope my.project_info
+        .name = my.project.name
+        .namespace = my.project.namespace
+        .namespace_dir = my.project.namespace_dir
+        .framework = my.project.framework
+        .wrappers = my.project.wrappers
+        .install_headers_dir = my.project.install_headers_dir
+        .install_private_headers_dir = my.project.install_private_headers_dir
+
+        for my.project.require where defined (require.project) & string_equal (require.feature, "library")
+            new require to my.project_info
+                .project = -1.project
+            endnew
+        endfor
+
+        context_append_project (my.project_info, my.project)
+    endscope
+
+    my.projects_api.active_project = my.project.name
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Reset all information about given project and set this project as active.
+# ---------------------------------------------------------------------------
+function projects_api_cleanup_lang (projects_api, lang_name)
+    check_arguments (my, "projects_api, lang_name", my)
+
+    my.project = _F17_get_active_project (my.projects_api)
+    my.lang = _F17_get_project_lang (my.project, my.lang_name)
+    delete my.lang
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Return global resolution context, that contains all uid to name maps.
+# ---------------------------------------------------------------------------
+function projects_api_build_type_resolution_map (projects_api, lang_name)
+    check_arguments (my, "projects_api", my)
+
+    my.resolution_map = XML.new ("type_resolution_map")
+
+    for my.projects_api.project
+
+        my.project_prefix = (project.name <> my.projects_api.active_project) ?? make_id ("project", project.name) ?
+
+        #   Process project UIDs.
+        for project.uid
+            if defined (my.project_prefix) & defined (uid.full_ref)
+                my.resolution_map.$(uid_insert_prefix (uid.uid, my.project_prefix)) = uid.full_ref
+            else
+                my.resolution_map.$(uid_insert_prefix (uid.uid, my.project_prefix)) = uid.ref
+            endif
+        endfor
+
+        for project.lang where lang.id = "c" | (defined (my.lang_name) & make_id (my.lang_name) = lang.id)
+            #   Process lang UIDs.
+            for lang.uid
+                if defined (my.project_prefix) & defined (uid.full_ref)
+                    my.resolution_map.$(uid_insert_prefix (uid.uid, my.project_prefix)) = uid.full_ref
+                else
+                    my.resolution_map.$(uid_insert_prefix (uid.uid, my.project_prefix)) = uid.ref
+                endif
+            endfor
+
+            #   Process headers.
+            my.is_external_project = (project.name = my.projects_api.active_project) ?? "0" ? "1"
+            my.public_prefix = my.is_external_project ?? project.namespace_dir ?
+            my.private_prefix = my.is_external_project ?? cat_path (project.namespace_dir, "private") ?
+
+            for lang.header
+                if my.is_external_project & header.scope = "internal"
+                    next
+                endif
+
+                if header.scope = "public"
+                    my.header_file = cat_path (my.public_prefix, header.file)
+
+                elsif header.scope = "private"
+                    my.header_file = cat_path (my.private_prefix, header.file)
+                else
+                    my.header_file = header.file
+                endif
+
+                my.key = make_id ("c", my.project_prefix, "header", header.name)
+                my.resolution_map.$(my.key:) = my.header_file
+            endfor
+        endfor
+    endfor
+
+    return my.resolution_map
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Traverse all known entries within source and collect meta information
+#   about types.
+# ---------------------------------------------------------------------------
+function projects_api_collect_info (projects_api, lang, source)
+    check_arguments (my, "projects_api, lang, source", my)
+
+    my.project = _F17_get_active_project (my.projects_api)
+    my.lang_destination = _F17_get_project_lang (my.project, my.lang)
+    my.c_lang_destination = _F17_get_project_lang (my.project, "c")
+
+    context_append_hierarchy (my.lang_destination, my.source)
+
+    #   Append headers with type info.
+    for my.source.c_module
+        my.header = my.c_lang_destination->header (file = c_module.c_include_file) ?
+
+        if ! defined (my.header)
+            new header to my.c_lang_destination
+                .name = c_module.id
+                .file = c_module.c_include_file
+                .scope = c_module.scope
+
+                my.header = header
+            endnew
+        endif
+
+        for c_module. as c_type where item_in(c_type, "c_enum, c_struct, c_callback, c_method") & defined(c_type.name)
+            if string_equal(c_type.declaration, "public")
+                new declaration to my.header
+                    .type = c_type.name
+                endnew
+            endif
+
+            if string_equal(c_type.definition, "public")
+                new definition to my.header
+                    .type = c_type.name
+                endnew
+            endif
+
+            for c_type.c_constant
+                new declaration to my.header
+                    .type = c_constant.name
+                endnew
+
+                new definition to my.header
+                    .type = c_constant.name
+                endnew
+            endfor
+        endfor
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Find resolved name based on the given UID in within active project.
+# ---------------------------------------------------------------------------
+function projects_api_find_resolved_name (projects_api, uid)
+    check_arguments (my, "projects_api, uid", my)
+
+    my.active_project = _F17_get_active_project (my.projects_api)
+
+    for my.active_project.uid where uid.uid = my.uid
+        return uid.ref
+    endfor
+
+    for my.active_project.lang
+        for lang.uid where uid.uid = my.uid
+            return uid.ref
+        endfor
+    endfor
+
+    echo_fatal ("Requested UID '$(my.uid)' is not found", my)
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Return new XML item with information about header file that contains
+#   given type declaration.
+# ---------------------------------------------------------------------------
+function projects_api_find_declaration_header (projects_api, type_name)
+    check_arguments (my, "projects_api, type_name", my)
+
+    for my.projects_api.project
+        my.project_c = _F17_get_project_lang (project, "c")
+        for my.project_c.header
+            for header.declaration
+                if declaration.type = my.type_name
+                    my.header_info = XML.new ("header_info")
+
+                    scope my.header_info
+                        .name = header.name
+                        .file = header.file
+                        .project = project.name
+                        .is_external = project.name <> my.projects_api.active_project
+                    endscope
+
+                    if my.header_info.is_external
+                        if header.scope = "public"
+                            my.header_info.system = cat_path (project.install_headers_dir, header.file)
+                            my.header_info.framework = cat_path (project.framework, header.file)
+                        elsif header.scope = "private"
+                            my.header_info.system = cat_path (project.install_private_headers_dir, header.file)
+                        endif
+                    endif
+
+                    return my.header_info
+                endif
+            endfor
+        endfor
+    endfor
+
+    return
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Return new XML item with information about header file that contains
+#   given type definition.
+# ---------------------------------------------------------------------------
+function projects_api_find_definition_header (projects_api, type_name)
+    check_arguments (my, "projects_api, type_name", my)
+
+    for my.projects_api.project
+        my.lang_c = _F17_get_project_lang (project, "c")
+        for my.lang_c.header
+            for header.definition
+                if definition.type = my.type_name
+                    my.header_info = XML.new ("header_info")
+
+                    scope my.header_info
+                        .name = header.name
+                        .file = header.file
+                        .project = project.name
+                        .is_external = project.name <> my.projects_api.active_project
+                    endscope
+
+                    if my.header_info.is_external
+                        if header.scope = "public"
+                            my.header_info.system = cat_path (project.install_headers_dir, header.file)
+                            my.header_info.framework = cat_path (project.framework, header.file)
+                        elsif header.scope = "private"
+                            my.header_info.system = cat_path (project.install_private_headers_dir, header.file)
+                        endif
+                    endif
+
+                    return my.header_info
+                endif
+            endfor
+        endfor
+    endfor
+
+    return
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Update information with given library.
+# ---------------------------------------------------------------------------
+function projects_api_update_library (projects_api, library)
+    check_arguments (my, "projects_api, library", my)
+
+    #   Find / Create new
+    my.library_info = my.projects_api->library (name = my.library.name) ?
+
+    if defined (my.library_info)
+        delete my.library_info
+    endif
+
+    new library to my.projects_api
+        my.library_info = library
+    endnew
+
+    #   Update
+    my.library_info.name = my.library.name
+
+    for my.library.error_message_getter
+        copy error_message_getter to my.library_info
+    endfor
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Return information about requested project.
+# ---------------------------------------------------------------------------
+function projects_api_find_project (projects_api, name)
+    check_arguments (my, "projects_api, name", my)
+
+    my.project = my.projects_api->project (project.name = my.name) ?
+    if defined (my.project)
+        return my.project
+    endif
+
+    echo_fatal ("Project \"$(my.name:)\" is not found", my)
+endfunction
+
+# ---------------------------------------------------------------------------
+#   Return information about requested library.
+# ---------------------------------------------------------------------------
+function projects_api_find_library (projects_api, name)
+    check_arguments (my, "projects_api, name", my)
+
+    my.library = my.projects_api->library (library.name = my.name) ?
+    if defined (my.library)
+        return my.library
+    endif
+
+    echo_fatal ("Library \"$(my.name:)\" is not found", my)
+endfunction
+
+.endtemplate

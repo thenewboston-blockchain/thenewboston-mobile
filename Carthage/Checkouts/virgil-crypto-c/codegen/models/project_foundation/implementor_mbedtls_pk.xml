@@ -1,0 +1,300 @@
+<implementor name="mbedtls pk" is_default="1">
+    Asymmetric cryptography implementation with ARM mbedTLS.
+
+    <implementation name="rsa public key">
+        Handles RSA public key.
+
+        <require class="mbedtls bignum asn1 reader"/>
+        <require class="mbedtls bignum asn1 writer"/>
+        <require module="asn1rd defs"/>
+        <require module="asn1wr defs"/>
+        <require header="mbedtls/rsa.h" scope="context"/>
+        <require impl="simple alg info"/>
+
+        <property name="alg info" interface="alg info"/>
+        <property name="rsa ctx" class="mbedtls_rsa_context" library="mbedtls" is_reference="0"/>
+        <property name="impl tag" enum="impl/tag"/>
+
+        <interface name="key"/>
+        <interface name="public key"/>
+
+        <method name="key exponent" declaration="public">
+            Return public key exponent.
+
+            <return type="size"/>
+        </method>
+
+        <method name="import" declaration="public" visibility="private">
+            Import public key from the raw binary format.
+
+            RSAPublicKey ::= SEQUENCE {
+                modulus INTEGER, -- n
+                publicExponent INTEGER -- e
+            }
+
+            <argument name="raw public key" impl="raw public key"/>
+
+            <return enum="status"/>
+        </method>
+
+        <method name="export" declaration="public" visibility="private" is_const="1">
+            Export public key in the raw binary format.
+
+            RSAPublicKey ::= SEQUENCE {
+                modulus INTEGER, -- n
+                publicExponent INTEGER -- e
+            }
+
+            <return impl="raw public key" access="disown"/>
+        </method>
+    </implementation>
+
+
+    <implementation name="rsa private key">
+        Handles RSA private key.
+
+        <require class="mbedtls bignum asn1 reader"/>
+        <require class="mbedtls bignum asn1 writer"/>
+        <require module="rsa public key defs"/>
+        <require module="asn1rd defs"/>
+        <require module="asn1wr defs"/>
+        <require header="mbedtls/rsa.h" scope="context"/>
+        <require impl="simple alg info"/>
+
+        <property name="alg info" interface="alg info"/>
+        <property name="rsa ctx" class="mbedtls_rsa_context" library="mbedtls" is_reference="0"/>
+        <property name="impl tag" enum="impl/tag"/>
+
+        <interface name="key"/>
+        <interface name="private key"/>
+
+        <method name="import" declaration="public" visibility="private">
+            Import public key from the raw binary format.
+
+            RSAPrivateKey ::= SEQUENCE {
+                 version Version,
+                 modulus INTEGER, -- n
+                 publicExponent INTEGER, -- e
+                 privateExponent INTEGER, -- d
+                 prime1 INTEGER, -- p
+                 prime2 INTEGER, -- q
+                 exponent1 INTEGER, -- d mod (p-1)
+                 exponent2 INTEGER, -- d mod (q-1)
+                 coefficient INTEGER -- (inverse of q) mod p
+             }
+
+            <argument name="raw private key" impl="raw private key"/>
+
+            <return enum="status"/>
+        </method>
+
+        <method name="export" declaration="public" visibility="private" is_const="1">
+            Export public key in the raw binary format.
+
+            RSAPrivateKey ::= SEQUENCE {
+                 version Version,
+                 modulus INTEGER, -- n
+                 publicExponent INTEGER, -- e
+                 privateExponent INTEGER, -- d
+                 prime1 INTEGER, -- p
+                 prime2 INTEGER, -- q
+                 exponent1 INTEGER, -- d mod (p-1)
+                 exponent2 INTEGER, -- d mod (q-1)
+                 coefficient INTEGER -- (inverse of q) mod p
+             }
+
+            <return impl="raw private key" access="disown"/>
+        </method>
+    </implementation>
+
+
+    <implementation name="rsa">
+        RSA implementation.
+
+        <require library="mbedtls" feature="RSA C"/>
+        <require library="mbedtls" feature="BIGNUM C"/>
+        <require library="mbedtls" feature="PKCS1 V21"/>
+
+        <require class="mbedtls md"/>
+        <require class="simple alg info"/>
+        <require enum="asn1 tag"/>
+        <require impl="ctr drbg"/>
+        <require module="rsa public key defs"/>
+        <require module="rsa private key defs"/>
+        <require interface="alg"/>
+        <require interface="alg info"/>
+        <require interface="public key"/>
+        <require interface="private key"/>
+        <require module="mbedtls bridge random"/>
+
+        <dependency name="random" interface="random"/>
+
+        <method name="setup defaults" declaration="public">
+            Setup predefined values to the uninitialized class dependencies.
+
+            <return enum="status"/>
+        </method>
+
+        <interface name="key alg">
+            <constant name="can import public key" value="true"/>
+            <constant name="can export public key" value="true"/>
+            <constant name="can import private key" value="true"/>
+            <constant name="can export private key" value="true"/>
+        </interface>
+        <interface name="key cipher"/>
+        <interface name="key signer"/>
+
+        <method name="generate key" declaration="public" is_const="1">
+            Generate new private key.
+            Note, this operation might be slow.
+
+            <argument name="bitlen" type="size"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="private key" access="disown"/>
+        </method>
+    </implementation>
+
+
+    <implementation name="ecc public key">
+        Handles ECC public key.
+
+        <require header="mbedtls/ecp.h" scope="context"/>
+        <require class="mbedtls ecp"/>
+        <require interface="alg info" scope="public"/>
+
+        <property name="impl tag" enum="impl/tag"/>
+        <property name="alg info" interface="alg info"/>
+        <property name="ecc grp" class="mbedtls_ecp_group" library="mbedtls" is_reference="0"/>
+        <property name="ecc pub" class="mbedtls_ecp_point" library="mbedtls" is_reference="0"/>
+
+        <interface name="key"/>
+        <interface name="public key"/>
+    </implementation>
+
+
+    <implementation name="ecc private key">
+        Handles ECC private key.
+
+        <require header="mbedtls/ecp.h" scope="context"/>
+        <require class="mbedtls ecp"/>
+        <require module="ecc public key defs"/>
+        <require interface="alg info" scope="public"/>
+
+        <property name="impl tag" enum="impl/tag"/>
+        <property name="alg info" interface="alg info"/>
+        <property name="ecc grp" class="mbedtls_ecp_group" library="mbedtls" is_reference="0"/>
+        <property name="ecc priv" class="mbedtls_mpi" library="mbedtls" is_reference="0"/>
+        <property name="ecc pub" class="mbedtls_ecp_point" library="mbedtls" is_reference="0"/>
+
+        <interface name="key"/>
+        <interface name="private key"/>
+    </implementation>
+
+
+    <implementation name="ecc">
+        Elliptic curve cryptography implementation.
+        Supported curves:
+            - secp256r1.
+
+        <require library="mbedtls" feature="ECP C"/>
+        <require library="mbedtls" feature="ECDH C"/>
+        <require library="mbedtls" feature="ECDSA C"/>
+        <require library="mbedtls" feature="ECP DP SECP256R1 ENABLED"/>
+        <require library="mbedtls" feature="BIGNUM C"/>
+
+        <require header="mbedtls/ecp.h" scope="context"/>
+        <require header="mbedtls/ecdh.h" scope="context"/>
+        <require header="mbedtls/ecdsa.h" scope="context"/>
+
+        <require class="asn1rd"/>
+        <require class="asn1wr"/>
+        <require class="mbedtls bignum asn1 reader"/>
+        <require class="mbedtls bignum asn1 writer"/>
+        <require class="mbedtls md"/>
+        <require class="mbedtls ecp"/>
+        <require class="simple alg info"/>
+        <require class="ecc alg info"/>
+        <require enum="asn1 tag"/>
+        <require impl="ctr drbg"/>
+        <require interface="alg"/>
+        <require interface="alg info"/>
+        <require interface="public key"/>
+        <require interface="private key"/>
+        <require module="asn1rd defs"/>
+        <require module="asn1wr defs"/>
+        <require module="ecc private key defs"/>
+        <require module="ecc public key defs"/>
+        <require module="mbedtls bridge random"/>
+
+        <dependency name="random" interface="random"/>
+        <dependency name="ecies" class="ecies" has_observers="1"/>
+
+        <method name="setup defaults" declaration="public">
+            Setup predefined values to the uninitialized class dependencies.
+
+            <return enum="status"/>
+        </method>
+
+        <interface name="key alg">
+            <constant name="can import public key" value="true"/>
+            <constant name="can export public key" value="true"/>
+            <constant name="can import private key" value="true"/>
+            <constant name="can export private key" value="true"/>
+        </interface>
+        <interface name="key cipher"/>
+        <interface name="key signer"/>
+        <interface name="compute shared key"/>
+        <interface name="kem"/>
+
+        <method name="write signature" is_static="1">
+            Write R and S to ASN.1 structure.
+
+            ECDSA-Sig-Value ::= SEQUENCE {
+                r INTEGER,
+                s INTEGER
+            }
+
+            <argument name="r" class="mbedtls_mpi" library="mbedtls"/>
+            <argument name="s" class="mbedtls_mpi" library="mbedtls"/>
+
+            <argument name="signature" class="buffer"/>
+        </method>
+
+        <method name="read signature" is_static="1">
+            Read R and S from ASN.1 structure.
+
+            ECDSA-Sig-Value ::= SEQUENCE {
+                r INTEGER,
+                s INTEGER
+            }
+
+            <argument name="signature" class="data"/>
+            <argument name="r" class="mbedtls_mpi" library="mbedtls" access="readwrite"/>
+            <argument name="s" class="mbedtls_mpi" library="mbedtls" access="readwrite"/>
+
+            <return enum="status"/>
+        </method>
+
+        <method name="generate key" declaration="public" is_const="1">
+            Generate new private key.
+            Supported algorithm ids:
+                - secp256r1.
+
+            Note, this operation might be slow.
+
+            <argument name="alg id" enum="alg id"/>
+            <argument name="error" class="error" access="readwrite"/>
+
+            <return interface="private key" access="disown"/>
+        </method>
+
+        <method name="produce alg info for key" is_const="1">
+            Produce algorithm information for public or private key.
+
+            <argument name="key" interface="key"/>
+
+            <return interface="alg info" access="disown"/>
+        </method>
+    </implementation>
+</implementor>

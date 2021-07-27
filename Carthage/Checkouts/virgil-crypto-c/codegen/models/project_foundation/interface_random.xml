@@ -1,0 +1,21 @@
+<interface name="random">
+    Common interface to get random data.
+
+    <method name="random" is_const="1">
+        Generate random bytes.
+        All RNG implementations must be thread-safe.
+
+        <argument name="data len" type="size"/>
+        <argument name="data" class="buffer">
+            <length argument="data len"/>
+        </argument>
+
+        <return enum="status"/>
+    </method>
+
+    <method name="reseed">
+        Retrieve new seed data from the entropy sources.
+
+        <return enum="status"/>
+    </method>
+</interface>
