@@ -1,6 +1,6 @@
 //  @license
 // --------------------------------------------------------------------------
-//  Copyright (C) 2015-2020 Virgil Security, Inc.
+//  Copyright (C) 2015-2019 Virgil Security, Inc.
 //
 //  All rights reserved.
 //
@@ -78,16 +78,8 @@ extern "C" {
 #   include <stdatomic.h>
 #endif
 
-#ifndef VSCF_SHARED_LIBRARY
-#define VSCF_SHARED_LIBRARY 0
-#endif
-
 #ifndef VSCF_MULTI_THREADING
 #define VSCF_MULTI_THREADING 1
-#endif
-
-#ifndef VSCF_POST_QUANTUM
-#define VSCF_POST_QUANTUM 1
 #endif
 
 #ifndef VSCF_CIPHER
@@ -212,14 +204,6 @@ extern "C" {
 
 #ifndef VSCF_MESSAGE_INFO_FOOTER_SERIALIZER
 #define VSCF_MESSAGE_INFO_FOOTER_SERIALIZER 1
-#endif
-
-#ifndef VSCF_PADDING
-#define VSCF_PADDING 1
-#endif
-
-#ifndef VSCF_KEM
-#define VSCF_KEM 1
 #endif
 
 #ifndef VSCF_SHA224
@@ -354,46 +338,6 @@ extern "C" {
 #define VSCF_CURVE25519 1
 #endif
 
-#ifndef VSCF_FALCON
-#define VSCF_FALCON 1
-#endif
-
-#ifndef VSCF_ROUND5
-#define VSCF_ROUND5 1
-#endif
-
-#ifndef VSCF_COMPOUND_KEY_ALG_INFO
-#define VSCF_COMPOUND_KEY_ALG_INFO 1
-#endif
-
-#ifndef VSCF_COMPOUND_PUBLIC_KEY
-#define VSCF_COMPOUND_PUBLIC_KEY 1
-#endif
-
-#ifndef VSCF_COMPOUND_PRIVATE_KEY
-#define VSCF_COMPOUND_PRIVATE_KEY 1
-#endif
-
-#ifndef VSCF_COMPOUND_KEY_ALG
-#define VSCF_COMPOUND_KEY_ALG 1
-#endif
-
-#ifndef VSCF_HYBRID_KEY_ALG_INFO
-#define VSCF_HYBRID_KEY_ALG_INFO 1
-#endif
-
-#ifndef VSCF_HYBRID_PUBLIC_KEY
-#define VSCF_HYBRID_PUBLIC_KEY 1
-#endif
-
-#ifndef VSCF_HYBRID_PRIVATE_KEY
-#define VSCF_HYBRID_PRIVATE_KEY 1
-#endif
-
-#ifndef VSCF_HYBRID_KEY_ALG
-#define VSCF_HYBRID_KEY_ALG 1
-#endif
-
 #ifndef VSCF_SIMPLE_ALG_INFO
 #define VSCF_SIMPLE_ALG_INFO 1
 #endif
@@ -428,10 +372,6 @@ extern "C" {
 
 #ifndef VSCF_MESSAGE_INFO_DER_SERIALIZER
 #define VSCF_MESSAGE_INFO_DER_SERIALIZER 1
-#endif
-
-#ifndef VSCF_RANDOM_PADDING
-#define VSCF_RANDOM_PADDING 1
 #endif
 
 #ifndef VSCF_ERROR
@@ -600,22 +540,6 @@ extern "C" {
 
 #ifndef VSCF_FOOTER_INFO
 #define VSCF_FOOTER_INFO 1
-#endif
-
-#ifndef VSCF_KEY_INFO
-#define VSCF_KEY_INFO 1
-#endif
-
-#ifndef VSCF_TAIL_FILTER
-#define VSCF_TAIL_FILTER 1
-#endif
-
-#ifndef VSCF_PADDING_PARAMS
-#define VSCF_PADDING_PARAMS 1
-#endif
-
-#ifndef VSCF_PADDING_CIPHER
-#define VSCF_PADDING_CIPHER 1
 #endif
 
 //

@@ -1,6 +1,6 @@
 //  @license
 // --------------------------------------------------------------------------
-//  Copyright (C) 2015-2020 Virgil Security, Inc.
+//  Copyright (C) 2015-2019 Virgil Security, Inc.
 //
 //  All rights reserved.
 //
@@ -80,6 +80,7 @@ enum vscf_alg_id_t {
     vscf_alg_id_KDF1,
     vscf_alg_id_KDF2,
     vscf_alg_id_RSA,
+    vscf_alg_id_ECC,
     vscf_alg_id_ED25519,
     vscf_alg_id_CURVE25519,
     vscf_alg_id_SECP256R1,
@@ -88,12 +89,7 @@ enum vscf_alg_id_t {
     vscf_alg_id_HMAC,
     vscf_alg_id_HKDF,
     vscf_alg_id_PKCS5_PBKDF2,
-    vscf_alg_id_PKCS5_PBES2,
-    vscf_alg_id_COMPOUND_KEY,
-    vscf_alg_id_HYBRID_KEY,
-    vscf_alg_id_FALCON,
-    vscf_alg_id_ROUND5_ND_5KEM_5D,
-    vscf_alg_id_RANDOM_PADDING
+    vscf_alg_id_PKCS5_PBES2
 };
 typedef enum vscf_alg_id_t vscf_alg_id_t;
 

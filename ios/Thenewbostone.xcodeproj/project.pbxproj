@@ -42,6 +42,10 @@
 		73E49E04118FBF1AAFF724B3 /* Pods-Thenewbostone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Thenewbostone.debug.xcconfig"; path = "Target Support Files/Pods-Thenewbostone/Pods-Thenewbostone.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Thenewbostone/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B096F99276286794AE1D0F4B /* Pods-Thenewbostone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Thenewbostone.release.xcconfig"; path = "Target Support Files/Pods-Thenewbostone/Pods-Thenewbostone.release.xcconfig"; sourceTree = "<group>"; };
+		C0CCD9CD26B075BC0045F24A /* VSCCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCCommon.framework; path = ../Carthage/Build/iOS/VSCCommon.framework; sourceTree = "<group>"; };
+		C0CCD9CE26B075BC0045F24A /* VSCFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCFoundation.framework; path = ../Carthage/Build/iOS/VSCFoundation.framework; sourceTree = "<group>"; };
+		C0CCD9CF26B075BC0045F24A /* VSCPythia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCPythia.framework; path = ../Carthage/Build/iOS/VSCPythia.framework; sourceTree = "<group>"; };
+		C0CCD9D026B075BC0045F24A /* VSCRatchet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCRatchet.framework; path = ../Carthage/Build/iOS/VSCRatchet.framework; sourceTree = "<group>"; };
 		C7382E9FCAE9C5F52B54ADAB /* Pods-Thenewbostone-ThenewbostoneTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Thenewbostone-ThenewbostoneTests.debug.xcconfig"; path = "Target Support Files/Pods-Thenewbostone-ThenewbostoneTests/Pods-Thenewbostone-ThenewbostoneTests.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -99,6 +103,10 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C0CCD9CD26B075BC0045F24A /* VSCCommon.framework */,
+				C0CCD9CE26B075BC0045F24A /* VSCFoundation.framework */,
+				C0CCD9CF26B075BC0045F24A /* VSCPythia.framework */,
+				C0CCD9D026B075BC0045F24A /* VSCRatchet.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				0E35885BEC8618E0F00C2630 /* libPods-Thenewbostone.a */,
 				0E698029E60D1838F3111523 /* Pods_Thenewbostone_ThenewbostoneTests.framework */,
@@ -181,7 +189,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				829A99045E8052FC6EE9A6E6 /* [CP] Embed Pods Frameworks */,
 				517DECDB9CEB856FF0795E6A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -199,7 +206,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -295,23 +302,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Thenewbostone/Pods-Thenewbostone-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		829A99045E8052FC6EE9A6E6 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Thenewbostone/Pods-Thenewbostone-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Thenewbostone/Pods-Thenewbostone-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Thenewbostone/Pods-Thenewbostone-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BEB35BAD3C4131AC26F8C9AA /* [CP] Check Pods Manifest.lock */ = {
@@ -412,13 +402,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C7382E9FCAE9C5F52B54ADAB /* Pods-Thenewbostone-ThenewbostoneTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ThenewbostoneTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -439,10 +430,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2328ADDFCF622335067FC29D /* Pods-Thenewbostone-ThenewbostoneTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = ThenewbostoneTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -481,6 +473,7 @@
 				PRODUCT_NAME = Thenewbostone;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -505,6 +498,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Thenewbostone;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

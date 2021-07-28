@@ -1,6 +1,6 @@
 //  @license
 // --------------------------------------------------------------------------
-//  Copyright (C) 2015-2020 Virgil Security, Inc.
+//  Copyright (C) 2015-2019 Virgil Security, Inc.
 //
 //  All rights reserved.
 //
@@ -87,19 +87,17 @@ extern "C" {
 #endif // BYTE_DEFINED
 
 #if defined(_WIN32) || defined(__CYGWIN__)
-#   if VSCF_SHARED_LIBRARY
-#       if defined(VSCF_INTERNAL_BUILD)
-#           ifdef __GNUC__
-#               define VSCF_PUBLIC __attribute__ ((dllexport))
-#           else
-#               define VSCF_PUBLIC __declspec(dllexport)
-#           endif
+#   ifdef VSCF_BUILD_SHARED_LIBS
+#       ifdef __GNUC__
+#           define VSCF_PUBLIC __attribute__ ((dllexport))
 #       else
-#           ifdef __GNUC__
-#               define VSCF_PUBLIC __attribute__ ((dllimport))
-#           else
-#               define VSCF_PUBLIC __declspec(dllimport)
-#           endif
+#           define VSCF_PUBLIC __declspec(dllexport)
+#       endif
+#   elif !defined(VSCF_INTERNAL_BUILD)
+#       ifdef __GNUC__
+#           define VSCF_PUBLIC __attribute__ ((dllimport))
+#       else
+#           define VSCF_PUBLIC __declspec(dllimport)
 #       endif
 #   else
 #       define VSCF_PUBLIC
@@ -116,7 +114,7 @@ extern "C" {
 
 #define VSCF_VERSION_MAJOR 0
 
-#define VSCF_VERSION_MINOR 12
+#define VSCF_VERSION_MINOR 11
 
 #define VSCF_VERSION_PATCH 0
 
