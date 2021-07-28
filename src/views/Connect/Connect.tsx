@@ -17,7 +17,8 @@ import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";
 import CryptoJS from "crypto-js"
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions' 
-import { virgilCrypto, KeyPairType} from 'react-native-virgil-crypto';
+import { sign } from "tweetnacl";
+ 
 import RNSingleSelect, {
   ISingleSelectDataType,
 } from "@freakycoder/react-native-single-select";
@@ -28,6 +29,7 @@ interface connects {
 } 
  
 var Aes = NativeModules.Aes
+type AccountKeys = [Uint8Array, Uint8Array];
 const { Ed25519JavaBridge } = NativeModules;
 
 const connectScreen = ({navigation: {navigate}}: connects) => { 
@@ -64,6 +66,37 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
 
   const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length) 
 
+  function generateFromKey(signingKey: string): AccountKeys {
+    const { publicKey: accountNumber, secretKey: signingKey_ } = sign.keyPair.fromSeed(hexToUint8Array(signingKey));
+    return [accountNumber, signingKey_];
+  }
+
+  function uint8arrayToHex(array: Uint8Array): string {
+    return Buffer.from(array).toString("hex");
+  }
+
+  function randomKey(): AccountKeys {
+    const keyPair = sign.keyPair();
+    const { publicKey, secretKey: signingKey } = keyPair;
+    const publicKeyHex = uint8arrayToHex(publicKey);
+    const signingKeyHex = uint8arrayToHex(signingKey);
+    return [publicKey, signingKey];
+  }
+  
+  function fromBothKeys(signingKey: string, accountNumber: string): AccountKeys {
+    const accountNumberArray = hexToUint8Array(accountNumber);
+    const signingKeyArray = new Uint8Array(64);
+    signingKeyArray.set(hexToUint8Array(signingKey));
+    signingKeyArray.set(accountNumberArray, 32);
+    return [accountNumberArray, signingKeyArray];
+  }
+  
+   
+
+  function hexToUint8Array(arr: string): Uint8Array {
+    return new Uint8Array(Buffer.from(arr, "hex"));
+  } 
+
   useEffect(() => {  
     getSeedESP();
   }, []); 
@@ -81,10 +114,10 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
         setPublicKey(JSON.parse(keyPair).publicKey);    
       } 
       else{    
-        //const genKeyPair = nacl.box.keyPair() 
-        const genKeyPair = virgilCrypto.generateKeys(KeyPairType.CURVE25519_ED25519);   
-        const exportPubKey = (genKeyPair.publicKey);
-        const exportPriKey = (genKeyPair.privateKey); //virgilCrypto.exportPrivateKey
+        //const genKeyPair = nacl.box.keyPair()  
+        const genKeyPair = randomKey()  
+        const exportPubKey = (genKeyPair[0]);
+        const exportPriKey = (genKeyPair[1]);  
         setPrivateKey(exportPriKey);   
         setPublicKey(exportPubKey);  
         setKeyPair(exportPubKey, exportPriKey);

@@ -14,18 +14,14 @@ import { useSelector, useDispatch} from 'react-redux';
 import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions'
 import { SigningKeyAction, AccountNumberAction } from '../../actions/loginActions';
 import Style from "./Style";
-import LinearGradient from 'react-native-linear-gradient';
-import CryptoJS from "crypto-js"
-import EncryptedStorage from 'react-native-encrypted-storage'; 
-import { virgilCrypto } from 'react-native-virgil-crypto';
-import { Base64, nacl } from "react-native-tweetnacl";
+import LinearGradient from 'react-native-linear-gradient'; 
+import EncryptedStorage from 'react-native-encrypted-storage';   
+import { sign } from "tweetnacl";
 
 interface createAccount {
   navigation: any; // TODO use navigation props type
   route: any;
-}
- 
-
+} 
 
 const CreateAccountScreen = ({ navigation, route}: createAccount) => { 
   const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login, pScreen} = route.params;  
@@ -50,8 +46,10 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
   const [seed, setSeed] = useState("");  
   const [privateKey, setPrivateKey] = useState(null);  
   const [publicKey, setPublicKey] = useState(null); 
+  const crypto = require('crypto');
 
-  var Aes = NativeModules.Aes
+  var Aes = NativeModules.Aes;
+  type AccountKeys = [Uint8Array, Uint8Array];
   
   const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length) 
 
@@ -59,6 +57,25 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
     getSeedESP();
 
   }, []);    
+
+  function generateFromKey(signingKey: string): AccountKeys {
+    const { publicKey: accountNumber, secretKey: signingKey_ } = sign.keyPair.fromSeed(hexToUint8Array(signingKey));
+    return [accountNumber, signingKey_];
+  }
+  
+  function fromBothKeys(signingKey: string, accountNumber: string): AccountKeys {
+    const accountNumberArray = hexToUint8Array(accountNumber);
+    const signingKeyArray = new Uint8Array(64);
+    signingKeyArray.set(hexToUint8Array(signingKey));
+    signingKeyArray.set(accountNumberArray, 32);
+    return [accountNumberArray, signingKeyArray];
+  }
+  
+   
+
+  function hexToUint8Array(arr: string): Uint8Array {
+    return new Uint8Array(Buffer.from(arr, "hex"));
+  } 
 
   async function getSeedESP() {
     try {   
@@ -70,7 +87,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
       if (keyPair !== null) {  
         setPrivateKey(JSON.parse(keyPair).privateKey);   
         setPublicKey(JSON.parse(keyPair).publicKey);   
-      }
+      } 
     } catch (error) {
        console.log(error);
     }
@@ -106,11 +123,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
                 setDlgVisible(true);
               }
               else{   
-                
-                virgilCrypto.importPublicKey((publicKey.value)) 
-                console.log((privateKey.data))
-                //virgilCrypto.importPrivateKey(privateKey.data.toString('base64')) 
-                const encryptedData = virgilCrypto.encrypt(account.sign_key, publicKey.value); 
+                var encryptedData = crypto.publicEncrypt(account.sign_key, publicKey.value); 
                  
                 account.sign_key = encryptedData
                 account.isEncrypt = true; 

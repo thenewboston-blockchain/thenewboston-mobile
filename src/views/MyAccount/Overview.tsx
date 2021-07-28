@@ -23,9 +23,9 @@ import DeleteAccount from './DeleteAccount/DeleteAccount'
 import LinearGradient from 'react-native-linear-gradient';
 // svg
 import Refresh from "../../assets/svg/Refresh.svg";
-import CryptoJS from "crypto-js"
-import EncryptedStorage from 'react-native-encrypted-storage';
-import { virgilCrypto } from 'react-native-virgil-crypto';
+const crypto = require('crypto');
+import EncryptedStorage from 'react-native-encrypted-storage'; 
+import { sign } from "tweetnacl";
 
 
 const TAB_BAR_HEIGHT = 20;
@@ -55,12 +55,13 @@ const OverviewScreen = ({ route, navigation }) => {
   const [privateKey, setPrivateKey] = useState(null);  
   const [publicKey, setPublicKey] = useState(null); 
     
+  type AccountKeys = [Uint8Array, Uint8Array];
   const handleSendCoins = () => { 
     console.log("send coins");
   };
 
-  function toDecrypt(encryptedData){
-    const decryptedData = virgilCrypto.decrypt(encryptedData, privateKey.data); 
+  function toDecrypt(encryptedData){ 
+    const decryptedData = crypto.privateDecrypt(encryptedData, privateKey.data);
     return decryptedData; 
   }
 
@@ -75,6 +76,24 @@ const OverviewScreen = ({ route, navigation }) => {
   useEffect(() => {  
     getSeedESP();
   }, []);  
+
+  function generateFromKey(signingKey: string): AccountKeys {
+    const { publicKey: accountNumber, secretKey: signingKey_ } = sign.keyPair.fromSeed(hexToUint8Array(signingKey));
+    return [accountNumber, signingKey_];
+  }
+  
+  function fromBothKeys(signingKey: string, accountNumber: string): AccountKeys {
+    const accountNumberArray = hexToUint8Array(accountNumber);
+    const signingKeyArray = new Uint8Array(64);
+    signingKeyArray.set(hexToUint8Array(signingKey));
+    signingKeyArray.set(accountNumberArray, 32);
+    return [accountNumberArray, signingKeyArray];
+  }
+   
+
+  function hexToUint8Array(arr: string): Uint8Array {
+    return new Uint8Array(Buffer.from(arr, "hex"));
+  } 
 
   async function getSeedESP() {
     try {   
@@ -254,8 +273,8 @@ const OverviewScreen = ({ route, navigation }) => {
                 setDlgMessage("This account name exists in your accounts");
                 setDlgVisible(true);
               }
-              else{  
-                const encryptedData = virgilCrypto.encrypt(account.sign_key, publicKey); 
+              else{   
+                var encryptedData = crypto.publicEncrypt(account.sign_key, publicKey); 
                 account.sign_key = encryptedData
                 account.isEncrypt = true; 
                 myAccounts.push(account); 
