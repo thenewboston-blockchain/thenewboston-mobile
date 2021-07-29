@@ -16,7 +16,8 @@ import { SigningKeyAction, AccountNumberAction } from '../../actions/loginAction
 import Style from "./Style";
 import LinearGradient from 'react-native-linear-gradient'; 
 import EncryptedStorage from 'react-native-encrypted-storage';   
-import { sign } from "tweetnacl";
+import nacl from 'tweetnacl'
+import naclutil from 'tweetnacl-util' 
 
 interface createAccount {
   navigation: any; // TODO use navigation props type
@@ -59,7 +60,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
   }, []);    
 
   function generateFromKey(signingKey: string): AccountKeys {
-    const { publicKey: accountNumber, secretKey: signingKey_ } = sign.keyPair.fromSeed(hexToUint8Array(signingKey));
+    const { publicKey: accountNumber, secretKey: signingKey_ } = nacl.sign.keyPair.fromSeed(hexToUint8Array(signingKey)); 
     return [accountNumber, signingKey_];
   }
   
@@ -71,11 +72,38 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
     return [accountNumberArray, signingKeyArray];
   }
   
-   
+  function uint8arrayToHex(array: Uint8Array): string {
+    return Buffer.from(array).toString("hex");
+  }
 
   function hexToUint8Array(arr: string): Uint8Array {
     return new Uint8Array(Buffer.from(arr, "hex"));
   } 
+
+  function naclEncrypting(plain_text){
+    const one_time_code = nacl.randomBytes(24);    
+    const cipher_text = nacl.box(
+      naclutil.decodeUTF8(plain_text),
+        one_time_code,
+        hexToUint8Array(publicKey),
+        hexToUint8Array(privateKey)
+        
+    ); 
+    //message to be sent to Viktoria
+    const message_in_transit = {cipher_text, one_time_code}; 
+    return message_in_transit;
+  };
+
+  function naclDecrypting(message){
+    //Get the decoded message 
+    let decoded_message = nacl.box.open(message.cipher_text, message.one_time_code, hexToUint8Array(publicKey), hexToUint8Array(privateKey));
+
+    //Get the human readable message
+    let plain_text = naclutil.encodeUTF8(decoded_message)
+
+    //return the plaintext
+    return plain_text;
+  };
 
   async function getSeedESP() {
     try {   
@@ -83,10 +111,10 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
       if (session !== undefined) {
            setSeed(session);   
       }
-      const keyPair = await EncryptedStorage.getItem("keyPair");     
+      const keyPair = await EncryptedStorage.getItem("keyPair");   
       if (keyPair !== null) {  
         setPrivateKey(JSON.parse(keyPair).privateKey);   
-        setPublicKey(JSON.parse(keyPair).publicKey);   
+        setPublicKey(JSON.parse(keyPair).publicKey);    
       } 
     } catch (error) {
        console.log(error);
@@ -123,10 +151,18 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
                 setDlgVisible(true);
               }
               else{   
-                var encryptedData = crypto.publicEncrypt(account.sign_key, publicKey.value); 
+                console.log(seed)
+                if(publicKey == null || privateKey == null){
+                  account.isEncrypt = false;
+                }
+                else{ 
+                  const encryptedData = naclEncrypting(account.sign_key) 
+                  console.log(encryptedData)
+                  account.sign_key = encryptedData.cipher_text;
+                  account.one_time_code = encryptedData.one_time_code;
+                  account.isEncrypt = true;
+                }
                  
-                account.sign_key = encryptedData
-                account.isEncrypt = true; 
                 myAccounts.push(account);     
                 dispatch(AccountAction(myAccounts)); 
                 navigation.navigate("loginPassword", { 

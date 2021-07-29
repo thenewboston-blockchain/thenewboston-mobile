@@ -15,7 +15,10 @@ import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";   
 import EncryptedStorage from 'react-native-encrypted-storage';  
+import nacl from 'tweetnacl'
+import naclutil from 'tweetnacl-util' 
 var Aes = NativeModules.Aes
+type AccountKeys = [Uint8Array, Uint8Array];
 
 const LoginPasswordScreen = ({ navigation, route}) => {
 
@@ -35,6 +38,9 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   const [mySigningKey, setMySigningKey] = useState(lSigningKey == null ? "" : lSigningKey); 
   const [myAccountNumber, setMyAccountNumber] = useState(lAccountNumber == null ? "" : lAccountNumber); 
   const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
+  const [privateKey, setPrivateKey] = useState(null);  
+  const [publicKey, setPublicKey] = useState(null);  
+  
 
   useEffect(() => {   
     getSeedESP() 
@@ -51,23 +57,74 @@ const LoginPasswordScreen = ({ navigation, route}) => {
     }
   }
 
-  async function getSeedESP() {
-    try {   
-      const session = await EncryptedStorage.getItem("seed"); 
-      if (session !== undefined) {
-           setSeed(session); 
-      }
+  function generateFromKey(signingKey: string): AccountKeys {  
+    const { publicKey: accountNumber, secretKey: signingKey_ } = nacl.sign.keyPair.fromSeed(hexToUint8Array(signingKey)); 
+    return [accountNumber, signingKey_];
+  }
+
+  function randomKey(): AccountKeys {
+    const keyPair = nacl.box.keyPair();
+    const { publicKey, secretKey: signingKey } = keyPair;
+    const publicKeyHex = uint8arrayToHex(publicKey);
+    const signingKeyHex = uint8arrayToHex(signingKey); 
+    return [publicKey, signingKey];
+  }
+
+  function uint8arrayToHex(array: Uint8Array): string {
+    return Buffer.from(array).toString("hex");
+  } 
+  
+  function fromBothKeys(signingKey: string, accountNumber: string): AccountKeys {
+    const accountNumberArray = hexToUint8Array(accountNumber);
+    const signingKeyArray = new Uint8Array(64);
+    signingKeyArray.set(hexToUint8Array(signingKey));
+    signingKeyArray.set(accountNumberArray, 32);
+    return [accountNumberArray, signingKeyArray];
+  }
+  
+  async function setKeyPair(exportPubKey, exportPriKey) {
+    try {
+      await EncryptedStorage.setItem(
+          "keyPair",
+          JSON.stringify({ 
+            privateKey: exportPriKey,
+            publicKey : exportPubKey, 
+        })
+      ); 
     } catch (error) {
        console.log(error);
     }
+  } 
+
+  function hexToUint8Array(arr: string): Uint8Array {
+    return new Uint8Array(Buffer.from(arr, "hex"));
+  } 
+
+  async function getSeedESP() {
+    try {   
+      const session = await EncryptedStorage.getItem("seed");   
+      if (session !== undefined) { 
+           setSeed(session);    
+      }   
+
+      const keyPair = await EncryptedStorage.getItem("keyPair"); 
+      if (keyPair !== null) {   
+        setPrivateKey(JSON.parse(keyPair).privateKey);   
+        setPublicKey(JSON.parse(keyPair).publicKey);    
+      }  
+       
+    }
+    catch (error) {
+       console.log(error);
+    } 
   }
 
-  const login = async ()  => {  
+  const login = async ()  => {    
     if(password == ""){
       setDlgMessage("Input your Password")
       setDlgVisible(true);
     } 
-    else if ((seed == "" || seed == null) && (mySigningKey == "" && global.mySigningKey == false)){
+    else if ((seed == "" || seed == null) && (mySigningKey == "" && (global.mySigningKey == false || global.mySigningKey == undefined))){
       dispatch(PasswordAction(password)); 
       setSeedESP(password);
       navigation.navigate('createAccount', { 
@@ -78,12 +135,21 @@ const LoginPasswordScreen = ({ navigation, route}) => {
         pScreen:'password'
       }); 
     }
-    else if(seed == password){
-      setLoading(true);
-      generateKey(seed, 'SALT', 1000, 256).then((key: any) => { 
+    else if(seed == password || (seed == null && mySigningKey != "")){ 
+      setLoading(true); 
+      generateKey(password, 'SALT', 1000, 256).then((key: any) => {  
         dispatch(PasswordAction(password));  
-        setSeedESP(password); 
+        setSeedESP(password);  
         setLoading(false);
+        //const genKeyPair = nacl.box.keyPair()  
+        //const genKeyPair = generateFromKey(key);
+        const genKeyPair = randomKey()
+        const exportPubKey = (uint8arrayToHex(genKeyPair[0]));
+        const exportPriKey = (uint8arrayToHex(genKeyPair[1]));   
+        setPrivateKey(exportPriKey);   
+        setPublicKey(exportPubKey);  
+        setKeyPair(exportPubKey, exportPriKey);
+
         navigation.navigate('tab', {
           nickname: lnickName,
           signingKeyHex: "",
@@ -100,6 +166,8 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       
     }
     else{ 
+      console.log(seed)
+      console.log(password)
       setDlgMessage("Your password is not correct.")
       setDlgVisible(true);
     }

@@ -24,8 +24,9 @@ import LinearGradient from 'react-native-linear-gradient';
 // svg
 import Refresh from "../../assets/svg/Refresh.svg";
 const crypto = require('crypto');
-import EncryptedStorage from 'react-native-encrypted-storage'; 
-import { sign } from "tweetnacl";
+import EncryptedStorage from 'react-native-encrypted-storage';  
+import nacl from 'tweetnacl'
+import naclutil from 'tweetnacl-util' 
 
 
 const TAB_BAR_HEIGHT = 20;
@@ -44,7 +45,7 @@ const OverviewScreen = ({ route, navigation }) => {
   const [viewRef, setViewRef] = useState(null);  
   const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : myAccounts[0].name); 
   const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : (myAccounts[0].account_number)); 
-  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : toDecrypt(myAccounts[0].sign_key));  
+  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : toDecryptSignKey(myAccounts[0]));  
   const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
   const [addMode, setAddMode] = useState(false); 
@@ -60,10 +61,37 @@ const OverviewScreen = ({ route, navigation }) => {
     console.log("send coins");
   };
 
-  function toDecrypt(encryptedData){ 
-    const decryptedData = crypto.privateDecrypt(encryptedData, privateKey.data);
-    return decryptedData; 
+  function naclEncrypting(plain_text){
+    const one_time_code = nacl.randomBytes(24);    
+    const cipher_text = nacl.box(
+      naclutil.decodeUTF8(plain_text),
+        one_time_code,
+        hexToUint8Array(publicKey),
+        hexToUint8Array(privateKey)
+        
+    ); 
+    //message to be sent to Viktoria
+    const message_in_transit = {cipher_text, one_time_code};
+
+    return message_in_transit;
+  };
+
+  function toDecryptSignKey(account){   
+    if(account.isEncrypt == false || account.one_time_code == null){ 
+      return account.sign_key
+    }
+    else{ 
+      const message = {cipher_text: account.sign_key, one_time_code: account.one_time_code}
+      return naclDecrypting(message)
+    } 
   }
+
+  function naclDecrypting(message){ 
+     
+    let decoded_message = nacl.box.open(message.cipher_text, message.one_time_code, hexToUint8Array(publicKey), hexToUint8Array(privateKey));   
+    let plain_text = naclutil.encodeUTF8(decoded_message)  
+    return plain_text;
+  };
 
   function toHexString(byteArray) {
     return Array.prototype.map.call(byteArray, function(byte) {
@@ -77,8 +105,8 @@ const OverviewScreen = ({ route, navigation }) => {
     getSeedESP();
   }, []);  
 
-  function generateFromKey(signingKey: string): AccountKeys {
-    const { publicKey: accountNumber, secretKey: signingKey_ } = sign.keyPair.fromSeed(hexToUint8Array(signingKey));
+  function generateFromKey(signingKey: string): AccountKeys { 
+    const { publicKey: accountNumber, secretKey: signingKey_ } = nacl.sign.keyPair.fromSeed(hexToUint8Array(signingKey));
     return [accountNumber, signingKey_];
   }
   
@@ -119,7 +147,7 @@ const OverviewScreen = ({ route, navigation }) => {
     if(_myAccounts != [] && _myAccounts.length > 0){
       setActName(_myAccounts[0].name);
       setActNumber((_myAccounts[0].account_number));
-      setActSignKey(toDecrypt(_myAccounts[0].sign_key));
+      setActSignKey( toDecryptSignKey(_myAccounts[0]));
       setActBalance(_myAccounts[0].balance);
     }
     else{
@@ -159,7 +187,7 @@ const OverviewScreen = ({ route, navigation }) => {
         setActName(myAccounts[index].name);
       } 
       setActNumber((myAccounts[index].account_number));   
-      setActSignKey(toDecrypt(myAccounts[index].sign_key));
+      setActSignKey(toDecryptSignKey(myAccounts[index]));
       setActBalance(myAccounts[index].balance);  
     } 
   }
@@ -274,8 +302,9 @@ const OverviewScreen = ({ route, navigation }) => {
                 setDlgVisible(true);
               }
               else{   
-                var encryptedData = crypto.publicEncrypt(account.sign_key, publicKey); 
-                account.sign_key = encryptedData
+                const encryptedData = naclEncrypting(account.sign_key) 
+                account.sign_key = encryptedData.cipher_text;
+                account.one_time_code = encryptedData.one_time_code;
                 account.isEncrypt = true; 
                 myAccounts.push(account); 
                 dispatch(AccountAction(myAccounts));
