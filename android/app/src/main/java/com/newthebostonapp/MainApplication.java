@@ -1,6 +1,6 @@
 package com.newthebostonapp;
 
-import com.virgilsecurity.rn.crypto.RNVirgilCryptoPackage;
+//import com.virgilsecurity.rn.crypto.RNVirgilCryptoPackage;
 import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;

@@ -35,7 +35,7 @@ import Settings from "./src/assets/svg/Settings.svg";
 import ArrowBack from "./src/assets/svg/ArrowBack.svg";
 
 
-const Navigator = ({route}) => {
+const Navigator = ({linking, fallback, route}) => {
   const Stack = createStackNavigator(); 
   return (
     <LinearGradient

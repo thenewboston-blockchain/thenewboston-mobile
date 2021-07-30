@@ -1,4 +1,7 @@
 {
   "name": "newthebostonapp",
-  "displayName": "newthebostonapp"
+  "displayName": "newthebostonapp",
+  "expo": {
+    "scheme": "mychat"
+  }
 }

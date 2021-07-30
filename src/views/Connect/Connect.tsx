@@ -26,13 +26,14 @@ import RNSingleSelect, {
 
 interface connects { 
   navigation: any; // TODO use navigation props type
+  route: any;
 } 
  
 var Aes = NativeModules.Aes
 
 const { Ed25519JavaBridge } = NativeModules;
 
-const connectScreen = ({navigation: {navigate}}: connects) => { 
+const connectScreen = ({navigation: {navigate}, route}: connects) => { 
 
   const dispatch = useDispatch(); 
   const { width: ScreenWidth } = Dimensions.get("window");
@@ -66,6 +67,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
  
 
   useEffect(() => {  
+    console.log('props', route)
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     getSeedESP();
   }, []); 

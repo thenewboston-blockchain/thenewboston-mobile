@@ -165,9 +165,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       });
       
     }
-    else{ 
-      console.log(seed)
-      console.log(password)
+    else{  
       setDlgMessage("Your password is not correct.")
       setDlgVisible(true);
     }
