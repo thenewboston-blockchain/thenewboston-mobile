@@ -1,5 +1,3 @@
-import "react-native-gesture-handler";
-
 import * as React from "react";
 import { View, Text, Image } from "react-native";
 
@@ -35,7 +33,7 @@ import Settings from "./src/assets/svg/Settings.svg";
 import ArrowBack from "./src/assets/svg/ArrowBack.svg";
 
 
-const Navigator = ({linking, fallback, route}) => {
+const Navigator = ({route}) => {
   const Stack = createStackNavigator(); 
   return (
     <LinearGradient

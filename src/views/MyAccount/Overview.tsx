@@ -22,8 +22,7 @@ import { AccountAction } from '../../actions/accountActions'
 import DeleteAccount from './DeleteAccount/DeleteAccount'
 import LinearGradient from 'react-native-linear-gradient';
 // svg
-import Refresh from "../../assets/svg/Refresh.svg";
-const crypto = require('crypto');
+import Refresh from "../../assets/svg/Refresh.svg"; 
 import EncryptedStorage from 'react-native-encrypted-storage';  
 import nacl from 'tweetnacl'
 import naclutil from 'tweetnacl-util' 

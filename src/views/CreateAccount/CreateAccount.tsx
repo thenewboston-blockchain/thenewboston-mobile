@@ -46,8 +46,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
   const [spinVisible, setSpinVisible] = useState(false); 
   const [seed, setSeed] = useState("");  
   const [privateKey, setPrivateKey] = useState(null);  
-  const [publicKey, setPublicKey] = useState(null); 
-  const crypto = require('crypto');
+  const [publicKey, setPublicKey] = useState(null);  
 
   var Aes = NativeModules.Aes;
   type AccountKeys = [Uint8Array, Uint8Array];

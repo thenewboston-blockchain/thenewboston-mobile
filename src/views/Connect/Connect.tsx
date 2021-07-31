@@ -33,7 +33,7 @@ var Aes = NativeModules.Aes
 
 const { Ed25519JavaBridge } = NativeModules;
 
-const connectScreen = ({navigation: {navigate}, route}: connects) => { 
+const connectScreen = ({navigation: {navigate}}: connects) => { 
 
   const dispatch = useDispatch(); 
   const { width: ScreenWidth } = Dimensions.get("window");
@@ -52,7 +52,7 @@ const connectScreen = ({navigation: {navigate}, route}: connects) => {
     Array<ISingleSelectDataType>
   >([]);
   const [lNickName, setlNickName] = useState<string>(nickname)
-  const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == null ? "" : ipAddress)
+  const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == null ? "54.183.16.194" : ipAddress)
   const validator_IpAddress = "54.219.183.128"
 
   const [dlgVisible, setDlgVisible] = useState(false)
@@ -66,14 +66,13 @@ const connectScreen = ({navigation: {navigate}, route}: connects) => {
   const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length) 
  
 
-  useEffect(() => {  
-    console.log('props', route)
+  useEffect(() => {   
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     getSeedESP();
   }, []); 
 
-  async function getSeedESP() {
-    
+  async function getSeedESP() { 
+     
     setTimeout(() => {
       setDynamicData(protocolData);
     }, 2000);
