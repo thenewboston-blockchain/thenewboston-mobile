@@ -1,8 +1,6 @@
 import { Colors, Custom, Typography } from "../../styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
-import DoneSvg from "../../assets/svg/Done.svg"
- 
+import { ScrollView, Text, View } from "react-native"; 
 
 // components 
 

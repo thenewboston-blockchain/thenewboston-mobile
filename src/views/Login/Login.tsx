@@ -6,10 +6,11 @@ import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient'; 
 import CustomButton from "../../components/CustomButton";
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";  
-// svgs
-import FingerPrint from "../../assets/svg/FingerPrint.svg";
 import Style from "./Style";
 import { TouchableOpacity } from "react-native-gesture-handler";
+// svgs
+import FingerPrint from "../../assets/svg/FingerPrint.svg";
+
 
 interface login {
   navigation: any,
@@ -148,7 +149,7 @@ const LoginScreen = ({ navigation, route }:login) => {
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >

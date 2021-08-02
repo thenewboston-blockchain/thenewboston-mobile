@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Style from "./Style";
 import { View, Text, ScrollView, Modal, NativeModules} from "react-native";
-import { Custom, Typography, Colors } from "styles";
-
-// components
-import CustomInput from "../../components/CustomInput";
-import CustomSelect from "../../components/CustomSelect";
-import CustomButton from "../../components/CustomButton";
-import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Transaction} from 'thenewboston/dist/index.js';
+import { Custom, Typography, Colors } from "styles"; 
+import CustomInput from "../../components/CustomInput"; 
+import CustomButton from "../../components/CustomButton"; 
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
 import { PasswordAction} from '../../actions/loginActions';
@@ -15,15 +11,13 @@ import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";   
 import EncryptedStorage from 'react-native-encrypted-storage';  
-import nacl from 'tweetnacl'
-import naclutil from 'tweetnacl-util' 
+import nacl from 'tweetnacl' 
 var Aes = NativeModules.Aes
 type AccountKeys = [Uint8Array, Uint8Array];
 
 const LoginPasswordScreen = ({ navigation, route}) => {
 
-  const dispatch = useDispatch(); 
-  //const lPassword = useSelector((state: IAppState) => state.loginState.password);  
+  const dispatch = useDispatch();   
   const {accounts, validator_accounts, bank_url, nickname, paramSeed} = route.params; 
   const [seed, setSeed] = useState(paramSeed == null ? "" : paramSeed);
   const [password, setPassword] = useState(""); 
@@ -140,9 +134,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       generateKey(password, 'SALT', 1000, 256).then((key: any) => {  
         dispatch(PasswordAction(password));  
         setSeedESP(password);  
-        setLoading(false);
-        //const genKeyPair = nacl.box.keyPair()  
-        //const genKeyPair = generateFromKey(key);
+        setLoading(false); 
         const genKeyPair = randomKey()
         const exportPubKey = (uint8arrayToHex(genKeyPair[0]));
         const exportPriKey = (uint8arrayToHex(genKeyPair[1]));   
@@ -197,18 +189,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
             ]}
           >
             Please enter your password to login
-          </Text>
-
-          {/* <CustomInput
-            name="nickname"
-            value={lnickName}
-            staticLabel={false}
-            labelText="nickName" 
-            onChangeText={(value: string) => {
-              setlNickName(value);
-            }}
-            autoCapitalize="none"
-          /> */}
+          </Text> 
 
           <CustomInput
             name="password"
@@ -247,7 +228,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+          
         }}
         
       >

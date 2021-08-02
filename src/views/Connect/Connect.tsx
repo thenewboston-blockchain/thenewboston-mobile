@@ -4,21 +4,15 @@ import { ScrollView, Text, View, Modal, NativeModules, Dimensions, LogBox} from 
 import {Account, Bank} from 'thenewboston' 
 import CustomButton from "../../components/CustomButton";
 // components
-import CustomInput from "../../components/CustomInput";
-import CustomSelect from "../../components/CustomSelect";
-import LinearGradient from 'react-native-linear-gradient';
-import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
+import CustomInput from "../../components/CustomInput"; 
+import LinearGradient from 'react-native-linear-gradient'; 
 import Style from "./Style";
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../../actions/loginActions'
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";
-import CryptoJS from "crypto-js"
-import EncryptedStorage from 'react-native-encrypted-storage';
-import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions' 
-import { sign } from "tweetnacl";
-import nacl from 'tweetnacl' 
+import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
+import EncryptedStorage from 'react-native-encrypted-storage'; 
  
 import RNSingleSelect, {
   ISingleSelectDataType,
@@ -29,8 +23,7 @@ interface connects {
   route: any;
 } 
  
-var Aes = NativeModules.Aes
-
+var Aes = NativeModules.Aes 
 const { Ed25519JavaBridge } = NativeModules;
 
 const connectScreen = ({navigation: {navigate}}: connects) => { 
@@ -60,11 +53,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false); 
   const protocols = [{ label: "PROTPCOL", value: "Protocol" }];
-  const [seed, setSeed] = useState("");   
-    
-
-  const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length) 
- 
+  const [seed, setSeed] = useState("");    
 
   useEffect(() => {   
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -149,18 +138,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
             ]}
           >
             Please enter the address of a bank
-          </Text>
-
-          {/* <CustomSelect
-            options={protocols}
-            selected={lProtocol}
-            required={true}
-            updateSelected={(selected: any) => {
-              setlProtocol(selected) 
-            }}
-            customStyle={[Custom.mb20]}
-            placeholder={{ label: "HTTP", value: "http" }}
-          /> */}
+          </Text> 
           <RNSingleSelect
             data={dynamicData}
             arrowImageStyle={{width: 15, height: 10}}
@@ -227,7 +205,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+          
         }}
         
       >
@@ -247,8 +225,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
                     setDlgVisible(false);
                 }} />
         </LinearGradient> 
-        
-        
+         
       </Modal>
     </View>
   );

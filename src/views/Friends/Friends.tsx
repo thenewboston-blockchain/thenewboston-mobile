@@ -2,29 +2,21 @@ import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
 
 import { ScrollView, Text, TouchableOpacity, View, Modal, ActivityIndicator} from "react-native";
-import Style from "./Style";
-
-
-// components
+import Style from "./Style"; 
 import Accounts from "../../components/Accounts/Accounts";
 import CustomButton from "../../components/CustomButton";
-import FriendNumber from "../../components/FriendNumber/FriendNumber";
-import SignKey from "../../components/SignKey/SignKey";
-
+import FriendNumber from "../../components/FriendNumber/FriendNumber";  
 import CreateFriendWidget from "../../components/CreateFriendWidget/CreateFriendWidget";
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
-import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
-import BottomDrawer from "react-native-bottom-drawer-view";
+import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview"; 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
-// svg
-import Refresh from "../../assets/svg/Refresh.svg";
 import LinearGradient from 'react-native-linear-gradient';
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
 import { FriendAction } from '../../actions/friendActions'
-
-const TAB_BAR_HEIGHT = 20;
-const DOWN_DISPLAY = 50;
+// svg
+import Refresh from "../../assets/svg/Refresh.svg";
+ 
 
 const FriendsScreen = ({ route, navigation }) => {
  
@@ -183,7 +175,7 @@ const FriendsScreen = ({ route, navigation }) => {
         transparent={true}
         visible={doneVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >
@@ -212,7 +204,7 @@ const FriendsScreen = ({ route, navigation }) => {
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >

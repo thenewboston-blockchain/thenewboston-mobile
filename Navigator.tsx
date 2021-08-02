@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, PermissionsAndroid} from "react-native";
 
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 
@@ -15,7 +15,7 @@ import SettingsScreen from "./src/views/Settings/Settings";
 import SendCoins1Screen from "./src/views/SendCoins1/SendCoins1";
 import SendCoins2Screen from "./src/views/SendCoins2/SendCoins2";
 import EditAccountScreen from "./src/views/Settings/EditAccount/EditAccount"; 
-
+import * as ImagePicker from 'react-native-image-picker';
 import TNBLogo from "./src/assets/svg/TNBLogo.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import TransactionsScreen from "./src/views/Transactions/Transactions";
@@ -256,13 +256,41 @@ const qrCodeHeaderOptions = (title, navigation) => {
     }, 
     headerTitle: title,
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate("qrCodeScreen")}>
+        <TouchableOpacity onPress={openCameraWithPermission}>
           <ScanCode />
         </TouchableOpacity>
       ), 
     headerLeft: () => <TNBLogo />, 
   }; 
 };
+
+const openCameraWithPermission = async() =>{
+  const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      {
+        title: 'App Camera Permission',
+        message: 'App needs access to your camera ',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      ImagePicker.launchCamera(
+        {
+          mediaType: 'mixed',
+          includeBase64: false,
+          maxHeight: 200,
+          maxWidth: 200,
+        },
+        (response) => {
+          console.log(response); 
+        },
+      );
+    } else {
+      console.log('Camera permission denied');
+    } 
+}
 
 const headerOptions = {
   headerStyle: {

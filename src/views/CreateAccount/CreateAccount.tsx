@@ -1,18 +1,12 @@
 import { Colors, Custom, Typography} from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View, Modal, NativeModules} from "react-native";
-
-// components
-import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
-
-import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
-import BottomDrawer from "react-native-bottom-drawer-view";
+import { ScrollView, Text, View, Modal, NativeModules} from "react-native"; 
+import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget"; 
+import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";  
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
-import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions'
-import { SigningKeyAction, AccountNumberAction } from '../../actions/loginActions';
+import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions' 
 import Style from "./Style";
 import LinearGradient from 'react-native-linear-gradient'; 
 import EncryptedStorage from 'react-native-encrypted-storage';   
@@ -47,11 +41,8 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
   const [seed, setSeed] = useState("");  
   const [privateKey, setPrivateKey] = useState(null);  
   const [publicKey, setPublicKey] = useState(null);  
-
-  var Aes = NativeModules.Aes;
-  type AccountKeys = [Uint8Array, Uint8Array];
-  
-  const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length) 
+ 
+  type AccountKeys = [Uint8Array, Uint8Array]; 
 
   useEffect(() => {  
     getSeedESP();
@@ -91,18 +82,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
     //message to be sent to Viktoria
     const message_in_transit = {cipher_text, one_time_code}; 
     return message_in_transit;
-  };
-
-  function naclDecrypting(message){
-    //Get the decoded message 
-    let decoded_message = nacl.box.open(message.cipher_text, message.one_time_code, hexToUint8Array(publicKey), hexToUint8Array(privateKey));
-
-    //Get the human readable message
-    let plain_text = naclutil.encodeUTF8(decoded_message)
-
-    //return the plaintext
-    return plain_text;
-  };
+  }; 
 
   async function getSeedESP() {
     try {   
@@ -191,7 +171,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >

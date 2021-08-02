@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View, Modal } from "react-native";
 import {Account, Bank, AccountPaymentHandler} from 'thenewboston/dist/index.js';
 import CustomButton from "../../components/CustomButton"; 
-import CustomInput from "../../components/CustomInput";
-import CustomSelect from "../../components/CustomSelect";
+import CustomInput from "../../components/CustomInput"; 
 import { BlurView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
@@ -52,11 +51,7 @@ const SendCoins1Screen = (props) => {
       const paymentHandler = new AccountPaymentHandler(paymentHandlerOptions); 
       await paymentHandler.init(); 
       const recipientAccount = new Account(to.value);   
-      try { 
-        // let transactions = [
-        //   {amount: amount, memo, recipient: recipientAccount.accountNumberHex},
-        // ]
-        // paymentHandler.sendBulkTransactions(transactions);
+      try {  
         await paymentHandler.sendCoins(recipientAccount, amount, memo).then((result)=>{
           console.log('result = ', result)
           setLoading(false);
@@ -140,8 +135,7 @@ const SendCoins1Screen = (props) => {
         animationType="fade"
         transparent={true}
         visible={dlgVisible}  
-        onRequestClose={() => {
-          // this.closeButtonFunction()
+        onRequestClose={() => { 
         }}
         
       >

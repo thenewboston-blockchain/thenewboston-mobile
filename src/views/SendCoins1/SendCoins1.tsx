@@ -1,13 +1,10 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View, Dimensions } from "react-native";
-
-import CustomButton from "../../components/CustomButton";
-// components
+import { ScrollView, Text, View, Dimensions } from "react-native"; 
+import CustomButton from "../../components/CustomButton"; 
 import CustomInput from "../../components/CustomInput";
 import CustomSelect from "../../components/CustomSelect";
-import Style from "./Style";
-//redux
+import Style from "./Style"; 
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux'; 
 import RNSingleSelect, {
@@ -100,15 +97,7 @@ const SendCoins1Screen = (props) => {
   return (
     <View style={Style.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={Style.formView}>
-          {/* <CustomSelect
-            options={froms}
-            selected={from}
-            required={true}
-            updateSelected={(selected: any) => setFrom(selected)}
-            customStyle={[Custom.mb20]}
-            placeholder={{ label: "Select" }}
-          /> */}
+        <View style={Style.formView}> 
           <RNSingleSelect
             data={fromData}
             arrowImageStyle={{width: 15, height: 10}}
@@ -125,15 +114,7 @@ const SendCoins1Screen = (props) => {
               setFrom(selectedItem.value)
             }
             >
-            </RNSingleSelect>
-          {/* <CustomSelect
-            options={tos}
-            selected={to}
-            required={true}
-            updateSelected={(selected: any) => setTo(selected)}
-            customStyle={[Custom.mb20]}
-            placeholder={{ label: "To" }}
-          /> */}
+            </RNSingleSelect> 
           <RNSingleSelect
             data={toData}
             arrowImageStyle={{width: 15, height: 10}}

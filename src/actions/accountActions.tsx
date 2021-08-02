@@ -17,9 +17,7 @@ export interface IISCAPSULEAction {
     is_capsule: boolean;
 }
  
-export type AccountActions = IAccountAction | IISCAPSULEAction;
-
-/*<Promise<Return Type>, State Interface, Type of Param, Type of Action> */
+export type AccountActions = IAccountAction | IISCAPSULEAction; 
  
 export const AccountAction: ActionCreator<ThunkAction<any, IAccountState, null, IAccountAction>> = (account: []) => 
     (dispatch: Dispatch) => dispatch({type: AccountActionTypes.ACCOUNT, account: account}) 

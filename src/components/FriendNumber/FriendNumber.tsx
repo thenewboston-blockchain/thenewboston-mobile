@@ -6,12 +6,10 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Platform,
-} from "react-native";
-import { Avatar } from "react-native-elements";
+} from "react-native"; 
 import { Custom } from "../../styles";
 import Style from "./Style";
-import Clipboard from '@react-native-community/clipboard'
-
+import Clipboard from '@react-native-community/clipboard' 
 // svg 
 import Copy from "../../assets/svg/Copy.svg";
 

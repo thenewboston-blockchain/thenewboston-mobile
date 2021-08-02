@@ -1,10 +1,8 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Modal} from "react-native";
-import QRCodeScanner from 'react-native-qrcode-scanner';
+import { View, Text, Image, TouchableOpacity, Modal} from "react-native"; 
 import { RNCamera } from 'react-native-camera';
-import Style from "./Style"; 
-import { useSelector, useDispatch} from 'react-redux';
+import Style from "./Style";  
 import {Account, Bank} from 'thenewboston' 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../../actions/loginActions'
@@ -80,24 +78,7 @@ const QRCodeScreen = ({ navigation }) => {
             alert(e);  
           }}
         >
-        </RNCamera>
-        {/* <QRCodeScanner 
-          onRead={onSuccess}  
-          topContent={
-            <Text style={Style.centerText}>
-              Go to{' '}
-              <Text style={Style.textBold}>wikipedia.org/wiki/QR_code</Text> on
-              your computer and scan the QR code.
-            </Text>
-          }
-          bottomContent={
-            <TouchableOpacity style={Style.buttonTouchable}>
-               <View style={Style.cameraRatioBackground}>
-
-               </View> 
-            </TouchableOpacity>
-          }
-      /> */}
+        </RNCamera> 
        <Modal
         animationType="slide"
         transparent={true}

@@ -1,26 +1,12 @@
 import { Colors, Custom, Typography } from "styles";
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect, useState } from "react"; 
 import { ScrollView, Text, TouchableOpacity, View, BackHandler, Modal} from "react-native";
-import Style from "./Style";
-
-
-// components
-import Accounts from "../../components/Accounts/Accounts";
-import CustomButton from "../../components/CustomButton";
-import AccountNumber from "../../components/AccountNumber/AccountNumber";
-import SignKey from "../../components/SignKey/SignKey";
-
-import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
-import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
-import BottomDrawer from "react-native-bottom-drawer-view"; 
+import Style from "./Style";  
+import CustomButton from "../../components/CustomButton";   
 import YesNoModalViewScreen from "../../components/InfoModalWidgets/YesNoModalview"; 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
-import SettingPanel from "../../components/SettingPanel/SettingPanel";
-
-const TAB_BAR_HEIGHT = 20;
-const DOWN_DISPLAY = 50;
+import SettingPanel from "../../components/SettingPanel/SettingPanel"; 
  
 
 const SettingsScreen = ({ route, navigation }) => {
@@ -68,7 +54,7 @@ const SettingsScreen = ({ route, navigation }) => {
                 transparent={true}
                 visible={dlgVisible}  
                 onRequestClose={() => {
-                // this.closeButtonFunction()
+        
                 }}
                 
             >

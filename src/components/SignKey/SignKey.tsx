@@ -6,18 +6,14 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Platform, 
-} from "react-native";
-import { Avatar } from "react-native-elements";
+} from "react-native"; 
 import { Custom } from "../../styles";
 import Style from "./Style";
 import Clipboard from '@react-native-community/clipboard';
-import RNFS from 'react-native-fs';
-
+import RNFS from 'react-native-fs'; 
 // svg
 import Visible from "../../assets/svg/Visible.svg";
-import HideVisible from "../../assets/svg/Hide.svg";
-
-
+import HideVisible from "../../assets/svg/Hide.svg"; 
 import Copy from "../../assets/svg/Copy.svg";
 import Download from "../../assets/svg/Download.svg";
 

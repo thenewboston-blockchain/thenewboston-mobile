@@ -10,12 +10,8 @@ import {Account, Bank, Transaction} from 'thenewboston/dist/index.js';
 import Style from "./Style";
 import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
-import CustomButton from "../../components/CustomButton";
-import { AccountAction } from '../../actions/accountActions'
-// components
-import TransactionItem from "../../components/TransactionItem/TransactionItem";
-
-// svg
+import CustomButton from "../../components/CustomButton";  
+import TransactionItem from "../../components/TransactionItem/TransactionItem"; 
 
 const TransactionsScreen = ({route}) => {
   const {nickname, signingKeyHex, accountNumber, signingKey, bank_url, login} = route.params; 
@@ -78,54 +74,4 @@ const TransactionsScreen = ({route}) => {
 };
 
 export default TransactionsScreen;
-
-const testTransactions = [
-  {
-    sender: "John Doe",
-    amount: 0.5,
-    recipient: "Kevin459",
-    memo: "09012913798728648298391032",
-    date: "04.30.2021",
-    sent: true,
-  },
-  {
-    sender: "John Doe",
-    amount: 0.5,
-    recipient: "Kevin459",
-    memo: "09012913798728648298391032",
-    date: "04.30.2021",
-    sent: true,
-  },
-  {
-    sender: "John Doe",
-    amount: 0.5,
-    recipient: "Kevin459",
-    memo: "09012913798728648298391032",
-    date: "04.30.2021",
-    sent: false,
-  },
-  {
-    sender: "Steven789",
-    amount: 0.5,
-    recipient: "Kevin459",
-    memo: "09012913798728648298391032",
-    date: "05.30.2021",
-    sent: false,
-  },
-  {
-    sender: "John Doe",
-    amount: 0.5,
-    recipient: "Kevin459",
-    memo: "09012913798728648298391032",
-    date: "05.30.2021",
-    sent: true,
-  },
-  {
-    sender: "John Doe",
-    amount: 0.5,
-    recipient: "Kevin459",
-    memo: "09012913798728648298391032",
-    date: "05.30.2021",
-    sent: true,
-  },
-];
+ 

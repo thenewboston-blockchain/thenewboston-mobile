@@ -40,8 +40,7 @@ const CreateAccountWidget = (props: createAccount) => {
     const [dlgMessage, setDlgMessage] = useState("");
     const [dlgVisible, setDlgVisible] = useState(false);
     const [loading, setLoading] = useState<boolean>(false)  
-    const dispatch = useDispatch();   
-    //const {accounts, bank_url, validator_accounts} = props.route.params;  
+    const dispatch = useDispatch();    
 
     const handleCreateAccount=async()=>{   
         if(activity == NEW_ACCOUNT){   
@@ -80,11 +79,7 @@ const CreateAccountWidget = (props: createAccount) => {
             }  
         }
         
-    }
-
-    // const handleCancel=()=>{
-    //     props.navigation.goBack(null)
-    // }
+    } 
     
     return (
         <View style={Style.container}>

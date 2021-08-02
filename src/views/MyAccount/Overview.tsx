@@ -1,16 +1,11 @@
 import { Colors, Custom, Typography } from "styles";
-import React, { useEffect, useState,} from "react";
-
+import React, { useEffect, useState,} from "react"; 
 import { ScrollView, Text, TouchableOpacity, View, Modal, ActivityIndicator, NativeModules} from "react-native";
-import Style from "./Style";
-
-
-// components
+import Style from "./Style"; 
 import Accounts from "../../components/Accounts/Accounts";
 import CustomButton from "../../components/CustomButton";
 import AccountNumber from "../../components/AccountNumber/AccountNumber";
-import SignKey from "../../components/SignKey/SignKey";
-
+import SignKey from "../../components/SignKey/SignKey"; 
 import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
 import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
@@ -20,18 +15,12 @@ import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
 import { AccountAction } from '../../actions/accountActions'
 import DeleteAccount from './DeleteAccount/DeleteAccount'
-import LinearGradient from 'react-native-linear-gradient';
-// svg
-import Refresh from "../../assets/svg/Refresh.svg"; 
+import LinearGradient from 'react-native-linear-gradient'; 
 import EncryptedStorage from 'react-native-encrypted-storage';  
 import nacl from 'tweetnacl'
 import naclutil from 'tweetnacl-util' 
-
-
-const TAB_BAR_HEIGHT = 20;
-const DOWN_DISPLAY = 50; 
-
-var Aes = NativeModules.Aes
+// svg
+import Refresh from "../../assets/svg/Refresh.svg";  
 
 const OverviewScreen = ({ route, navigation }) => {
  
@@ -327,7 +316,7 @@ const OverviewScreen = ({ route, navigation }) => {
         transparent={true}
         visible={doneVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >
@@ -354,7 +343,7 @@ const OverviewScreen = ({ route, navigation }) => {
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >
@@ -380,7 +369,7 @@ const OverviewScreen = ({ route, navigation }) => {
           transparent={true}
           visible={removeVisible}  
           onRequestClose={() => {
-          // this.closeButtonFunction()
+          
           }}
           
       >
