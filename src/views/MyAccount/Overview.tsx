@@ -1,33 +1,40 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState,} from "react"; 
-import { ScrollView, Text, TouchableOpacity, View, Modal, ActivityIndicator, NativeModules} from "react-native";
-import Style from "./Style"; 
-import Accounts from "../../components/Accounts/Accounts";
-import CustomButton from "../../components/CustomButton";
-import AccountNumber from "../../components/AccountNumber/AccountNumber";
-import SignKey from "../../components/SignKey/SignKey"; 
-import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
-import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
-import BottomDrawer from "react-native-bottom-drawer-view";
-import { BlurView, VibrancyView } from "@react-native-community/blur";
-import { IAppState } from '../../store/store';
-import { useSelector, useDispatch} from 'react-redux';
-import { AccountAction } from '../../actions/accountActions'
-import DeleteAccount from './DeleteAccount/DeleteAccount'
-import LinearGradient from 'react-native-linear-gradient'; 
-import EncryptedStorage from 'react-native-encrypted-storage';  
 import nacl from 'tweetnacl'
 import naclutil from 'tweetnacl-util' 
-// svg
-import Refresh from "../../assets/svg/Refresh.svg";  
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { useSelector, useDispatch} from 'react-redux';
+import { IAppState } from 'store/store'; 
+import LinearGradient from 'react-native-linear-gradient'; 
+import EncryptedStorage from 'react-native-encrypted-storage';  
+import { 
+  ScrollView, 
+  Text, 
+  TouchableOpacity, 
+  View, 
+  Modal, 
+  ActivityIndicator, 
+  NativeModules
+} from "react-native";
+import Style from "./Style"; 
+
+import Accounts from "components/Accounts/Accounts";
+import CustomButton from "components/CustomButton";
+import AccountNumber from "components/AccountNumber/AccountNumber";
+import SignKey from "components/SignKey/SignKey"; 
+import CreateAccountWidget from "components/CreateAccountWIdget/CreateAccountWidget";
+import DoneModalViewWidget from "components/CustomWidgets/DoneModalview";
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";   
+import { AccountAction } from 'actions/accountActions'
+import DeleteAccount from './DeleteAccount/DeleteAccount' 
+import Refresh from "assets/svg/Refresh.svg";  
 
 const OverviewScreen = ({ route, navigation }) => {
  
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch(); 
   const lAccounts = useSelector((state: IAppState) => state.accountState.account); 
-  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login, genKey} = route.params;  
+  const {validator_accounts, bank_url, login} = route.params;  
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [modalVisible, setModalVisible] = useState(false);   
   const [viewRef, setViewRef] = useState(null);  
@@ -46,7 +53,7 @@ const OverviewScreen = ({ route, navigation }) => {
     
   type AccountKeys = [Uint8Array, Uint8Array];
   const handleSendCoins = () => { 
-    console.log("send coins");
+     
   };
 
   function naclEncrypting(plain_text){
@@ -57,10 +64,8 @@ const OverviewScreen = ({ route, navigation }) => {
         hexToUint8Array(publicKey),
         hexToUint8Array(privateKey)
         
-    ); 
-    //message to be sent to Viktoria
-    const message_in_transit = {cipher_text, one_time_code};
-
+    );  
+    const message_in_transit = {cipher_text, one_time_code}; 
     return message_in_transit;
   };
 
@@ -105,8 +110,7 @@ const OverviewScreen = ({ route, navigation }) => {
     signingKeyArray.set(accountNumberArray, 32);
     return [accountNumberArray, signingKeyArray];
   }
-   
-
+    
   function hexToUint8Array(arr: string): Uint8Array {
     return new Uint8Array(Buffer.from(arr, "hex"));
   } 
@@ -205,8 +209,7 @@ const OverviewScreen = ({ route, navigation }) => {
             <Refresh />
           </TouchableOpacity>
         </View>
-
-        {/* send coins  */}
+ 
         <CustomButton
           title="Send Coins" 
           onPress={()=>navigation.navigate('sendcoins1')}
@@ -252,7 +255,7 @@ const OverviewScreen = ({ route, navigation }) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
       >
         <BlurView
@@ -290,15 +293,18 @@ const OverviewScreen = ({ route, navigation }) => {
                 setDlgVisible(true);
               }
               else{   
-                const encryptedData = naclEncrypting(account.sign_key) 
-                account.sign_key = encryptedData.cipher_text;
-                account.one_time_code = encryptedData.one_time_code;
-                account.isEncrypt = true; 
-                myAccounts.push(account); 
-                dispatch(AccountAction(myAccounts));
-                setMyAccounts(myAccounts); 
-                setModalVisible(false);
-                setDoneVisible(true); 
+                if(publicKey != null && privateKey != null){
+                  const encryptedData = naclEncrypting(account.sign_key) 
+                  account.sign_key = encryptedData.cipher_text;
+                  account.one_time_code = encryptedData.one_time_code;
+                  account.isEncrypt = true; 
+                  myAccounts.push(account); 
+                  dispatch(AccountAction(myAccounts));
+                  setMyAccounts(myAccounts); 
+                  setModalVisible(false);
+                  setDoneVisible(true); 
+                }
+               
               }
               
             }} 

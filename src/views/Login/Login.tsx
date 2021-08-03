@@ -4,12 +4,12 @@ import { ScrollView, Text, View, Modal} from "react-native";
 import FingerprintScanner from "react-native-fingerprint-scanner"
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient'; 
-import CustomButton from "../../components/CustomButton";
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";  
+import { TouchableOpacity } from "react-native-gesture-handler";  
 import Style from "./Style";
-import { TouchableOpacity } from "react-native-gesture-handler";
-// svgs
-import FingerPrint from "../../assets/svg/FingerPrint.svg";
+
+import CustomButton from "components/CustomButton";
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";    
+import FingerPrint from "assets/svg/FingerPrint.svg";
 
 
 interface login {
@@ -21,8 +21,7 @@ const LoginScreen = ({ navigation, route }:login) => {
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
   const [fingerPrint, setFingerPrint] = useState(false)
-  const [fingerAuth, setFingerAuth] = useState(false)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [fingerAuth, setFingerAuth] = useState(false) 
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false); 
  
@@ -42,8 +41,7 @@ const LoginScreen = ({ navigation, route }:login) => {
       setFingerAuth(true) 
       onFingerprint();
     })
-    .catch((error) => { 
-      setErrorMessage(error.message)
+    .catch((error) => {  
       setFingerAuth(false) 
       onFingerprint();
       console.log(error.message)
@@ -51,8 +49,7 @@ const LoginScreen = ({ navigation, route }:login) => {
     FingerprintScanner
     .isSensorAvailable()
     .then(biometryType => setFingerPrint(true))
-    .catch(error=> {
-      setErrorMessage(error.message);
+    .catch(error=> { 
       setFingerAuth(false) 
       onFingerprint();
       console.log(error.message);

@@ -8,8 +8,7 @@ import {
   Platform,
   Share,  
 } from "react-native";
-import Clipboard from '@react-native-community/clipboard'
-import { Avatar } from "react-native-elements";
+import Clipboard from '@react-native-community/clipboard' 
 import { Custom } from "../../styles";
 import Style from "./Style"; 
 

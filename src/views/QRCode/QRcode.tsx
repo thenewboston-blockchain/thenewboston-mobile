@@ -1,13 +1,15 @@
-import { Colors, Custom, Typography } from "styles";
+import { Colors } from "styles";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Modal} from "react-native"; 
+import { View, Modal} from "react-native"; 
 import { RNCamera } from 'react-native-camera';
 import Style from "./Style";  
 import {Account, Bank} from 'thenewboston' 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
-import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../../actions/loginActions'
 import LinearGradient from 'react-native-linear-gradient';
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";
+import { useDispatch} from 'react-redux';
+
+import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from 'actions/loginActions' 
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";
  
 const QRCodeScreen = ({ navigation }) => {  
   const [camera, setCamera] = useState(null);   
@@ -64,8 +66,7 @@ const QRCodeScreen = ({ navigation }) => {
             height: '100%'
           }}  
           type={RNCamera.Constants.Type.back}
-          barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-          //googleVisionBarcodeType = {GoogleVisionBarcodeType.QR_CODE}
+          barCodeTypes={[RNCamera.Constants.BarCodeType.qr]} 
           flashMode={RNCamera.Constants.FlashMode.on}
           androidCameraPermissionOptions={{
             title: 'Permission to use camera',
@@ -104,8 +105,7 @@ const QRCodeScreen = ({ navigation }) => {
                     setDlgVisible(false);
                 }} />
         </LinearGradient> 
-        
-        
+         
       </Modal>
     </View>
     );

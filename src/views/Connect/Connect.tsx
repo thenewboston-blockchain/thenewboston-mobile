@@ -1,23 +1,30 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View, Modal, NativeModules, Dimensions, LogBox} from "react-native";
-import {Account, Bank} from 'thenewboston' 
-import CustomButton from "../../components/CustomButton";
-// components
-import CustomInput from "../../components/CustomInput"; 
-import LinearGradient from 'react-native-linear-gradient'; 
 import Style from "./Style";
-import { IAppState } from '../../store/store';
+import { ScrollView, Text, View, Modal, NativeModules, Dimensions, LogBox} from "react-native";
 import { useSelector, useDispatch} from 'react-redux';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
-import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../../actions/loginActions'
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
+import {Account, Bank} from 'thenewboston' 
 import EncryptedStorage from 'react-native-encrypted-storage'; 
- 
 import RNSingleSelect, {
   ISingleSelectDataType,
 } from "@freakycoder/react-native-single-select"; 
+import LinearGradient from 'react-native-linear-gradient'; 
 
+//Component
+import CustomButton from "components/CustomButton";
+import CustomInput from "components/CustomInput";  
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview"; 
+import { IAppState } from 'store/store'; 
+
+import { 
+  ProtocolAction, 
+  IpAddressAction, 
+  PortAction, 
+  NickNameAction } 
+from 'actions/loginActions'
+
+ 
 interface connects { 
   navigation: any; // TODO use navigation props type
   route: any;
@@ -33,27 +40,22 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const port = useSelector((state: IAppState) => state.loginState.port);
   const nickname = useSelector((state: IAppState) => state.loginState.nickName); 
   const protocol = useSelector((state: IAppState) => state.loginState.protocol);
-  const ipAddress = useSelector((state: IAppState) => state.loginState.ipAddress); 
- 
+  const ipAddress = useSelector((state: IAppState) => state.loginState.ipAddress);  
   const [lPort, setlPort] = useState<string>(port)
   const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)
   const protocolData: Array<ISingleSelectDataType> = [
     { id: 0, value: "HTTP" },
     { id: 1, value: "PROTOCOL" }, 
   ];
-  const [dynamicData, setDynamicData] = React.useState<
-    Array<ISingleSelectDataType>
-  >([]);
+  const [dynamicData, setDynamicData] = React.useState<Array<ISingleSelectDataType>>([]);
   const [lNickName, setlNickName] = useState<string>(nickname)
-  const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == null ? "54.183.16.194" : ipAddress)
-  const validator_IpAddress = "54.219.183.128"
-
+  const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == "" ? "54.183.16.194" : ipAddress)
+  const validator_IpAddress = "54.219.183.128" 
   const [dlgVisible, setDlgVisible] = useState(false)
   const [dlgMessage, setDlgMessage] = useState("") 
   const [loading, setLoading] = useState(false);
-  const [isValid, setValid] = useState(false); 
-  const protocols = [{ label: "PROTPCOL", value: "Protocol" }];
-  const [seed, setSeed] = useState("");    
+  const [isValid, setValid] = useState(false);    
+  const ACCOUNT_MAX = 100; 
 
   useEffect(() => {   
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -97,8 +99,8 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
       const Aaccount = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
       var validator_accounts = [];
       let account_size = Aaccount.count; 
-      for(let i = 0; i < account_size; i+=100){
-        const part_accounts = await validator_bank.getAccounts({ limit: 100, offset: i });  
+      for(let i = 0; i < account_size; i += ACCOUNT_MAX){
+        const part_accounts = await validator_bank.getAccounts({ limit: ACCOUNT_MAX, offset: i });  
         validator_accounts = [...validator_accounts, ...part_accounts.results]; 
       }  
 

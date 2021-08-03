@@ -8,13 +8,14 @@ import {
 } from "react-native";
 import {Account, Bank, Transaction} from 'thenewboston/dist/index.js';
 import Style from "./Style";
-import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
-import CustomButton from "../../components/CustomButton";  
-import TransactionItem from "../../components/TransactionItem/TransactionItem"; 
+
+import { IAppState } from 'store/store'; 
+import CustomButton from "components/CustomButton";  
+import TransactionItem from "components/TransactionItem/TransactionItem"; 
 
 const TransactionsScreen = ({route}) => {
-  const {nickname, signingKeyHex, accountNumber, signingKey, bank_url, login} = route.params; 
+  const {nickname, bank_url, login} = route.params; 
   const [transactions, setTransactions] = useState(null);    
   const lAccounts = useSelector((state: IAppState) => state.accountState.account);
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 

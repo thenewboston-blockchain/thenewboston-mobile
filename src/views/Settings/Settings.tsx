@@ -1,12 +1,13 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react"; 
-import { ScrollView, Text, TouchableOpacity, View, BackHandler, Modal} from "react-native";
+import { ScrollView, Text, View, BackHandler, Modal} from "react-native";
 import Style from "./Style";  
-import CustomButton from "../../components/CustomButton";   
-import YesNoModalViewScreen from "../../components/InfoModalWidgets/YesNoModalview"; 
-import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
-import SettingPanel from "../../components/SettingPanel/SettingPanel"; 
+import { BlurView, VibrancyView } from "@react-native-community/blur"; 
+
+import CustomButton from "components/CustomButton";   
+import YesNoModalViewScreen from "components/InfoModalWidgets/YesNoModalview";  
+import SettingPanel from "components/SettingPanel/SettingPanel"; 
  
 
 const SettingsScreen = ({ route, navigation }) => {
@@ -55,8 +56,7 @@ const SettingsScreen = ({ route, navigation }) => {
                 visible={dlgVisible}  
                 onRequestClose={() => {
         
-                }}
-                
+                }}  
             >
                 <BlurView
                 style={Style.absolute}

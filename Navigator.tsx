@@ -1,36 +1,34 @@
 import * as React from "react";
 import { View, Text, Image, PermissionsAndroid} from "react-native";
-
-import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
-
-import ConnectScreen from "./src/views/Connect/Connect";
-import CreateAccountScreen from "./src/views/CreateAccount/CreateAccount";
-import FriendsScreen from "./src/views/Friends/Friends";
 import LinearGradient from "react-native-linear-gradient";
-import LoginPasswordScreen from "./src/views/LoginPassword/LoginPassword";
-import LoginScreen from "./src/views/Login/Login";
-import OverviewScreen from "./src/views/MyAccount/Overview";
-import ScanCode from "./src/assets/svg/ScanCode.svg";
-import SettingsScreen from "./src/views/Settings/Settings";
-import SendCoins1Screen from "./src/views/SendCoins1/SendCoins1";
-import SendCoins2Screen from "./src/views/SendCoins2/SendCoins2";
-import EditAccountScreen from "./src/views/Settings/EditAccount/EditAccount"; 
-import * as ImagePicker from 'react-native-image-picker';
-import TNBLogo from "./src/assets/svg/TNBLogo.svg";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import TransactionsScreen from "./src/views/Transactions/Transactions";
+import * as ImagePicker from 'react-native-image-picker';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Colors, Custom, Typography } from "styles";
-import QRCodeScreen from "./src/views/QRCode/QRcode";;
 
+import ConnectScreen from "views/Connect/Connect";
+import CreateAccountScreen from "views/CreateAccount/CreateAccount";
+import FriendsScreen from "views/Friends/Friends"; 
+import LoginPasswordScreen from "views/LoginPassword/LoginPassword";
+import LoginScreen from "views/Login/Login";
+import OverviewScreen from "views/MyAccount/Overview"; 
+import SettingsScreen from "views/Settings/Settings";
+import SendCoins1Screen from "views/SendCoins1/SendCoins1";
+import SendCoins2Screen from "views/SendCoins2/SendCoins2";
+import EditAccountScreen from "views/Settings/EditAccount/EditAccount";  
+import TransactionsScreen from "views/Transactions/Transactions";
+import QRCodeScreen from "views/QRCode/QRcode"; 
 
 // svg
-import Home from "./src/assets/svg/Home.svg";
-import Transactions from "./src/assets/svg/Transactions.svg";
-import Friends from "./src/assets/svg/Friends.svg";
-import Settings from "./src/assets/svg/Settings.svg";
-import ArrowBack from "./src/assets/svg/ArrowBack.svg";
+import Home from "assets/svg/Home.svg";
+import Transactions from "assets/svg/Transactions.svg";
+import Friends from "assets/svg/Friends.svg";
+import Settings from "assets/svg/Settings.svg";
+import ArrowBack from "assets/svg/ArrowBack.svg";
+import ScanCode from "assets/svg/ScanCode.svg";
+import TNBLogo from "assets/svg/TNBLogo.svg";
 
 
 const Navigator = ({route}) => {

@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import Style from "./Style";
 import { View, Text, ScrollView, Modal, NativeModules} from "react-native";
+import { useSelector, useDispatch} from 'react-redux'; 
 import { Custom, Typography, Colors } from "styles"; 
-import CustomInput from "../../components/CustomInput"; 
-import CustomButton from "../../components/CustomButton"; 
-import { IAppState } from '../../store/store';
-import { useSelector, useDispatch} from 'react-redux';
-import { PasswordAction} from '../../actions/loginActions';
+import EncryptedStorage from 'react-native-encrypted-storage';  
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";   
-import EncryptedStorage from 'react-native-encrypted-storage';  
 import nacl from 'tweetnacl' 
-var Aes = NativeModules.Aes
-type AccountKeys = [Uint8Array, Uint8Array];
 
+import { IAppState } from 'store/store'; 
+import { PasswordAction} from 'actions/loginActions'; 
+import CustomInput from "components/CustomInput"; 
+import CustomButton from "components/CustomButton";  
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";    
+
+var Aes = NativeModules.Aes
+type AccountKeys = [Uint8Array, Uint8Array]; 
 const LoginPasswordScreen = ({ navigation, route}) => {
 
   const dispatch = useDispatch();   
@@ -29,8 +30,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   const [dlgVisible, setDlgVisible] = useState(false); 
   const lSigningKey = useSelector((state: IAppState) => state.loginState.signing_key);
   const lAccountNumber = useSelector((state: IAppState) => state.loginState.account_number); 
-  const [mySigningKey, setMySigningKey] = useState(lSigningKey == null ? "" : lSigningKey); 
-  const [myAccountNumber, setMyAccountNumber] = useState(lAccountNumber == null ? "" : lAccountNumber); 
+  const [mySigningKey, setMySigningKey] = useState(lSigningKey == null ? "" : lSigningKey);  
   const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
   const [privateKey, setPrivateKey] = useState(null);  
   const [publicKey, setPublicKey] = useState(null);  
@@ -45,10 +45,10 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       await EncryptedStorage.setItem(
           "seed",
           seed
-      ); 
+      );  
     } catch (error) {
        console.log(error);
-    }
+    } 
   }
 
   function generateFromKey(signingKey: string): AccountKeys {  
@@ -58,9 +58,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
 
   function randomKey(): AccountKeys {
     const keyPair = nacl.box.keyPair();
-    const { publicKey, secretKey: signingKey } = keyPair;
-    const publicKeyHex = uint8arrayToHex(publicKey);
-    const signingKeyHex = uint8arrayToHex(signingKey); 
+    const { publicKey, secretKey: signingKey } = keyPair; 
     return [publicKey, signingKey];
   }
 
@@ -114,11 +112,14 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   }
 
   const login = async ()  => {    
+    if(seed == null){
+      setSeed(route.params.paramSeed)
+    } 
     if(password == ""){
       setDlgMessage("Input your Password")
       setDlgVisible(true);
     } 
-    else if ((seed == "" || seed == null) && (mySigningKey == "" && (global.mySigningKey == false || global.mySigningKey == undefined))){
+    else if ((seed == "" || seed == null) && (mySigningKey == "" && (global.hasPassword == false || global.hasPassword == undefined))){
       dispatch(PasswordAction(password)); 
       setSeedESP(password);
       navigation.navigate('createAccount', { 
@@ -129,7 +130,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
         pScreen:'password'
       }); 
     }
-    else if(seed == password || (seed == null && mySigningKey != "")){ 
+    else if(seed == password || (seed == null && (mySigningKey != ""))){ 
       setLoading(true); 
       generateKey(password, 'SALT', 1000, 256).then((key: any) => {  
         dispatch(PasswordAction(password));  
@@ -157,7 +158,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       });
       
     }
-    else{  
+    else{   
       setDlgMessage("Your password is not correct.")
       setDlgVisible(true);
     }

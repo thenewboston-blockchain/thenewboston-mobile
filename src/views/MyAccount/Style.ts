@@ -3,8 +3,7 @@ import { Colors, Typography } from "styles";
 import { StyleSheet } from "react-native";
 
 const Styles = StyleSheet.create({
-  container: {
-    // paddingVertical: "10%",
+  container: { 
     flex:1,
   },
   balanceContainer: {

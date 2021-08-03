@@ -48,7 +48,7 @@ const CreateAccountWidget = (props: createAccount) => {
             const signingKey = account.signingKeyHex
             const accountNumber = account.accountNumberHex;
             const newAccount = {name: data.nickname, sign_key: signingKey, account_number: accountNumber, balance: 0}    
-            global.mySigningKey = true;
+            global.hasPassword = true;
             dispatch(SigningKeyAction(account.signingKeyHex)); 
             dispatch(AccountNumberAction(account.accountNumberHex));  
             props.addAccount(newAccount, true);   

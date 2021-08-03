@@ -1,43 +1,33 @@
 import { Colors, Custom, Typography} from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View, Modal, NativeModules} from "react-native"; 
-import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget"; 
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";  
-import { BlurView, VibrancyView } from "@react-native-community/blur";
-import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
-import { AccountAction, ISCAPSULEAction } from '../../actions/accountActions' 
-import Style from "./Style";
+import { BlurView, VibrancyView } from "@react-native-community/blur"; 
+import { ScrollView, Text, View, Modal, NativeModules} from "react-native"; 
 import LinearGradient from 'react-native-linear-gradient'; 
 import EncryptedStorage from 'react-native-encrypted-storage';   
 import nacl from 'tweetnacl'
 import naclutil from 'tweetnacl-util' 
 
+import Style from "./Style";
+import CreateAccountWidget from "components/CreateAccountWIdget/CreateAccountWidget"; 
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";   
+import { AccountAction } from 'actions/accountActions' 
+import { IAppState } from 'store/store'; 
+
+ 
 interface createAccount {
   navigation: any; // TODO use navigation props type
   route: any;
 } 
 
 const CreateAccountScreen = ({ navigation, route}: createAccount) => { 
-  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login, pScreen} = route.params;  
+  const {accounts, validator_accounts, bank_url, login, pScreen} = route.params;  
   const dispatch = useDispatch();     
-  const lAccounts = useSelector((state: IAppState) => state.accountState.account);
-  const lIsCapsule = useSelector((state: IAppState) => state.accountState.is_capsule);  
-  const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
-  const [isCapsule, setCapsule] = useState(lIsCapsule == null ? [] : lIsCapsule); 
-  const [modalVisible, setModalVisible] = useState(false);   
- 
-  const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : 'No Accounts'); //myAccounts[0].name
-  const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : ''); //myAccounts[0].account_number
-  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : '');  //myAccounts[0].sign_key
-  const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : '0.00');  //myAccounts[0].balance
-  const [doneVisible, setDoneVisible] = useState(login != 'login'); 
-  const [addMode, setAddMode] = useState(true); 
+  const lAccounts = useSelector((state: IAppState) => state.accountState.account); 
+  const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts);   
   const [prevScreen, setPrevScreen] = useState(pScreen); 
   const [dlgMessage, setDlgMessage] = useState("");
-  const [dlgVisible, setDlgVisible] = useState(false); 
-  const [removeVisible, setRemoveVisible] = useState(false);
-  const [spinVisible, setSpinVisible] = useState(false); 
+  const [dlgVisible, setDlgVisible] = useState(false);  
   const [seed, setSeed] = useState("");  
   const [privateKey, setPrivateKey] = useState(null);  
   const [publicKey, setPublicKey] = useState(null);  
@@ -47,25 +37,8 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
   useEffect(() => {  
     getSeedESP();
 
-  }, []);    
-
-  function generateFromKey(signingKey: string): AccountKeys {
-    const { publicKey: accountNumber, secretKey: signingKey_ } = nacl.sign.keyPair.fromSeed(hexToUint8Array(signingKey)); 
-    return [accountNumber, signingKey_];
-  }
-  
-  function fromBothKeys(signingKey: string, accountNumber: string): AccountKeys {
-    const accountNumberArray = hexToUint8Array(accountNumber);
-    const signingKeyArray = new Uint8Array(64);
-    signingKeyArray.set(hexToUint8Array(signingKey));
-    signingKeyArray.set(accountNumberArray, 32);
-    return [accountNumberArray, signingKeyArray];
-  }
-  
-  function uint8arrayToHex(array: Uint8Array): string {
-    return Buffer.from(array).toString("hex");
-  }
-
+  }, []);      
+   
   function hexToUint8Array(arr: string): Uint8Array {
     return new Uint8Array(Buffer.from(arr, "hex"));
   } 
@@ -79,7 +52,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
         hexToUint8Array(privateKey)
         
     ); 
-    //message to be sent to Viktoria
+     
     const message_in_transit = {cipher_text, one_time_code}; 
     return message_in_transit;
   }; 
@@ -106,11 +79,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
         <CreateAccountWidget title={"Create or Add Account"}
             navigation={navigation}
             route = {route} 
-            addAccount={(account, addMode) => {  
-              setActName(account.name);
-              setActNumber(account.account_number);
-              setActBalance(account.balance); 
-              setAddMode(addMode); 
+            addAccount={(account, addMode) => {   
               var bExist = false;  
               var bExistName = false; 
               myAccounts.map((item)=>{
@@ -130,20 +99,20 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
                 setDlgVisible(true);
               }
               else{   
-                console.log(seed)
+                 
                 if(publicKey == null || privateKey == null){
                   account.isEncrypt = false;
                 }
-                else{ 
-                  const encryptedData = naclEncrypting(account.sign_key) 
-                  console.log(encryptedData)
+                else{  
+                  const encryptedData = naclEncrypting(account.sign_key)  
                   account.sign_key = encryptedData.cipher_text;
                   account.one_time_code = encryptedData.one_time_code;
                   account.isEncrypt = true;
+                 
                 }
                  
                 myAccounts.push(account);     
-                dispatch(AccountAction(myAccounts)); 
+                dispatch(AccountAction(myAccounts));  
                 navigation.navigate("loginPassword", { 
                   accounts: accounts,
                   validator_accounts: validator_accounts,
@@ -159,10 +128,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
             handleCancel={() => { 
               if(prevScreen == 'login' || prevScreen == 'password'){ 
                 navigation.goBack(null);  
-              }
-              else{
-                setModalVisible(false); 
-              }
+              } 
             }}
             />
       </ScrollView>

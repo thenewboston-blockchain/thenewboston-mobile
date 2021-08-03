@@ -1,16 +1,17 @@
 import { Colors, Typography } from 'styles';
 import { Text, View, Modal} from 'react-native'; 
-import CustomButton from '../../../components/CustomButton';
-import CustomInput from '../../../components/CustomInput' 
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+import LinearGradient from 'react-native-linear-gradient';
 import React from 'react';
 import Style from './Style'
 import { useState } from 'react';  
-import InfoModalWidget from "../../../components/InfoModalWidgets/InfoModalview"; 
-import { BlurView, VibrancyView } from "@react-native-community/blur";
-import LinearGradient from 'react-native-linear-gradient';
-import { IAppState } from '../../../store/store';
 import { useSelector, useDispatch} from 'react-redux'; 
-import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../../../actions/loginActions'
+
+import CustomButton from 'components/CustomButton';
+import CustomInput from 'components/CustomInput' 
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview"; 
+import { IAppState } from 'store/store';
+import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from 'actions/loginActions'
 
 interface EditAccountPayload {
   nickname: string 

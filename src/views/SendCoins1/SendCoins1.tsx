@@ -1,15 +1,16 @@
 import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View, Dimensions } from "react-native"; 
-import CustomButton from "../../components/CustomButton"; 
-import CustomInput from "../../components/CustomInput";
-import CustomSelect from "../../components/CustomSelect";
-import Style from "./Style"; 
-import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux'; 
 import RNSingleSelect, {
   ISingleSelectDataType,
 } from "@freakycoder/react-native-single-select";
+import Style from "./Style"; 
+
+import CustomButton from "components/CustomButton"; 
+import CustomInput from "components/CustomInput"; 
+import { IAppState } from 'store/store';
+
 
 
 const SendCoins1Screen = (props) => {
@@ -18,7 +19,7 @@ const SendCoins1Screen = (props) => {
   const lFriends = useSelector((state: IAppState) => state.friendState.friend);
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [friends, setFriends] = useState(lFriends == null ? [] : lFriends); 
-  const {validator_accounts, bank_url} = props.route.params; 
+  const {bank_url} = props.route.params; 
   const [fromData, setFromData] = React.useState<Array<ISingleSelectDataType>>([]);
   const [toData, setToData] = React.useState<Array<ISingleSelectDataType>>([]);
   const [memo, setMemo] = useState(""); 
@@ -46,8 +47,7 @@ const SendCoins1Screen = (props) => {
       color: "#62737E"
     }
   ));
-  const [tos, setTos] = useState(_tos);  
-
+  const [tos, setTos] = useState(_tos);   
   const [from, setFrom] = useState("Select"); 
   const [to, setTo] = useState("To"); 
 
