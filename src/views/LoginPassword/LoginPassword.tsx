@@ -111,15 +111,17 @@ const LoginPasswordScreen = ({ navigation, route}) => {
     } 
   }
 
-  const login = async ()  => {    
-    if(seed == null){
-      setSeed(route.params.paramSeed)
+  const login = async ()  => {  
+    var lSeed = seed;
+    if(lSeed == null || lSeed == undefined){
+      lSeed = route.params.paramSeed;
+      setSeed(lSeed); 
     } 
     if(password == ""){
       setDlgMessage("Input your Password")
       setDlgVisible(true);
     } 
-    else if ((seed == "" || seed == null) && (mySigningKey == "" && (global.hasPassword == false || global.hasPassword == undefined))){
+    else if ((lSeed == "" || lSeed == null) && (mySigningKey == "" && (global.hasPassword == false || global.hasPassword == undefined))){
       dispatch(PasswordAction(password)); 
       setSeedESP(password);
       navigation.navigate('createAccount', { 
@@ -127,10 +129,10 @@ const LoginPasswordScreen = ({ navigation, route}) => {
         validator_accounts: validator_accounts,
         bank_url: bank_url,
         login: 'create',
-        pScreen:'password'
+        pScreen:'password', 
       }); 
     }
-    else if(seed == password || (seed == null && (mySigningKey != ""))){ 
+    else if(lSeed == password || (lSeed == null && (mySigningKey != ""))){ 
       setLoading(true); 
       generateKey(password, 'SALT', 1000, 256).then((key: any) => {  
         dispatch(PasswordAction(password));  

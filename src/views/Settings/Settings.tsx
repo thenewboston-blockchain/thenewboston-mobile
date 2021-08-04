@@ -13,12 +13,17 @@ import SettingPanel from "components/SettingPanel/SettingPanel";
 const SettingsScreen = ({ route, navigation }) => {
 
     const [viewRef, setViewRef] = useState(null);  
-    const {nickname} = route.params;    
+    const {nickname} = route.params 
+    const [lNickname, setlNickName] = useState(nickname);    
     const [dlgMessage, setDlgMessage] = useState("Are you sure want to exit?");
     const [dlgVisible, setDlgVisible] = useState(false);
     const handleExit = () => { 
         BackHandler.exitApp();
     };
+
+    const onSetNickName = (updateName) =>{
+        setlNickName(updateName)
+    } 
     
     return (
         <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
@@ -29,9 +34,9 @@ const SettingsScreen = ({ route, navigation }) => {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={[Custom.row, Custom.mt30]}> 
                     <SettingPanel
-                        nickname={nickname}
+                        nickname={lNickname}  
                         onEditAccount={() => {  
-                            navigation.navigate('editaccount'); 
+                            navigation.navigate('editaccount', {nickname: lNickname, setNickName: onSetNickName}); 
                         }}
                     /> 
                 </View>  

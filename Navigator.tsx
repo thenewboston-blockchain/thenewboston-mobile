@@ -181,7 +181,7 @@ const SettingsStackScreen = ({route, navigation}) => {
           stackheaderOptions("Edit nickname", navigation)
         }
         name="editaccount"
-        initialParams={{nickname: route.params.nickname}}
+        initialParams={{nickname: route.params.nickname, setNickName: route.params.setNickName}}
         component={EditAccountScreen}
       /> 
     </SettingStack.Navigator>

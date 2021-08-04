@@ -18,7 +18,7 @@ interface EditAccountPayload {
 }
 
 const EditAccountScreen = ({route, navigation}) => {
-  const {nickname} = route.params;    
+  const {nickname, setNickName} = route.params;     
   const dispatch = useDispatch();  
   const lNickname = useSelector((state: IAppState) => state.loginState.nickName);  
   const [data, setData] = useState<EditAccountPayload>({
@@ -28,7 +28,7 @@ const EditAccountScreen = ({route, navigation}) => {
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false);
 
-  const onSaveNickName = ()=>{ 
+  const onSaveNickName = ()=>{  
     dispatch(NickNameAction(data.nickname)) 
     setDlgMessage("Success to save Nickname!")
     setDlgVisible(true); 
@@ -78,8 +78,9 @@ const EditAccountScreen = ({route, navigation}) => {
                         message={dlgMessage} 
                         button={"Ok"} 
                         handleOk={() => {
-                        setDlgVisible(false);
-                        navigation.goBack(null);
+                            setDlgVisible(false); 
+                            setNickName(data.nickname)
+                            navigation.goBack({nickname: data.nickname});
                     }} /> 
                 </LinearGradient>  
             </Modal>
