@@ -10,6 +10,7 @@ import RNSingleSelect, {
   ISingleSelectDataType,
 } from "@freakycoder/react-native-single-select"; 
 import LinearGradient from 'react-native-linear-gradient'; 
+import RNConfigReader from 'rn-config-reader';
 
 //Component
 import CustomButton from "components/CustomButton";
@@ -44,13 +45,13 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   const [lPort, setlPort] = useState<string>(port)
   const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)
   const protocolData: Array<ISingleSelectDataType> = [
-    { id: 0, value: "HTTP" },
+    { id: 0, value: "HTTP" }, 
     { id: 1, value: "PROTOCOL" }, 
   ];
   const [dynamicData, setDynamicData] = React.useState<Array<ISingleSelectDataType>>([]);
-  const [lNickName, setlNickName] = useState<string>(nickname)
-  const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == "" ? "54.183.16.194" : ipAddress)
-  const validator_IpAddress = "54.219.183.128" 
+  const [lNickName, setlNickName] = useState<string>(nickname) 
+  const [lIpAddress, setlIpAddress] = useState<string>(ipAddress == "" ? RNConfigReader.SERVER_IP : ipAddress)
+  const validator_IpAddress = RNConfigReader.VALIDATOR_SERVER_IP 
   const [dlgVisible, setDlgVisible] = useState(false)
   const [dlgMessage, setDlgMessage] = useState("") 
   const [loading, setLoading] = useState(false);
@@ -85,17 +86,20 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
 
   const handleSubmit = async()=>{  
     
-    if(lIpAddress == "" || lProtocol == null || !(lProtocol == "http" || lProtocol == "HTTP")) {
+    if(lIpAddress == "" || lProtocol == null || !(lProtocol == "http" || lProtocol == "HTTP" || lProtocol == "https" || lProtocol == "HTTPS")) {
       return;
     } 
     let bank_url = lProtocol + '://' + lIpAddress + ':' + port;
     
     try{  
-      setLoading(true) 
+      setLoading(true)  
       const bank = new Bank(bank_url);  
-      const accounts = await bank.getAccounts();  
+      const accounts = await bank.getAccounts();   
+      console.log(accounts);
       let validator_rul = lProtocol + '://' + validator_IpAddress  
-      const validator_bank = new Bank(validator_rul);  
+      console.log(validator_rul);
+      const validator_bank = new Bank(validator_rul);   
+
       const Aaccount = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
       var validator_accounts = [];
       let account_size = Aaccount.count; 

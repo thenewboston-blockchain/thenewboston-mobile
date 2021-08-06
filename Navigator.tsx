@@ -18,8 +18,7 @@ import SettingsScreen from "views/Settings/Settings";
 import SendCoins1Screen from "views/SendCoins1/SendCoins1";
 import SendCoins2Screen from "views/SendCoins2/SendCoins2";
 import EditAccountScreen from "views/Settings/EditAccount/EditAccount";  
-import TransactionsScreen from "views/Transactions/Transactions";
-import QRCodeScreen from "views/QRCode/QRcode"; 
+import TransactionsScreen from "views/Transactions/Transactions"; 
 
 // svg
 import Home from "assets/svg/Home.svg";
@@ -55,12 +54,7 @@ const Navigator = ({route}) => {
             name="createAccount"
             component={CreateAccountScreen}
             options={authHeaderOptions}
-          />
-          <Stack.Screen
-            name="qrCodeScreen"
-            component={QRCodeScreen}
-            options={nonHeaderOptions}
-          />
+          /> 
           <Stack.Screen
             name="login"
             component={LoginScreen} 

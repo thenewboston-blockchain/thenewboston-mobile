@@ -1,20 +1,19 @@
 import { Colors } from "styles";
 import React, { useEffect, useState } from "react";
-import { View, Modal} from "react-native"; 
-import { RNCamera } from 'react-native-camera';
+import { View, Modal} from "react-native";  
 import Style from "./Style";  
 import {Account, Bank} from 'thenewboston' 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
 import { useDispatch} from 'react-redux';
+import RNConfigReader from 'rn-config-reader';
 
 import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from 'actions/loginActions' 
 import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";
  
 const QRCodeScreen = ({ navigation }) => {  
   const [camera, setCamera] = useState(null);   
-  const dispatch = useDispatch(); 
-  const validator_IpAddress = "54.219.183.128"
+  const dispatch = useDispatch();  
   const [dlgVisible, setDlgVisible] = useState(false)
   const [dlgMessage, setDlgMessage] = useState("") 
   const onSuccess = (e) => {
@@ -27,7 +26,7 @@ const QRCodeScreen = ({ navigation }) => {
         let bank_url = barcodes[0].protocol + '://' + barcodes[0].ipAddress + ':' + barcodes[0].port;
         const bank = new Bank(bank_url);  
         const accounts = await bank.getAccounts();  
-        let validator_rul = barcodes[0].protocol + validator_IpAddress  
+        let validator_rul = barcodes[0].protocol + RNConfigReader.VALIDATOR_SERVER_IP   
         const validator_bank = new Bank(validator_rul);  
         const Aaccount = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
         var validator_accounts = [];
@@ -56,37 +55,12 @@ const QRCodeScreen = ({ navigation }) => {
   }
    
   return ( 
-    <View style={Style.container}> 
-       <RNCamera
-          ref={ref => { 
-            setCamera(ref)
-          }}
-          style={{ 
-            width: '100%',
-            height: '100%'
-          }}  
-          type={RNCamera.Constants.Type.back}
-          barCodeTypes={[RNCamera.Constants.BarCodeType.qr]} 
-          flashMode={RNCamera.Constants.FlashMode.on}
-          androidCameraPermissionOptions={{
-            title: 'Permission to use camera',
-            message: 'We need your permission to use your camera',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }} 
-          onGoogleVisionBarcodesDetected={({ barcodes }) => tryConnect(barcodes)}
-          onBarCodeRead = {(e) =>{
-            alert(e);  
-          }}
-        >
-        </RNCamera> 
+    <View style={Style.container}>  
        <Modal
         animationType="slide"
         transparent={true}
         visible={dlgVisible}  
-        onRequestClose={() => {
-          // this.closeButtonFunction()
-        }}
+        onRequestClose={() => {}}
         
       >
          <BlurView

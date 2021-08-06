@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">TNBC Wallet</string>
+    <string-array name="export_variables">
+        <item>VALIDATOR_SERVER_IP</item>
+        <item>SERVER_IP</item>
+    </string-array>
+    <string name="VALIDATOR_SERVER_IP">54.219.183.128</string>
+    <string name="SERVER_IP">54.183.16.194</string>
 </resources>

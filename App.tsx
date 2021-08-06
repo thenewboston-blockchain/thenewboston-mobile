@@ -3,8 +3,7 @@ import { Provider } from 'react-redux'
 import Navigator from "./Navigator";
 import { PersistGate } from 'redux-persist/integration/react';
 import configureStore from './src/store/store'; 
-import { persistStore, persistReducer } from 'redux-persist'; 
-//import * as Linking from 'expo-linking';
+import { persistStore, persistReducer } from 'redux-persist';  
 const store = configureStore();
 //const prefix = Linking.createURL('/');
 const persistor = persistStore(store);  

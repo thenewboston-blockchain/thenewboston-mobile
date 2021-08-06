@@ -1,14 +1,14 @@
 rootProject.name = 'newthebostonapp'
+include ':rn-config-reader'
+project(':rn-config-reader').projectDir = new File(rootProject.projectDir, '../node_modules/rn-config-reader/android')
 include ':react-native-permissions'
 project(':react-native-permissions').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-permissions/android')
 include ':react-native-randombytes'
-project(':react-native-randombytes').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-randombytes/android')
-include ':react-native-camera'
-project(':react-native-camera').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-camera/android')
+project(':react-native-randombytes').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-randombytes/android') 
 include ':@react-native-community_blur'
 project(':@react-native-community_blur').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/blur/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app', ':randombytes'
-project(':randombytes').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-randombytes/android')
-include ':react-native-virgil-crypto'
-project(':react-native-virgil-crypto').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-virgil-crypto/android')
+project(':randombytes').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-randombytes/android') 
+include ':react-native-config-reader'
+project(':react-native-config-reader').projectDir = new File(rootProject.projectDir, 	'../node_modules/rn-config-reader/android')
