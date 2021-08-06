@@ -61,10 +61,10 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   useEffect(() => {   
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     getSeedESP();
+    handleLogin();
   }, []); 
 
-  async function getSeedESP() { 
-     
+  async function getSeedESP() {  
     setTimeout(() => {
       setDynamicData(protocolData);
     }, 2000);
@@ -84,25 +84,46 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
     }
   } 
 
+  const handleLogin = () =>{
+    if(ipAddress == RNConfigReader.SERVER_IP && nickname != "" && protocol != ""){ 
+      let bank_url = lProtocol + '://' + lIpAddress + ':' + port;
+       navigate('login', {
+        nickname: lNickName,
+        accounts: null,
+        validator_accounts: null,
+        bank_url: bank_url, 
+      });  
+    }
+  }
+
   const handleSubmit = async()=>{  
     
-    if(lIpAddress == "" || lProtocol == null || !(lProtocol == "http" || lProtocol == "HTTP" || lProtocol == "https" || lProtocol == "HTTPS")) {
+    if(lIpAddress == "" || lProtocol == null || !(lProtocol == "http" || 
+    lProtocol == "HTTP" || lProtocol == "https" || lProtocol == "HTTPS")) {
+      setDlgMessage("Please input IP address correctly!");
+      setDlgVisible(true);
       return;
     } 
+
+    if(lNickName == ""){ 
+      setDlgMessage("Please input nickname!");
+      setDlgVisible(true);
+      return;
+    }
+    
     let bank_url = lProtocol + '://' + lIpAddress + ':' + port;
     
     try{  
       setLoading(true)  
       const bank = new Bank(bank_url);  
-      const accounts = await bank.getAccounts();   
-      console.log(accounts);
+      const accounts = await bank.getAccounts();    
       let validator_rul = lProtocol + '://' + validator_IpAddress  
       console.log(validator_rul);
       const validator_bank = new Bank(validator_rul);   
 
-      const Aaccount = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
+      const allAccounts = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
       var validator_accounts = [];
-      let account_size = Aaccount.count; 
+      let account_size = allAccounts.count; 
       for(let i = 0; i < account_size; i += ACCOUNT_MAX){
         const part_accounts = await validator_bank.getAccounts({ limit: ACCOUNT_MAX, offset: i });  
         validator_accounts = [...validator_accounts, ...part_accounts.results]; 

@@ -5,12 +5,14 @@ import FingerprintScanner from "react-native-fingerprint-scanner"
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient'; 
 import { TouchableOpacity } from "react-native-gesture-handler";  
+import {Account, Bank} from 'thenewboston' 
 import Style from "./Style";
 
 import CustomButton from "components/CustomButton";
 import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";    
 import FingerPrint from "assets/svg/FingerPrint.svg";
 
+const ACCOUNT_MAX = 100; 
 
 interface login {
   navigation: any,
@@ -24,17 +26,49 @@ const LoginScreen = ({ navigation, route }:login) => {
   const [fingerAuth, setFingerAuth] = useState(false) 
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false); 
+  const [bankURL, setBankURL] = useState(route.params.bank_url)
+  const [nickName, setNickName] = useState(route.params.nickName)
+  const [accounts, setAccounts] = useState(route.params.accounts)
+  const [validAccounts, setValidAccounts] = useState(route.params.validator_accounts)
  
   const goToPasswordLogin = () => { 
     navigation.navigate("loginPassword", { 
-      accounts: route.params.accounts,
-      validator_accounts: route.params.validator_accounts,
-      bank_url: route.params.bank_url, 
-      nickname: route.params.nickname,
+      accounts: accounts,
+      validator_accounts: validAccounts,
+      bank_url: bankURL, 
+      nickname: nickName,
     });
   };
 
-  useEffect(() => { 
+  const getAccounts = async ()  => {
+    const bank = new Bank(bankURL);  
+    const accounts = await bank.getAccounts();      
+    const validator_bank = new Bank(bankURL);    
+    const allAccounts = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
+    setAccounts(allAccounts)
+    var validator_accounts = [];
+    let account_size = allAccounts.count; 
+    for(let i = 0; i < account_size; i += ACCOUNT_MAX){
+      const part_accounts = await validator_bank.getAccounts({ limit: ACCOUNT_MAX, offset: i });  
+      validator_accounts = [...validator_accounts, ...part_accounts.results]; 
+    } 
+    setValidAccounts(validator_accounts);
+    onLoginScreen();
+    console.log(allAccounts)
+  }
+
+  useEffect(() => {  
+      
+    if(accounts == null){
+      getAccounts(); 
+    } 
+    else{
+      onLoginScreen();
+    }
+    
+  }, []);
+ 
+  const onLoginScreen = () => {
     FingerprintScanner
     .authenticate({ description: 'Scan your fingerprint on the device scanner to continue' })
     .then(() => {
@@ -54,18 +88,16 @@ const LoginScreen = ({ navigation, route }:login) => {
       onFingerprint();
       console.log(error.message);
     });
-    
-  }, []);
- 
+  }
 
   const onFingerprint = () =>{
         
      if(fingerPrint == false){
       navigation.navigate("loginPassword", { 
-        accounts: route.params.accounts,
-        validator_accounts: route.params.validator_accounts,
-        bank_url: route.params.bank_url, 
-        nickname: route.params.nickname,
+        accounts: accounts,
+        validator_accounts: validAccounts,
+        bank_url: bankURL, 
+        nickname: nickName,
       });
      }
      else{
@@ -77,10 +109,10 @@ const LoginScreen = ({ navigation, route }:login) => {
         navigation.navigate('tab', { 
           signingKeyHex: "",
           accountNumber: "", 
-          accounts: route.params.accounts,
-          validator_accounts: route.params.validator_accounts,
-          bank_url: route.params.bank_url, 
-          nickname: route.params.nickname,
+          accounts: accounts,
+          validator_accounts: validAccounts,
+          bank_url: bankURL, 
+          nickname: nickName,
           login: 'login',
           pScreen:'password'
         });
@@ -90,10 +122,10 @@ const LoginScreen = ({ navigation, route }:login) => {
 
   const handleSubmit = () => { 
     navigation.navigate("createAccount", { 
-      accounts: route.params.accounts,
-      validator_accounts: route.params.validator_accounts,
-      bank_url: route.params.bank_url, 
-      nickname: route.params.nickname,  
+      accounts: accounts,
+      validator_accounts: validAccounts,
+      bank_url: bankURL, 
+      nickname: nickName,  
       pScreen: 'login'
     });
   };
