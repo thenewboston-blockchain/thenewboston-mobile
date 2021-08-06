@@ -1,6 +1,0 @@
-framework module FlipperKit {
-  umbrella header "FlipperKit-framework-umbrella.h"
-
-  export *
-  module * { export * }
-}

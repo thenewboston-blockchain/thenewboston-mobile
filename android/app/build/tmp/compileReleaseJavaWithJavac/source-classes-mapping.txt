@@ -1,0 +1,10 @@
+com/thenewboston/wallet/MainActivity.java
+ com.thenewboston.wallet.MainActivity
+ com.thenewboston.wallet.MainActivity$1
+com/thenewboston/wallet/MainApplication.java
+ com.thenewboston.wallet.MainApplication
+ com.thenewboston.wallet.MainApplication$1
+com/thenewboston/wallet/BuildConfig.java
+ com.thenewboston.wallet.BuildConfig
+com/facebook/react/PackageList.java
+ com.facebook.react.PackageList

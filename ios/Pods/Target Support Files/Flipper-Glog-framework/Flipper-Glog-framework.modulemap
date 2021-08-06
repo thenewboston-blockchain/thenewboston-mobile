@@ -1,6 +1,0 @@
-framework module glog {
-  umbrella header "Flipper-Glog-framework-umbrella.h"
-
-  export *
-  module * { export * }
-}

@@ -1,1 +1,0 @@
-../../../Target Support Files/VirgilCryptoFoundation-library/VirgilCryptoFoundation-library-umbrella.h

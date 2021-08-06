@@ -1,6 +1,0 @@
-framework module RNSecureRandom {
-  umbrella header "RNSecureRandom-framework-umbrella.h"
-
-  export *
-  module * { export * }
-}

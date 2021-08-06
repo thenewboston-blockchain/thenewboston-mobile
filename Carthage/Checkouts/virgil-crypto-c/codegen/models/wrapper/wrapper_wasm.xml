@@ -1,3 +1,0 @@
-<wrapper lang="wasm" source_dir="../wrappers/wasm">
-    Wrapper to the WebAssembly JavaScript programming language.
-</wrapper>

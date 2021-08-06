@@ -1,6 +1,0 @@
-framework module RNReanimated {
-  umbrella header "RNReanimated-framework-umbrella.h"
-
-  export *
-  module * { export * }
-}

@@ -1,1 +1,0 @@
-../../../VirgilCryptoPythia/VirgilCryptoPythia/VirgilCryptoPythia.h

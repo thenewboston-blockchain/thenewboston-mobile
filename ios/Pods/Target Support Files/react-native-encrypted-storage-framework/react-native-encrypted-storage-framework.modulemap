@@ -1,6 +1,0 @@
-framework module react_native_encrypted_storage {
-  umbrella header "react-native-encrypted-storage-framework-umbrella.h"
-
-  export *
-  module * { export * }
-}

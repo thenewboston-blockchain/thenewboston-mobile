@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2" xmlns:ns2="http://schemas.android.com/tools">
+    <string-array name="crypto_fingerprint_fallback_prefixes">
+        <item>SM-G95</item> <!-- Samsung Galaxy S8/S8+ -->
+        <item>SM-G96</item> <!-- Samsung Galaxy S9/S9+ -->
+        <item>SM-G97</item> <!-- Samsung Galaxy S10/S10+ -->
+        <item>SM-N95</item> <!-- Samsung Galaxy Note 8 -->
+        <item>SM-N96</item> <!-- Samsung Galaxy Note 9 -->
+        <item>SM-N97</item> <!-- Samsung Galaxy Note 10/10+ -->
+        <item>SM-A20</item> <!-- Samsung Galaxy A20/A20e -->
+    </string-array>
+    <string-array name="crypto_fingerprint_fallback_vendors">
+        <item>samsung</item>
+    </string-array>
+    <string-array name="export_variables">
+        <item>VALIDATOR_SERVER_IP</item>
+        <item>SERVER_IP</item>
+    </string-array>
+    <string-array name="hide_fingerprint_instantly_prefixes">
+        <!-- Samsung Galaxy S10/S10+ -->
+        <item>SM-G97</item>
+        <item>SC-03L</item>
+        <item>SC-04L</item>
+        <item>SC-05L</item>
+        <item>SCV41</item>
+        <item>SCV42</item>
+
+        <!-- Samsung Galaxy Note 10/10+ -->
+        <item>SM-N97</item>
+        <item>SC-01M</item>
+        <item>SCV45</item>
+    </string-array>
+    <attr format="reference" name="SpinKitViewStyle"/>
     <attr name="appBarLayoutStyle"/>
     <attr format="reference" name="badgeStyle"/>
     <attr format="reference" name="bottomAppBarStyle"/>
@@ -93,10 +124,13 @@
     <color name="abc_search_url_text_selected">@android:color/black</color>
     <color name="accent_material_dark">@color/material_deep_teal_200</color>
     <color name="accent_material_light">@color/material_deep_teal_500</color>
+    <color name="androidx_core_ripple_material_light">#1f000000</color>
+    <color name="androidx_core_secondary_text_default_material_light">#8a000000</color>
     <color name="background_floating_material_dark">@color/material_grey_800</color>
     <color name="background_floating_material_light">@android:color/white</color>
     <color name="background_material_dark">@color/material_grey_850</color>
     <color name="background_material_light">@color/material_grey_50</color>
+    <color name="biometric_error_color">#ff5722</color>
     <color name="bright_foreground_disabled_material_dark">#80ffffff</color>
     <color name="bright_foreground_disabled_material_light">#80000000</color>
     <color name="bright_foreground_inverse_material_dark">@color/bright_foreground_material_light</color>
@@ -341,6 +375,7 @@
     <dimen name="fastscroll_default_thickness">8dp</dimen>
     <dimen name="fastscroll_margin">0dp</dimen>
     <dimen name="fastscroll_minimum_range">50dp</dimen>
+    <dimen name="fingerprint_icon_size">64dp</dimen>
     <item format="float" name="highlight_alpha_material_colored" type="dimen">0.26</item>
     <item format="float" name="highlight_alpha_material_dark" type="dimen">0.20</item>
     <item format="float" name="highlight_alpha_material_light" type="dimen">0.12</item>
@@ -644,6 +679,8 @@
     <item quantity="one"><ns1:g id="count">%d</ns1:g> new notification</item>
     <item quantity="other"><ns1:g id="count">%d</ns1:g> new notifications</item>
   </plurals>
+    <string name="SERVER_IP">54.183.16.194</string>
+    <string name="VALIDATOR_SERVER_IP">54.219.183.128</string>
     <string name="abc_action_bar_home_description">Navigate home</string>
     <string name="abc_action_bar_up_description">Navigate up</string>
     <string name="abc_action_menu_overflow_description">More options</string>
@@ -671,8 +708,9 @@
     <string name="abc_shareactionprovider_share_with">Share with</string>
     <string name="abc_shareactionprovider_share_with_application">Share with <ns1:g example="Mail" id="application_name">%s</ns1:g></string>
     <string name="abc_toolbar_collapse_description">Collapse</string>
+    <string name="accessibility_fingerprint_dialog_help_area">Help message area</string>
     <string name="alert_description" translatable="false">Alert</string>
-    <string name="app_name">newthebostonapp</string>
+    <string name="app_name">TNBC Wallet</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">com.google.android.material.bottomsheet.BottomSheetBehavior</string>
     <string name="button_description" translatable="false">Button</string>
@@ -711,10 +749,20 @@
     <string name="chip_text">Chip text</string>
     <string name="clear_text_end_icon_content_description">Clear text</string>
     <string name="combobox_description" translatable="false">Combo Box</string>
+    <string name="confirm_device_credential_password">Use password</string>
+    <string name="default_error_msg">Unknown error</string>
     <string name="error_icon_content_description">Error</string>
     <string name="exposed_dropdown_menu_content_description">Show dropdown menu</string>
     <string name="fab_transformation_scrim_behavior" translatable="false">com.google.android.material.transformation.FabTransformationScrimBehavior</string>
     <string name="fab_transformation_sheet_behavior" translatable="false">com.google.android.material.transformation.FabTransformationSheetBehavior</string>
+    <string name="fingerprint_dialog_touch_sensor">Touch the fingerprint sensor</string>
+    <string name="fingerprint_error_hw_not_available">Fingerprint hardware not available.</string>
+    <string name="fingerprint_error_hw_not_present">This device does not have a fingerprint sensor</string>
+    <string name="fingerprint_error_lockout">Too many attempts. Please try again later.</string>
+    <string name="fingerprint_error_no_fingerprints">No fingerprints enrolled.</string>
+    <string name="fingerprint_error_user_canceled">Fingerprint operation canceled by user.</string>
+    <string name="fingerprint_not_recognized">Not recognized</string>
+    <string name="generic_error_user_canceled">Authentication canceled by user.</string>
     <string name="header_description" translatable="false">Heading</string>
     <string name="hide_bottom_view_on_scroll_behavior" translatable="false">com.google.android.material.behavior.HideBottomViewOnScrollBehavior</string>
     <string description="Content description for an icon that appears in the title area of a dialog" name="icon_content_description">Dialog Icon</string>
@@ -2647,6 +2695,14 @@
     <style name="CardView.Light">
         <item name="cardBackgroundColor">@color/cardview_light_background</item>
     </style>
+    <style name="DeviceCredentialHandlerTheme" parent="Theme.AppCompat">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
     <style name="DialogAnimationFade">
     <item name="android:windowEnterAnimation">@anim/catalyst_fade_in</item>
     <item name="android:windowExitAnimation">@anim/catalyst_fade_out</item>
@@ -2985,6 +3041,160 @@
     <style name="ShapeAppearanceOverlay.TopRightDifferentCornerSize">
     <item name="cornerSizeTopRight">20px</item>
   </style>
+    <style name="SpinKitView">
+        <item name="android:indeterminateOnly">true</item>
+        <item name="android:minWidth">48dip</item>
+        <item name="android:maxWidth">48dip</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:maxHeight">48dip</item>
+    </style>
+    <style name="SpinKitView.ChasingDots">
+        <item name="SpinKit_Style">ChasingDots</item>
+    </style>
+    <style name="SpinKitView.Circle">
+        <item name="SpinKit_Style">Circle</item>
+    </style>
+    <style name="SpinKitView.CubeGrid">
+        <item name="SpinKit_Style">CubeGrid</item>
+    </style>
+    <style name="SpinKitView.DoubleBounce">
+        <item name="SpinKit_Style">DoubleBounce</item>
+    </style>
+    <style name="SpinKitView.FadingCircle">
+        <item name="SpinKit_Style">FadingCircle</item>
+    </style>
+    <style name="SpinKitView.FoldingCube">
+        <item name="SpinKit_Style">FoldingCube</item>
+    </style>
+    <style name="SpinKitView.Large">
+        <item name="android:minWidth">76dip</item>
+        <item name="android:maxWidth">76dip</item>
+        <item name="android:minHeight">76dip</item>
+        <item name="android:maxHeight">76dip</item>
+    </style>
+    <style name="SpinKitView.Large.ChasingDots">
+        <item name="SpinKit_Style">ChasingDots</item>
+    </style>
+    <style name="SpinKitView.Large.Circle">
+        <item name="SpinKit_Style">Circle</item>
+    </style>
+    <style name="SpinKitView.Large.CubeGrid">
+        <item name="SpinKit_Style">CubeGrid</item>
+    </style>
+    <style name="SpinKitView.Large.DoubleBounce">
+        <item name="SpinKit_Style">DoubleBounce</item>
+    </style>
+    <style name="SpinKitView.Large.FadingCircle">
+        <item name="SpinKit_Style">FadingCircle</item>
+    </style>
+    <style name="SpinKitView.Large.FoldingCube">
+        <item name="SpinKit_Style">FoldingCube</item>
+    </style>
+    <style name="SpinKitView.Large.MultiplePulse">
+        <item name="SpinKit_Style">MultiplePulse</item>
+    </style>
+    <style name="SpinKitView.Large.MultiplePulseRing">
+        <item name="SpinKit_Style">MultiplePulseRing</item>
+    </style>
+    <style name="SpinKitView.Large.Pulse">
+        <item name="SpinKit_Style">Pulse</item>
+    </style>
+    <style name="SpinKitView.Large.PulseRing">
+        <item name="SpinKit_Style">PulseRing</item>
+    </style>
+    <style name="SpinKitView.Large.RotatingCircle">
+        <item name="SpinKit_Style">RotatingCircle</item>
+    </style>
+    <style name="SpinKitView.Large.RotatingPlane">
+        <item name="SpinKit_Style">RotatingPlane</item>
+    </style>
+    <style name="SpinKitView.Large.ThreeBounce">
+        <item name="SpinKit_Style">ThreeBounce</item>
+    </style>
+    <style name="SpinKitView.Large.WanderingCubes">
+        <item name="SpinKit_Style">WanderingCubes</item>
+    </style>
+    <style name="SpinKitView.Large.Wave">
+        <item name="SpinKit_Style">Wave</item>
+    </style>
+    <style name="SpinKitView.MultiplePulse">
+        <item name="SpinKit_Style">MultiplePulse</item>
+    </style>
+    <style name="SpinKitView.MultiplePulseRing">
+        <item name="SpinKit_Style">MultiplePulseRing</item>
+    </style>
+    <style name="SpinKitView.Pulse">
+        <item name="SpinKit_Style">Pulse</item>
+    </style>
+    <style name="SpinKitView.PulseRing">
+        <item name="SpinKit_Style">PulseRing</item>
+    </style>
+    <style name="SpinKitView.RotatingCircle">
+        <item name="SpinKit_Style">RotatingCircle</item>
+    </style>
+    <style name="SpinKitView.RotatingPlane">
+        <item name="SpinKit_Style">RotatingPlane</item>
+    </style>
+    <style name="SpinKitView.Small">
+        <item name="android:minWidth">16dip</item>
+        <item name="android:maxWidth">16dip</item>
+        <item name="android:minHeight">16dip</item>
+        <item name="android:maxHeight">16dip</item>
+    </style>
+    <style name="SpinKitView.Small.ChasingDots">
+        <item name="SpinKit_Style">ChasingDots</item>
+    </style>
+    <style name="SpinKitView.Small.Circle">
+        <item name="SpinKit_Style">Circle</item>
+    </style>
+    <style name="SpinKitView.Small.CubeGrid">
+        <item name="SpinKit_Style">CubeGrid</item>
+    </style>
+    <style name="SpinKitView.Small.DoubleBounce">
+        <item name="SpinKit_Style">DoubleBounce</item>
+    </style>
+    <style name="SpinKitView.Small.FadingCircle">
+        <item name="SpinKit_Style">FadingCircle</item>
+    </style>
+    <style name="SpinKitView.Small.FoldingCube">
+        <item name="SpinKit_Style">FoldingCube</item>
+    </style>
+    <style name="SpinKitView.Small.MultiplePulse">
+        <item name="SpinKit_Style">MultiplePulse</item>
+    </style>
+    <style name="SpinKitView.Small.MultiplePulseRing">
+        <item name="SpinKit_Style">MultiplePulseRing</item>
+    </style>
+    <style name="SpinKitView.Small.Pulse">
+        <item name="SpinKit_Style">Pulse</item>
+    </style>
+    <style name="SpinKitView.Small.PulseRing">
+        <item name="SpinKit_Style">PulseRing</item>
+    </style>
+    <style name="SpinKitView.Small.RotatingCircle">
+        <item name="SpinKit_Style">RotatingCircle</item>
+    </style>
+    <style name="SpinKitView.Small.RotatingPlane">
+        <item name="SpinKit_Style">RotatingPlane</item>
+    </style>
+    <style name="SpinKitView.Small.ThreeBounce">
+        <item name="SpinKit_Style">ThreeBounce</item>
+    </style>
+    <style name="SpinKitView.Small.WanderingCubes">
+        <item name="SpinKit_Style">WanderingCubes</item>
+    </style>
+    <style name="SpinKitView.Small.Wave">
+        <item name="SpinKit_Style">Wave</item>
+    </style>
+    <style name="SpinKitView.ThreeBounce">
+        <item name="SpinKit_Style">ThreeBounce</item>
+    </style>
+    <style name="SpinKitView.WanderingCubes">
+        <item name="SpinKit_Style">WanderingCubes</item>
+    </style>
+    <style name="SpinKitView.Wave">
+        <item name="SpinKit_Style">Wave</item>
+    </style>
     <style name="SpinnerDatePickerDialog" ns2:targetApi="lollipop" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:datePickerStyle">@style/SpinnerDatePickerStyle</item>
     </style>
@@ -3576,6 +3786,14 @@
     <item name="colorControlNormal">@color/material_on_surface_emphasis_medium</item>
     <item name="actionMenuTextColor">@color/material_on_surface_emphasis_medium</item>
   </style>
+    <style name="TransparentStyle">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
     <style name="Widget.AppCompat.ActionBar" parent="Base.Widget.AppCompat.ActionBar">
     </style>
     <style name="Widget.AppCompat.ActionBar.Solid" parent="Base.Widget.AppCompat.ActionBar.Solid">
@@ -6511,11 +6729,6 @@
         <!-- State identifier indicating the popup will be above the anchor. -->
         <attr format="boolean" name="state_above_anchor"/>
     </declare-styleable>
-    <declare-styleable name="PxBlurringView">
-        <attr format="integer" name="blurRadius"/>
-        <attr format="integer" name="downsampleFactor"/>
-        <attr format="color" name="overlayColor"/>
-    </declare-styleable>
     <declare-styleable name="RecycleListView">
         <!-- Bottom padding to use when no buttons are present. -->
         <attr format="dimension" name="paddingBottomNoButtons"/>
@@ -6747,6 +6960,26 @@
          the theme color used for Snackbar text buttons (e.g., colorPrimary). -->
     <attr format="float" name="actionTextColorAlpha"/>
   </declare-styleable>
+    <declare-styleable name="SpinKitView">
+        <attr name="SpinKit_Style">
+            <enum name="RotatingPlane" value="0"/>
+            <enum name="DoubleBounce" value="1"/>
+            <enum name="Wave" value="2"/>
+            <enum name="WanderingCubes" value="3"/>
+            <enum name="Pulse" value="4"/>
+            <enum name="ChasingDots" value="5"/>
+            <enum name="ThreeBounce" value="6"/>
+            <enum name="Circle" value="7"/>
+            <enum name="CubeGrid" value="8"/>
+            <enum name="FadingCircle" value="9"/>
+            <enum name="FoldingCube" value="10"/>
+            <enum name="RotatingCircle" value="11"/>
+            <enum name="MultiplePulse" value="12"/>
+            <enum name="PulseRing" value="13"/>
+            <enum name="MultiplePulseRing" value="14"/>
+        </attr>
+        <attr format="color" name="SpinKit_Color"/>
+    </declare-styleable>
     <declare-styleable name="Spinner">
         <!-- The prompt to display when the spinner's dialog is shown. -->
         <attr name="android:prompt"/>

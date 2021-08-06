@@ -1,6 +1,0 @@
-framework module folly {
-  umbrella header "Flipper-Folly-framework-umbrella.h"
-
-  export *
-  module * { export * }
-}
