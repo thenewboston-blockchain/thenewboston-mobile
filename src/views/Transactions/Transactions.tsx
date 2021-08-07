@@ -9,12 +9,13 @@ import {
 import {Account, Bank, Transaction} from 'thenewboston/dist/index.js';
 import Style from "./Style";
 import { useSelector, useDispatch} from 'react-redux';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 import { IAppState } from 'store/store'; 
 import CustomButton from "components/CustomButton";  
 import TransactionItem from "components/TransactionItem/TransactionItem"; 
 
-const TransactionsScreen = ({route}) => {
+const TransactionsScreen = ({route, navigation}) => { 
   const {nickname, bank_url, login} = route.params; 
   const [transactions, setTransactions] = useState(null);    
   const lAccounts = useSelector((state: IAppState) => state.accountState.account);
@@ -42,14 +43,33 @@ const TransactionsScreen = ({route}) => {
     
   }, []);
 
-  return (
-    <View style={Style.container}>
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 50
+  };
+
+  const onSwipeRight = (state) =>{
+    navigation.navigate('overview')
+  }
+
+  const onSwipeLeft = (state) =>{ 
+    navigation.navigate('friends')
+  }
+
+  return ( 
+     
+    <GestureRecognizer 
+        onSwipeLeft={(state) => onSwipeLeft(state)}
+        onSwipeRight={(state) => onSwipeRight(state)} 
+        config={config} 
+        style={Style.container}
+        >  
       <View style={{ alignItems: "center" }}>
         <Text style={[Custom.mb10, { color: "#62737E" }]}>{nickname}</Text>
         <Text style={Style.heading}>Transactions</Text>
       </View> 
       {spinVisible && <ActivityIndicator size="large" color="white" style={{justifyContent:'center', marginTop:'35%'}}></ActivityIndicator>}
-      {!spinVisible && <FlatList
+      {!spinVisible && <FlatList 
         data={transactions != null && transactions != null ? transactions : null}
         renderItem={({ item, index }) => (
           <TransactionItem
@@ -70,7 +90,7 @@ const TransactionsScreen = ({route}) => {
           loading={false}
           customStyle={Style.bottomArea}
       />
-    </View>
+    </GestureRecognizer>
   );
 };
 

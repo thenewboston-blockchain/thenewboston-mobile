@@ -4,6 +4,7 @@ import { ScrollView, Text, View, BackHandler, Modal} from "react-native";
 import Style from "./Style";  
 import LinearGradient from 'react-native-linear-gradient';
 import { BlurView, VibrancyView } from "@react-native-community/blur"; 
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 import CustomButton from "components/CustomButton";   
 import YesNoModalViewScreen from "components/InfoModalWidgets/YesNoModalview";  
@@ -24,9 +25,23 @@ const SettingsScreen = ({ route, navigation }) => {
     const onSetNickName = (updateName) =>{
         setlNickName(updateName)
     } 
+
+    const config = {
+        velocityThreshold: 0.3,
+        directionalOffsetThreshold: 50
+    };
+
+    const onSwipeRight = (state) =>{
+        navigation.navigate('friends')
+    }
     
     return (
         <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
+        <GestureRecognizer  
+            onSwipeRight={(state) => onSwipeRight(state)} 
+            config={config} 
+            style={Style.container}
+        >
             <View style={{ alignItems: "center"}} >
             <Text style={Style.heading}>{'Settings'}</Text>  
             </View>  
@@ -86,6 +101,7 @@ const SettingsScreen = ({ route, navigation }) => {
                     /> 
                 </LinearGradient>  
             </Modal>
+        </GestureRecognizer>
     </View> 
     );
 };

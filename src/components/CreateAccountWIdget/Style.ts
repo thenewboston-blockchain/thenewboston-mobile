@@ -8,7 +8,7 @@ const Styles = StyleSheet.create({
     paddingVertical: "5%",
   },
   formView: {
-    marginTop: "5%",
+    marginTop: "4%",
     alignItems: "center",
     width:"100%",
   },

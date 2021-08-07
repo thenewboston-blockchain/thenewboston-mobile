@@ -6,6 +6,8 @@ import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient'; 
 import { TouchableOpacity } from "react-native-gesture-handler";  
 import {Account, Bank} from 'thenewboston' 
+import { useSelector, useDispatch} from 'react-redux';
+import { IAppState } from 'store/store'; 
 import Style from "./Style";
 
 import CustomButton from "components/CustomButton";
@@ -30,6 +32,7 @@ const LoginScreen = ({ navigation, route }:login) => {
   const [nickName, setNickName] = useState(route.params.nickName)
   const [accounts, setAccounts] = useState(route.params.accounts)
   const [validAccounts, setValidAccounts] = useState(route.params.validator_accounts)
+  const lNickname = useSelector((state: IAppState) => state.loginState.nickName);
  
   const goToPasswordLogin = () => { 
     navigation.navigate("loginPassword", { 
@@ -53,8 +56,11 @@ const LoginScreen = ({ navigation, route }:login) => {
       validator_accounts = [...validator_accounts, ...part_accounts.results]; 
     } 
     setValidAccounts(validator_accounts);
-    onLoginScreen();
-    console.log(allAccounts)
+    if(nickName == "" || nickName == null){
+      setNickName(lNickname)
+    }
+    onLoginScreen(); 
+    
   }
 
   useEffect(() => {  

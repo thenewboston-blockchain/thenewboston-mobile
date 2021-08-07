@@ -51,6 +51,13 @@ const Styles = StyleSheet.create({
     overflow: 'hidden',
     padding:15
   },
+  pulldonwContainer:{  
+    position:'absolute',
+    width:'100%', 
+    height:'100%',
+    alignSelf:'center',
+    alignItems:'center'
+  },
   doModalContainer:{
     height: '60%',
     width:'94%', 

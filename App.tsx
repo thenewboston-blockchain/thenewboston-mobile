@@ -1,18 +1,18 @@
-import * as React from "react"; 
+import React, { useEffect, useState } from "react";
 import { Provider } from 'react-redux'
 import Navigator from "./Navigator";
 import { PersistGate } from 'redux-persist/integration/react';
 import configureStore from './src/store/store'; 
 import { persistStore, persistReducer } from 'redux-persist';  
-const store = configureStore();
-//const prefix = Linking.createURL('/');
-const persistor = persistStore(store);  
+const store = configureStore(); 
+const persistor = persistStore(store);   
 
-const App = (props) => {  
+const App = (props) => {   
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-      <Navigator />
+      <Navigator isLogin={false}/>
       </PersistGate>
     </Provider>
   ) 

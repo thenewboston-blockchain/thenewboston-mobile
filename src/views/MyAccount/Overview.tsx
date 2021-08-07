@@ -17,6 +17,7 @@ import {
   NativeModules
 } from "react-native";
 import Style from "./Style"; 
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 import Accounts from "components/Accounts/Accounts";
 import CustomButton from "components/CustomButton";
@@ -28,6 +29,7 @@ import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";
 import { AccountAction } from 'actions/accountActions'
 import DeleteAccount from './DeleteAccount/DeleteAccount' 
 import Refresh from "assets/svg/Refresh.svg";  
+import DoneSvg from "assets/svg/PullDown.svg"
 
 const OverviewScreen = ({ route, navigation }) => {
  
@@ -184,8 +186,27 @@ const OverviewScreen = ({ route, navigation }) => {
     } 
   }
 
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 50
+  };
+
+  const onSwipeLeft = (state) =>{
+      navigation.navigate('transactions')
+  }
+
+  const onSwipeDown = (state) =>{
+    setModalVisible(false);
+  }
+
   return (
     <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
+      <GestureRecognizer  
+            onSwipeLeft={(state) => onSwipeLeft(state)} 
+            onSwipeDown={(state) => onSwipeDown(state)} 
+            config={config} 
+            style={Style.container}
+        >
       <View style={{ alignItems: "center"}} >
         <Text style={Style.heading}>{actName}</Text> 
         <Accounts
@@ -265,6 +286,10 @@ const OverviewScreen = ({ route, navigation }) => {
           reducedTransparencyFallbackColor="white"
         />
         <View style={Style.modalContainer}>
+          <View style= {Style.pulldonwContainer}>
+            <DoneSvg width="15%" height="5%" />
+          </View>
+        
           <ScrollView showsVerticalScrollIndicator={false}>
           <CreateAccountWidget title={"Create or Add Account"}
             navigation={navigation}
@@ -405,6 +430,7 @@ const OverviewScreen = ({ route, navigation }) => {
               /> 
           </LinearGradient>  
       </Modal>
+      </GestureRecognizer>
     </View>
   );
 };

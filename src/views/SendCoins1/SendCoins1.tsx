@@ -10,7 +10,7 @@ import Style from "./Style";
 import CustomButton from "components/CustomButton"; 
 import CustomInput from "components/CustomInput"; 
 import { IAppState } from 'store/store';
-
+import { Button } from "react-native-elements";
 
 
 const SendCoins1Screen = (props) => {
@@ -49,9 +49,10 @@ const SendCoins1Screen = (props) => {
   ));
   const [tos, setTos] = useState(_tos);   
   const [from, setFrom] = useState("Select"); 
-  const [to, setTo] = useState("To"); 
+  const [to, setTo] = useState("To");  
 
-  useEffect(() => {  
+  useEffect(() => {   
+
     setTimeout(() => {
       var fromDatas: Array<ISingleSelectDataType> = [];
       froms.map((item, i) => {
@@ -69,6 +70,7 @@ const SendCoins1Screen = (props) => {
 
     }, 2000);
   }, []);
+ 
 
   const handleSubmit = () => {
     let selectFrom;
@@ -97,7 +99,7 @@ const SendCoins1Screen = (props) => {
   return (
     <View style={Style.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={Style.formView}> 
+        <View style={Style.formView} > 
           <RNSingleSelect
             data={fromData}
             arrowImageStyle={{width: 15, height: 10}}
@@ -141,7 +143,7 @@ const SendCoins1Screen = (props) => {
               setMemo(value);
             }}
             autoCapitalize="none"
-          />
+          />  
 
           <CustomButton
             title="Next"

@@ -11,7 +11,7 @@ import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
 import {Account} from 'thenewboston/dist/index.js'  
 import { SigningKeyAction, AccountNumberAction } from '../../actions/loginActions';
-import { useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch} from 'react-redux'; 
 
 interface createAccount {
     title: string,
@@ -83,7 +83,7 @@ const CreateAccountWidget = (props: createAccount) => {
     
     return (
         <View style={Style.container}>
-        <View style={Style.formView}>
+        <View style={Style.formView}> 
           <Text style={[Typography.FONT_REGULAR, Style.heading]}>
             {props.title}
           </Text>

@@ -61,7 +61,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
   useEffect(() => {   
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     getSeedESP();
-    handleLogin();
+    //handleLogin();
   }, []); 
 
   async function getSeedESP() {  

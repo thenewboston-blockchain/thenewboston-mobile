@@ -2,6 +2,7 @@ import { Colors, Custom, Typography } from "styles";
 import React, { useEffect, useState } from "react"; 
 import { ScrollView, Text, TouchableOpacity, View, Modal, ActivityIndicator} from "react-native";
 import { useSelector, useDispatch} from 'react-redux';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 import Style from "./Style"; 
 import Accounts from "../../components/Accounts/Accounts";
@@ -70,8 +71,28 @@ const FriendsScreen = ({ route, navigation }) => {
 
   }
 
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 50
+  };
+
+  const onSwipeRight = (state) =>{
+    navigation.navigate('transactions')
+  }
+
+  const onSwipeLeft = (state) =>{ 
+    navigation.navigate('settings')
+  }
+
+
   return (
     <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
+    <GestureRecognizer 
+        onSwipeLeft={(state) => onSwipeLeft(state)}
+        onSwipeRight={(state) => onSwipeRight(state)} 
+        config={config} 
+        style={Style.container}
+        >  
       <View style={{ alignItems: "center"}} >
         <Text style={Style.heading}>{'My friends'}</Text> 
         <Accounts
@@ -220,7 +241,7 @@ const FriendsScreen = ({ route, navigation }) => {
             }} /> 
         </LinearGradient>  
       </Modal>
-
+      </GestureRecognizer>
     </View>
   );
 };

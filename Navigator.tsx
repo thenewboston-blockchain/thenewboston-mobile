@@ -30,8 +30,9 @@ import ScanCode from "assets/svg/ScanCode.svg";
 import TNBLogo from "assets/svg/TNBLogo.svg";
 
 
-const Navigator = ({route}) => {
+const Navigator = ({route, isLogin}) => {
   const Stack = createStackNavigator(); 
+  
   return (
     <LinearGradient
       colors={["#62737E", "#040505"]}
@@ -42,14 +43,14 @@ const Navigator = ({route}) => {
     >
       <NavigationContainer theme={MainTheme}>
         <Stack.Navigator>
-          <Stack.Screen
+          {!isLogin &&<Stack.Screen
             name="connec"
             component={ConnectScreen}
             options={({ navigation }) =>
             qrCodeHeaderOptions("", navigation)
             }
             
-          />
+          />}
           <Stack.Screen
             name="createAccount"
             component={CreateAccountScreen}
@@ -68,7 +69,7 @@ const Navigator = ({route}) => {
           <Stack.Screen
             options={headerOptions}
             name="tab" 
-            component={TabNavigator}
+            component={TabNavigator}  
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -78,13 +79,13 @@ const Navigator = ({route}) => {
 
 const TabIcon = ({ icon, text, focused }) => {
   return (
-    <View style={{ alignItems: "center", justifyContent: "center", top: 10 }}>
+    <View style={{ alignItems: "center", justifyContent: "center", top: -6, borderTopColor:'red', borderTopWidth: focused ? 2 : 0, paddingTop:11}}>
       {icon}
       <Text
         style={{
           color: focused ? "#FFF" : "#62737E",
           fontSize: 10,
-          marginTop: 10,
+          marginTop: 8,
         }}
       >
         {text}
@@ -94,15 +95,15 @@ const TabIcon = ({ icon, text, focused }) => {
 };
 
 const TabNavigator = ({route}) => {
-  const Tab = createBottomTabNavigator();   
+  const Tab = createBottomTabNavigator();    
   return (
     <Tab.Navigator
       tabBarOptions={{ showLabel: false, style: tabStyle, keyboardHidesTabBar: true}}
-      initialRouteName="overview" 
+      initialRouteName="overview"   
     >
       <Tab.Screen
-        name="overview"
-        options={{
+        name="overview" 
+        options={{ 
           tabBarIcon: ({ focused }) => (
             <TabIcon
               text="My Accounts"
@@ -198,7 +199,7 @@ const OverviewStackScreen = ({route}) => {
       />
       <OverviewStack.Screen
         options={({ navigation }) =>
-          stackheaderOptions("Send Coins", navigation)
+          stackSendCoinheaderOptions("Send Coins", navigation)
         }
         name="sendcoins1"
         initialParams={{validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url}}
@@ -206,7 +207,7 @@ const OverviewStackScreen = ({route}) => {
       />
       <OverviewStack.Screen
         options={({ navigation }) =>
-          stackheaderOptions("Send Coins", navigation)
+          stackSendCoinheaderOptions("Send Coins", navigation)
         }
         name="sendcoins2"
         component={SendCoins2Screen}
@@ -251,11 +252,11 @@ const qrCodeHeaderOptions = (title, navigation) => {
       shadowOpacity: 0,
     }, 
     headerTitle: title,
-      headerRight: () => (
-        <TouchableOpacity onPress={openCameraWithPermission}>
-          <ScanCode />
-        </TouchableOpacity>
-      ), 
+      // headerRight: () => (
+      //   <TouchableOpacity onPress={openCameraWithPermission}>
+      //     <ScanCode />
+      //   </TouchableOpacity>
+      // ), 
     headerLeft: () => <TNBLogo />, 
   }; 
 };
@@ -295,7 +296,7 @@ const headerOptions = {
     shadowOpacity: 0,
   },
   headerTitle: "",
-  headerLeft: () => null,
+  headerLeft: () => null,   
 };
 
 
@@ -315,6 +316,29 @@ const stackheaderOptions = (title, navigation) => {
   };
 };
 
+const stackSendCoinheaderOptions = (title, navigation) => {
+  return {
+    headerStyle: {
+      elevation: 0,
+      shadowOpacity: 0,
+      backgroundColor: "transparent", 
+    },
+    headerLeft: () => (
+      <TouchableOpacity style={{left:10}} onPress={() => navigation.goBack(null)}>
+        <ArrowBack />
+      </TouchableOpacity>
+    ),
+    headerRight: () => (
+      <TouchableOpacity onPress={openCameraWithPermission}>
+        <ScanCode />
+      </TouchableOpacity>
+    ),
+    headerTitle: () => <Text style={headingStyle}>{title}</Text>,
+  };
+};
+
+     
+
 const tabStyle = {
   position: "absolute",
   bottom: 25,
@@ -323,9 +347,11 @@ const tabStyle = {
   elevation: 0,
   borderRadius: 16,
   height: 65,
-  backgroundColor: "#2B4150",
-  borderWidth: 0,
-  borderColor: "#62737E",
+  backgroundColor: "linear-gradient(20.23deg, rgba(53, 96, 104, 0.6) -4.86%, rgba(29, 39, 49, 0.6) 110.32%)",
+  //borderWidth: 0,
+  borderColor: "#62737E", 
+  // borderTopColor: 'red',
+  // borderTopWidth: 1,
 };
 
 const headingStyle = {
