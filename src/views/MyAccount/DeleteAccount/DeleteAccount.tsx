@@ -1,16 +1,12 @@
 import { Colors, Custom, Typography } from "../../../styles";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import ManSvg from "../../../assets/svg/man-circle.svg"
-import BalanceSvg from "../../../assets/svg/balance.svg"
-import PasswordSvg from "../../../assets/svg/password.svg"
- 
-
-// components 
-
 import Style from "./Style"; 
-import CustomButton from "../../../components/CustomButton";
 
+import ManSvg from "assets/svg/man-circle.svg"
+import BalanceSvg from "assets/svg/balance.svg"
+import PasswordSvg from "assets/svg/password.svg"   
+import CustomButton from "components/CustomButton"; 
 
 interface DoneModal {
   navigation?: any,
@@ -30,8 +26,7 @@ const DeleteAccountScreen = (props: DoneModal) => {
     <View style={Style.container}> 
     <ScrollView showsVerticalScrollIndicator={false}>
         <View style={Style.formView}>
-          
-            {/* <DoneSvg width="15%" height="15%"/> */}
+           
             <Text style={[Typography.FONT_REGULAR, Style.heading]}>
                 {props.title}
             </Text>

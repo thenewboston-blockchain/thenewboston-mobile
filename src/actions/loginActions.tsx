@@ -47,9 +47,7 @@ export interface IAccountNumberAction {
     account_number: string;
 }
 
-export type LoginActions = IProtocolAction | IIpAddressAction | IPortAction | INickNameAction | IPasswordAction | ISigningKeyAction | IAccountNumberAction;
-
-/*<Promise<Return Type>, State Interface, Type of Param, Type of Action> */
+export type LoginActions = IProtocolAction | IIpAddressAction | IPortAction | INickNameAction | IPasswordAction | ISigningKeyAction | IAccountNumberAction; 
  
 export const ProtocolAction: ActionCreator<ThunkAction<any, ILoginState, null, IProtocolAction>> = (protocol: string) => 
     (dispatch: Dispatch) => dispatch({type: LoginActionTypes.PROTOCOL, protocol: protocol})
@@ -69,5 +67,5 @@ export const PasswordAction: ActionCreator<ThunkAction<any, ILoginState, null, I
 export const SigningKeyAction: ActionCreator<ThunkAction<any, ILoginState, null, ISigningKeyAction>> = (signing_key: string) => 
     (dispatch: Dispatch) => dispatch({type: LoginActionTypes.SINGING_KEY, signing_key: signing_key})   
 
-    export const AccountNumberAction: ActionCreator<ThunkAction<any, ILoginState, null, IAccountNumberAction>> = (account_number: string) => 
+export const AccountNumberAction: ActionCreator<ThunkAction<any, ILoginState, null, IAccountNumberAction>> = (account_number: string) => 
     (dispatch: Dispatch) => dispatch({type: LoginActionTypes.ACCOUNT_NUMBER, account_number: account_number})   

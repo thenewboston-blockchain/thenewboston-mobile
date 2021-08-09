@@ -9,7 +9,9 @@ import {Buffer} from 'buffer'
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
-import {Account} from 'thenewboston/dist/index.js' 
+import {Account} from 'thenewboston/dist/index.js'  
+import { SigningKeyAction, AccountNumberAction } from '../../actions/loginActions';
+import { useSelector, useDispatch} from 'react-redux'; 
 
 interface createAccount {
     title: string,
@@ -38,14 +40,17 @@ const CreateAccountWidget = (props: createAccount) => {
     const [dlgMessage, setDlgMessage] = useState("");
     const [dlgVisible, setDlgVisible] = useState(false);
     const [loading, setLoading] = useState<boolean>(false)  
-    //const {accounts, bank_url, validator_accounts} = props.route.params;  
+    const dispatch = useDispatch();    
 
     const handleCreateAccount=async()=>{   
         if(activity == NEW_ACCOUNT){   
             const account = new Account();   
-            const signingKey = account.signingKey
-            const accountNumber = account.accountNumber;
-            const newAccount = {name: data.nickname, sign_key: signingKey, account_number: accountNumber, balance: 0}   
+            const signingKey = account.signingKeyHex
+            const accountNumber = account.accountNumberHex;
+            const newAccount = {name: data.nickname, sign_key: signingKey, account_number: accountNumber, balance: 0}    
+            global.hasPassword = true;
+            dispatch(SigningKeyAction(account.signingKeyHex)); 
+            dispatch(AccountNumberAction(account.accountNumberHex));  
             props.addAccount(newAccount, true);   
         }
         else if(activity == EXISTING_ACCOUNT){
@@ -74,15 +79,11 @@ const CreateAccountWidget = (props: createAccount) => {
             }  
         }
         
-    }
-
-    // const handleCancel=()=>{
-    //     props.navigation.goBack(null)
-    // }
+    } 
     
     return (
         <View style={Style.container}>
-        <View style={Style.formView}>
+        <View style={Style.formView}> 
           <Text style={[Typography.FONT_REGULAR, Style.heading]}>
             {props.title}
           </Text>

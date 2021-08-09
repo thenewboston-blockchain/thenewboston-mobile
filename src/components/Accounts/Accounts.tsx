@@ -89,16 +89,8 @@ const Accounts = (props: Accounts) => {
           />
         ))}
       </ScrollView>}
-      <View style={Style.stickyItem}>
-        {/* <Animated.View
-          style={[
-            Style.stickyItemMask,
-            { width: animatedWidth, maxWidth: ACCOUNTS_BUTTON_WIDTH },
-          ]}
-        > */}
-
-          <StickyItemButton onPress={() => props.addAccount()} />
-        {/* </Animated.View> */}
+      <View style={Style.stickyItem}>  
+          <StickyItemButton onPress={() => props.addAccount()} /> 
       </View>
     </View>
   );

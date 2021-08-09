@@ -12,15 +12,28 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android" />
+            <option value="$PROJECT_DIR$/../node_modules/@react-native-community/blur/android" />
+            <option value="$PROJECT_DIR$/../node_modules/@react-native-community/clipboard/android" />
             <option value="$PROJECT_DIR$/../node_modules/@react-native-community/masked-view/android" />
             <option value="$PROJECT_DIR$/../node_modules/@react-native-picker/picker/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-aes-cipher/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-encrypted-storage/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-fingerprint-scanner/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-fs/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-image-picker/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-linear-gradient/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-permissions/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-randombytes/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-reanimated/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-screens/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-securerandom/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-spinkit/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-svg/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-vector-icons/android" />
+            <option value="$PROJECT_DIR$/../node_modules/rn-config-reader/android" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -7,9 +7,7 @@ import Style from './Style'
 import { useState } from 'react';  
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
-import LinearGradient from 'react-native-linear-gradient';
-import {Account, AccountData, BlockData, BlockMessage, AccountPaymentHandlerOptions, SignedMessage, Bank} from 'thenewboston/dist/index.js';
-import {Buffer} from 'buffer'  
+import LinearGradient from 'react-native-linear-gradient';  
 
 interface createFriend {
     title: string,
@@ -29,7 +27,7 @@ const createFriendWidget = (props: createFriend) => {
     const [isValid,setValid] = useState(false);
     const [data, setData] = useState<createFriendPayload>({
         nickname: "",
-        key:"f111e3eaa9d04fbc9352b1f33e5e672793ae06e4b79e6c73457327431df5ddc5"
+        key:""
     })
     const [loading, setLoading] = useState<boolean>(false)   
     const [dlgMessage, setDlgMessage] = useState("");
@@ -51,18 +49,14 @@ const createFriendWidget = (props: createFriend) => {
         if(props.accounts != null){
             props.accounts.map((item)=>{
                 if(item.account_number == friend.account_number){
-                    curBalance = item.balance    ///how to get balance?
+                    curBalance = item.balance    
                 }
             }) 
             friend.balance = curBalance;
             props.addFirends(friend);   
         } 
         
-    }
-
-    // const handleCancel=()=>{
-    //     //props.navigation.goBack(null)
-    // }
+    } 
     
     return (
         <View style={Style.container}>
@@ -122,7 +116,7 @@ const createFriendWidget = (props: createFriend) => {
                 transparent={true}
                 visible={dlgVisible}  
                 onRequestClose={() => {
-                // this.closeButtonFunction()
+                    
                 }}
                 
             >

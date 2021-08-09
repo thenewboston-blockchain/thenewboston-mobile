@@ -1,58 +1,91 @@
 import { Colors, Custom, Typography } from "styles";
-import React, { useEffect, useState,} from "react";
-
-import { ScrollView, Text, TouchableOpacity, View, Modal, ActivityIndicator} from "react-native";
-import Style from "./Style";
-
-
-// components
-import Accounts from "../../components/Accounts/Accounts";
-import CustomButton from "../../components/CustomButton";
-import AccountNumber from "../../components/AccountNumber/AccountNumber";
-import SignKey from "../../components/SignKey/SignKey";
-
-import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
-import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
-import BottomDrawer from "react-native-bottom-drawer-view";
+import React, { useEffect, useState,} from "react"; 
+import nacl from 'tweetnacl'
+import naclutil from 'tweetnacl-util' 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
-import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
-import { AccountAction } from '../../actions/accountActions'
-import DeleteAccount from './DeleteAccount/DeleteAccount'
-import LinearGradient from 'react-native-linear-gradient';
-// svg
-import Refresh from "../../assets/svg/Refresh.svg";
-import CryptoJS from "crypto-js"
-import EncryptedStorage from 'react-native-encrypted-storage';
+import { IAppState } from 'store/store'; 
+import LinearGradient from 'react-native-linear-gradient'; 
+import EncryptedStorage from 'react-native-encrypted-storage';  
+import { 
+  ScrollView, 
+  Text, 
+  TouchableOpacity, 
+  View, 
+  Modal, 
+  ActivityIndicator, 
+  NativeModules
+} from "react-native";
+import Style from "./Style"; 
+import GestureRecognizer from 'react-native-swipe-gestures';
 
-
-const TAB_BAR_HEIGHT = 20;
-const DOWN_DISPLAY = 50;
+import Accounts from "components/Accounts/Accounts";
+import CustomButton from "components/CustomButton";
+import AccountNumber from "components/AccountNumber/AccountNumber";
+import SignKey from "components/SignKey/SignKey"; 
+import CreateAccountWidget from "components/CreateAccountWIdget/CreateAccountWidget";
+import DoneModalViewWidget from "components/CustomWidgets/DoneModalview";
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";   
+import { AccountAction } from 'actions/accountActions'
+import DeleteAccount from './DeleteAccount/DeleteAccount' 
+import Refresh from "assets/svg/Refresh.svg";  
+import DoneSvg from "assets/svg/PullDown.svg"
 
 const OverviewScreen = ({ route, navigation }) => {
  
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch(); 
-  const lAccounts = useSelector((state: IAppState) => state.accountState.account);
+  const lAccounts = useSelector((state: IAppState) => state.accountState.account); 
+  const {validator_accounts, bank_url, login} = route.params;  
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [modalVisible, setModalVisible] = useState(false);   
-  const [viewRef, setViewRef] = useState(null);   
-  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login} = route.params; 
+  const [viewRef, setViewRef] = useState(null);  
   const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : myAccounts[0].name); 
-  const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : toHexString(myAccounts[0].account_number));
-  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : toHexString(myAccounts[0].sign_key));  
+  const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : (myAccounts[0].account_number)); 
+  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : toDecryptSignKey(myAccounts[0]));  
   const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
   const [doneVisible, setDoneVisible] = useState(login != 'login'); 
   const [addMode, setAddMode] = useState(false); 
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false); 
   const [removeVisible, setRemoveVisible] = useState(false);
-  const [spinVisible, setSpinVisible] = useState(false)
-  
- 
+  const [spinVisible, setSpinVisible] = useState(false) 
+  const [privateKey, setPrivateKey] = useState(null);  
+  const [publicKey, setPublicKey] = useState(null); 
+    
+  type AccountKeys = [Uint8Array, Uint8Array];
   const handleSendCoins = () => { 
-    console.log("send coins");
+     
+  };
+
+  function naclEncrypting(plain_text){
+    const one_time_code = nacl.randomBytes(24);    
+    const cipher_text = nacl.box(
+      naclutil.decodeUTF8(plain_text),
+        one_time_code,
+        hexToUint8Array(publicKey),
+        hexToUint8Array(privateKey)
+        
+    );  
+    const message_in_transit = {cipher_text, one_time_code}; 
+    return message_in_transit;
+  };
+
+  function toDecryptSignKey(account){   
+    if(account.isEncrypt == false || account.one_time_code == null){ 
+      return account.sign_key
+    }
+    else{ 
+      const message = {cipher_text: account.sign_key, one_time_code: account.one_time_code}
+      return naclDecrypting(message)
+    } 
+  }
+
+  function naclDecrypting(message){ 
+     
+    let decoded_message = nacl.box.open(message.cipher_text, message.one_time_code, hexToUint8Array(publicKey), hexToUint8Array(privateKey));   
+    let plain_text = naclutil.encodeUTF8(decoded_message)  
+    return plain_text;
   };
 
   function toHexString(byteArray) {
@@ -65,44 +98,51 @@ const OverviewScreen = ({ route, navigation }) => {
 
   useEffect(() => {  
     getSeedESP();
-  }, []); 
+  }, []);  
 
-  async function setMyAccountsESP(accounts, isCapsule) {
-    try {
-      await EncryptedStorage.setItem(
-          "myAccounts",
-          JSON.stringify({ 
-            isCapsule: isCapsule,
-            myAccounts : accounts, 
-        })
-      ); 
+  function generateFromKey(signingKey: string): AccountKeys { 
+    const { publicKey: accountNumber, secretKey: signingKey_ } = nacl.sign.keyPair.fromSeed(hexToUint8Array(signingKey));
+    return [accountNumber, signingKey_];
+  }
+  
+  function fromBothKeys(signingKey: string, accountNumber: string): AccountKeys {
+    const accountNumberArray = hexToUint8Array(accountNumber);
+    const signingKeyArray = new Uint8Array(64);
+    signingKeyArray.set(hexToUint8Array(signingKey));
+    signingKeyArray.set(accountNumberArray, 32);
+    return [accountNumberArray, signingKeyArray];
+  }
+    
+  function hexToUint8Array(arr: string): Uint8Array {
+    return new Uint8Array(Buffer.from(arr, "hex"));
+  } 
+
+  async function getSeedESP() {
+    try {   
+      const session = await EncryptedStorage.getItem("seed");    
+      if (session !== undefined) {
+           setSeed(session);   
+      }
+      const keyPair = await EncryptedStorage.getItem("keyPair");     
+      if (keyPair !== undefined) {  
+        setPrivateKey(JSON.parse(keyPair).privateKey);   
+        setPublicKey(JSON.parse(keyPair).publicKey);     
+      }
     } catch (error) {
        console.log(error);
     }
   } 
 
-  async function getSeedESP() {
-    try {   
-      const session = await EncryptedStorage.getItem("seed"); 
-      if (session !== undefined) {
-           setSeed(session); 
-      }
-    } catch (error) {
-       console.log(error);
-    }
-  }
-
-  const deleteAccount = () => {  
-    let _myaccounts = setMyAccounts(myAccounts.filter(item => item.account_number !== actNumber))
-    var ciphertext = CryptoJS.AES.encrypt(_myaccounts, seed); 
-    setMyAccountsESP(ciphertext, true)
-    dispatch(AccountAction(_myaccounts)); 
-    setMyAccounts(_myaccounts);
-    if(_myaccounts == "" && _myaccounts.length > 0){
-      setActName(_myaccounts[0].name);
-      setActNumber(toHexString(_myaccounts[0].account_number));
-      setActSignKey(toHexString(_myaccounts[0].sign_key));
-      setActBalance(_myaccounts[0].balance);
+  const deleteAccount = () => {   
+    let _myAccounts = myAccounts.filter(item => item.account_number !== actNumber);
+    setMyAccounts(_myAccounts);  
+    dispatch(AccountAction(_myAccounts)); 
+    
+    if(_myAccounts != [] && _myAccounts.length > 0){
+      setActName(_myAccounts[0].name);
+      setActNumber((_myAccounts[0].account_number));
+      setActSignKey( toDecryptSignKey(_myAccounts[0]));
+      setActBalance(_myAccounts[0].balance);
     }
     else{
       setActName('No Accounts');
@@ -123,10 +163,8 @@ const OverviewScreen = ({ route, navigation }) => {
           }
         }); 
         return account 
-      }) 
-     var ciphertext = CryptoJS.AES.encrypt(cusAccounts, seed); 
-     setMyAccountsESP(ciphertext, true)
-     dispatch(AccountAction(cusAccounts)); 
+      })  
+     dispatch(AccountAction(cusAccounts));  
      setMyAccounts(cusAccounts);
      setSpinVisible(false);
 
@@ -141,15 +179,34 @@ const OverviewScreen = ({ route, navigation }) => {
       } 
       else{
         setActName(myAccounts[index].name);
-      }
-      setActNumber(toHexString(myAccounts[index].account_number));
-      setActSignKey(toHexString(myAccounts[index].sign_key));
+      } 
+      setActNumber((myAccounts[index].account_number));   
+      setActSignKey(toDecryptSignKey(myAccounts[index]));
       setActBalance(myAccounts[index].balance);  
     } 
   }
 
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 50
+  };
+
+  const onSwipeLeft = (state) =>{
+      navigation.navigate('transactions')
+  }
+
+  const onSwipeDown = (state) =>{
+    setModalVisible(false);
+  }
+
   return (
     <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
+      <GestureRecognizer  
+            onSwipeLeft={(state) => onSwipeLeft(state)} 
+            onSwipeDown={(state) => onSwipeDown(state)} 
+            config={config} 
+            style={Style.container}
+        >
       <View style={{ alignItems: "center"}} >
         <Text style={Style.heading}>{actName}</Text> 
         <Accounts
@@ -173,8 +230,7 @@ const OverviewScreen = ({ route, navigation }) => {
             <Refresh />
           </TouchableOpacity>
         </View>
-
-        {/* send coins  */}
+ 
         <CustomButton
           title="Send Coins" 
           onPress={()=>navigation.navigate('sendcoins1')}
@@ -220,7 +276,7 @@ const OverviewScreen = ({ route, navigation }) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
       >
         <BlurView
@@ -230,6 +286,10 @@ const OverviewScreen = ({ route, navigation }) => {
           reducedTransparencyFallbackColor="white"
         />
         <View style={Style.modalContainer}>
+          <View style= {Style.pulldonwContainer}>
+            <DoneSvg width="15%" height="5%" />
+          </View>
+        
           <ScrollView showsVerticalScrollIndicator={false}>
           <CreateAccountWidget title={"Create or Add Account"}
             navigation={navigation}
@@ -250,21 +310,26 @@ const OverviewScreen = ({ route, navigation }) => {
                 }
               })
               if(bExist != false){ 
-                setDlgMessage("This signning key exists in your accounts");
+                setDlgMessage("This signing key exists in your accounts");
                 setDlgVisible(true);
               }
               else if(bExistName != false){ 
                 setDlgMessage("This account name exists in your accounts");
                 setDlgVisible(true);
               }
-              else{
-                myAccounts.push(account);
-                dispatch(AccountAction(myAccounts));
-                setMyAccounts(myAccounts);
-                var ciphertext = CryptoJS.AES.encrypt(myAccounts, seed); 
-                setMyAccountsESP(ciphertext, true)
-                setModalVisible(false);
-                setDoneVisible(true);
+              else{   
+                if(publicKey != null && privateKey != null){
+                  const encryptedData = naclEncrypting(account.sign_key) 
+                  account.sign_key = encryptedData.cipher_text;
+                  account.one_time_code = encryptedData.one_time_code;
+                  account.isEncrypt = true; 
+                  myAccounts.push(account); 
+                  dispatch(AccountAction(myAccounts));
+                  setMyAccounts(myAccounts); 
+                  setModalVisible(false);
+                  setDoneVisible(true); 
+                }
+               
               }
               
             }} 
@@ -282,7 +347,7 @@ const OverviewScreen = ({ route, navigation }) => {
         transparent={true}
         visible={doneVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >
@@ -309,7 +374,7 @@ const OverviewScreen = ({ route, navigation }) => {
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >
@@ -335,7 +400,7 @@ const OverviewScreen = ({ route, navigation }) => {
           transparent={true}
           visible={removeVisible}  
           onRequestClose={() => {
-          // this.closeButtonFunction()
+          
           }}
           
       >
@@ -365,6 +430,7 @@ const OverviewScreen = ({ route, navigation }) => {
               /> 
           </LinearGradient>  
       </Modal>
+      </GestureRecognizer>
     </View>
   );
 };

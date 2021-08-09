@@ -1,43 +1,32 @@
 import { Colors, Custom, Typography } from "styles";
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect, useState } from "react"; 
 import { ScrollView, Text, TouchableOpacity, View, Modal, ActivityIndicator} from "react-native";
-import Style from "./Style";
+import { useSelector, useDispatch} from 'react-redux';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
-
-// components
+import Style from "./Style"; 
 import Accounts from "../../components/Accounts/Accounts";
 import CustomButton from "../../components/CustomButton";
-import FriendNumber from "../../components/FriendNumber/FriendNumber";
-import SignKey from "../../components/SignKey/SignKey";
-
+import FriendNumber from "../../components/FriendNumber/FriendNumber";  
 import CreateFriendWidget from "../../components/CreateFriendWidget/CreateFriendWidget";
 import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
-import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
-import BottomDrawer from "react-native-bottom-drawer-view";
+import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview"; 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
-// svg
-import Refresh from "../../assets/svg/Refresh.svg";
 import LinearGradient from 'react-native-linear-gradient';
-import { IAppState } from '../../store/store';
-import { useSelector, useDispatch} from 'react-redux';
-import { FriendAction } from '../../actions/friendActions'
-
-const TAB_BAR_HEIGHT = 20;
-const DOWN_DISPLAY = 50;
+import { IAppState } from '../../store/store'; 
+import { FriendAction } from '../../actions/friendActions' 
+import Refresh from "../../assets/svg/Refresh.svg";
+ 
 
 const FriendsScreen = ({ route, navigation }) => {
  
-  const [loading, setLoading] = useState(false);
-
+  const [loading, setLoading] = useState(false); 
   const dispatch = useDispatch(); 
-  const lFriends = useSelector((state: IAppState) => state.friendState.friend);
-
-  const [friends, setFriends] = useState(lFriends == null ? [] : lFriends); 
-
+  const lFriends = useSelector((state: IAppState) => state.friendState.friend); 
+  const [friends, setFriends] = useState(lFriends == null ? [] : lFriends);  
   const [modalVisible, setModalVisible] = useState(false);   
   const [viewRef, setViewRef] = useState(null);   
-  const {nickname, signingKeyHex, signingKey, accounts, validator_accounts, bank_url, login} = route.params;   
+  const {validator_accounts, bank_url, login} = route.params;   
   const [actName, setActName] = useState((friends == null || friends.length == 0) ? 'No Friends' : friends[0].name); 
   const [balance, setBalance] = useState((friends == null || friends.length == 0) ? '0.0' : friends[0].balance);  
   const [actNumber, setActNumber] = useState((friends == null || friends.length == 0) ? '0.0' : friends[0].account_number);   
@@ -82,8 +71,28 @@ const FriendsScreen = ({ route, navigation }) => {
 
   }
 
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 50
+  };
+
+  const onSwipeRight = (state) =>{
+    navigation.navigate('transactions')
+  }
+
+  const onSwipeLeft = (state) =>{ 
+    navigation.navigate('settings')
+  }
+
+
   return (
     <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
+    <GestureRecognizer 
+        onSwipeLeft={(state) => onSwipeLeft(state)}
+        onSwipeRight={(state) => onSwipeRight(state)} 
+        config={config} 
+        style={Style.container}
+        >  
       <View style={{ alignItems: "center"}} >
         <Text style={Style.heading}>{'My friends'}</Text> 
         <Accounts
@@ -129,7 +138,7 @@ const FriendsScreen = ({ route, navigation }) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
       >
         <View style={Style.modalContainer}>
@@ -183,7 +192,7 @@ const FriendsScreen = ({ route, navigation }) => {
         transparent={true}
         visible={doneVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >
@@ -204,15 +213,14 @@ const FriendsScreen = ({ route, navigation }) => {
                     setDoneVisible(false);
                 }} />
         </LinearGradient> 
-        
-        
+         
       </Modal>
       <Modal
         animationType="slide"
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >
@@ -233,7 +241,7 @@ const FriendsScreen = ({ route, navigation }) => {
             }} /> 
         </LinearGradient>  
       </Modal>
-
+      </GestureRecognizer>
     </View>
   );
 };

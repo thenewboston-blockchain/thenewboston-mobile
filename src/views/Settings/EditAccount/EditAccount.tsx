@@ -1,23 +1,24 @@
 import { Colors, Typography } from 'styles';
 import { Text, View, Modal} from 'react-native'; 
-import CustomButton from '../../../components/CustomButton';
-import CustomInput from '../../../components/CustomInput' 
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+import LinearGradient from 'react-native-linear-gradient';
 import React from 'react';
 import Style from './Style'
 import { useState } from 'react';  
-import InfoModalWidget from "../../../components/InfoModalWidgets/InfoModalview"; 
-import { BlurView, VibrancyView } from "@react-native-community/blur";
-import LinearGradient from 'react-native-linear-gradient';
-import { IAppState } from '../../../store/store';
 import { useSelector, useDispatch} from 'react-redux'; 
-import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from '../../../actions/loginActions'
+
+import CustomButton from 'components/CustomButton';
+import CustomInput from 'components/CustomInput' 
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview"; 
+import { IAppState } from 'store/store';
+import { ProtocolAction, IpAddressAction, PortAction, NickNameAction } from 'actions/loginActions'
 
 interface EditAccountPayload {
   nickname: string 
 }
 
 const EditAccountScreen = ({route, navigation}) => {
-  const {nickname} = route.params;    
+  const {nickname, setNickName} = route.params;     
   const dispatch = useDispatch();  
   const lNickname = useSelector((state: IAppState) => state.loginState.nickName);  
   const [data, setData] = useState<EditAccountPayload>({
@@ -27,7 +28,7 @@ const EditAccountScreen = ({route, navigation}) => {
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false);
 
-  const onSaveNickName = ()=>{ 
+  const onSaveNickName = ()=>{  
     dispatch(NickNameAction(data.nickname)) 
     setDlgMessage("Success to save Nickname!")
     setDlgVisible(true); 
@@ -77,8 +78,9 @@ const EditAccountScreen = ({route, navigation}) => {
                         message={dlgMessage} 
                         button={"Ok"} 
                         handleOk={() => {
-                        setDlgVisible(false);
-                        navigation.goBack(null);
+                            setDlgVisible(false); 
+                            setNickName(data.nickname)
+                            navigation.goBack({nickname: data.nickname});
                     }} /> 
                 </LinearGradient>  
             </Modal>

@@ -4,12 +4,18 @@ import { ScrollView, Text, View, Modal} from "react-native";
 import FingerprintScanner from "react-native-fingerprint-scanner"
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient'; 
-import CustomButton from "../../components/CustomButton";
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview";  
-// svgs
-import FingerPrint from "../../assets/svg/FingerPrint.svg";
+import { TouchableOpacity } from "react-native-gesture-handler";  
+import {Account, Bank} from 'thenewboston' 
+import { useSelector, useDispatch} from 'react-redux';
+import { IAppState } from 'store/store'; 
 import Style from "./Style";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import RNConfigReader from 'rn-config-reader';
+
+import CustomButton from "components/CustomButton";
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";    
+import FingerPrint from "assets/svg/FingerPrint.svg";
+
+const ACCOUNT_MAX = 100; 
 
 interface login {
   navigation: any,
@@ -20,46 +26,93 @@ const LoginScreen = ({ navigation, route }:login) => {
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
   const [fingerPrint, setFingerPrint] = useState(false)
-  const [fingerAuth, setFingerAuth] = useState(false)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [fingerAuth, setFingerAuth] = useState(false) 
   const [dlgMessage, setDlgMessage] = useState("");
-  const [dlgVisible, setDlgVisible] = useState(false); 
+  const [dlgVisible, setDlgVisible] = useState(false);  
+  const [bankURL, setBankURL] = useState(route.params == undefined ? "" : route.params.bank_url)
+  const [nickName, setNickName] = useState(route.params == undefined ? "" : route.params.nickName)
+  const [accounts, setAccounts] = useState(route.params == undefined ? "" : route.params.accounts)
+  const [validAccounts, setValidAccounts] = useState(route.params == undefined ? "" : route.params.validator_accounts)
+  const lNickname = useSelector((state: IAppState) => state.loginState.nickName);
+  const protocol = useSelector((state: IAppState) => state.loginState.protocol);
+  const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)
  
   const goToPasswordLogin = () => { 
     navigation.navigate("loginPassword", { 
-      accounts: route.params.accounts,
-      validator_accounts: route.params.validator_accounts,
-      bank_url: route.params.bank_url, 
-      nickname: route.params.nickname,
+      accounts: accounts,
+      validator_accounts: validAccounts,
+      bank_url: bankURL, 
+      nickname: nickName,
     });
   };
 
-  useEffect(() => { 
-    FingerprintScanner
-    .authenticate({ description: 'Scan your fingerprint on the device scanner to continue' })
-    .then(() => {
-      setFingerAuth(true)
-    })
-    .catch((error) => { 
-      setErrorMessage(error.message)
-    });
-     
-    FingerprintScanner
-    .isSensorAvailable()
-    .then(biometryType => setFingerPrint(true))
-    .catch(error=> setErrorMessage(error.message));
+  const getAccounts = async ()  => {
+    var url = bankURL
+    if(url == ""){
+      url = RNConfigReader.SERVER_IP
+      setBankURL(url);
+    }
+    console.log(url)
+    url = lProtocol + '://' + url; 
+    const bank = new Bank(url);   
+    const accounts = await bank.getAccounts();      
+    const validator_bank = new Bank(url);    
+    const allAccounts = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
+    setAccounts(allAccounts)
+    var validator_accounts = [];
+    let account_size = allAccounts.count; 
+    for(let i = 0; i < account_size; i += ACCOUNT_MAX){
+      const part_accounts = await validator_bank.getAccounts({ limit: ACCOUNT_MAX, offset: i });  
+      validator_accounts = [...validator_accounts, ...part_accounts.results]; 
+    } 
+    setValidAccounts(validator_accounts);
+    if(nickName == "" || nickName == null){
+      setNickName(lNickname)
+    }
+    onLoginScreen(); 
+    
+  }
+
+  useEffect(() => {   
+    if(accounts == null || accounts == "" ){
+      getAccounts(); 
+    } 
+    else{ 
+      onLoginScreen();
+    }
     
   }, []);
  
+  const onLoginScreen = () => {
+    FingerprintScanner
+    .authenticate({ description: 'Scan your fingerprint on the device scanner to continue' })
+    .then(() => {
+      setFingerAuth(true) 
+      onFingerprint();
+    })
+    .catch((error) => {  
+      setFingerAuth(false) 
+      onFingerprint();
+      console.log(error.message)
+    }); 
+    FingerprintScanner
+    .isSensorAvailable()
+    .then(biometryType => setFingerPrint(true))
+    .catch(error=> { 
+      setFingerAuth(false) 
+      onFingerprint();
+      console.log(error.message);
+    });
+  }
 
   const onFingerprint = () =>{
         
      if(fingerPrint == false){
       navigation.navigate("loginPassword", { 
-        accounts: route.params.accounts,
-        validator_accounts: route.params.validator_accounts,
-        bank_url: route.params.bank_url, 
-        nickname: route.params.nickname,
+        accounts: accounts,
+        validator_accounts: validAccounts,
+        bank_url: bankURL, 
+        nickname: nickName,
       });
      }
      else{
@@ -71,10 +124,10 @@ const LoginScreen = ({ navigation, route }:login) => {
         navigation.navigate('tab', { 
           signingKeyHex: "",
           accountNumber: "", 
-          accounts: route.params.accounts,
-          validator_accounts: route.params.validator_accounts,
-          bank_url: route.params.bank_url, 
-          nickname: route.params.nickname,
+          accounts: accounts,
+          validator_accounts: validAccounts,
+          bank_url: bankURL, 
+          nickname: nickName,
           login: 'login',
           pScreen:'password'
         });
@@ -84,10 +137,10 @@ const LoginScreen = ({ navigation, route }:login) => {
 
   const handleSubmit = () => { 
     navigation.navigate("createAccount", { 
-      accounts: route.params.accounts,
-      validator_accounts: route.params.validator_accounts,
-      bank_url: route.params.bank_url, 
-      nickname: route.params.nickname,  
+      accounts: accounts,
+      validator_accounts: validAccounts,
+      bank_url: bankURL, 
+      nickname: nickName,  
       pScreen: 'login'
     });
   };
@@ -140,7 +193,7 @@ const LoginScreen = ({ navigation, route }:login) => {
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >

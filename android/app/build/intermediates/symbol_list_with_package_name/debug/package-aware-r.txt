@@ -1,4 +1,4 @@
-com.newthebostonapp
+com.thenewboston.wallet
 anim abc_fade_in
 anim abc_fade_out
 anim abc_grow_fade_in_from_bottom
@@ -62,6 +62,13 @@ animator mtrl_fab_hide_motion_spec
 animator mtrl_fab_show_motion_spec
 animator mtrl_fab_transformation_sheet_collapse_spec
 animator mtrl_fab_transformation_sheet_expand_spec
+array crypto_fingerprint_fallback_prefixes
+array crypto_fingerprint_fallback_vendors
+array export_variables
+array hide_fingerprint_instantly_prefixes
+attr SpinKitViewStyle
+attr SpinKit_Color
+attr SpinKit_Style
 attr actionBarDivider
 attr actionBarItemBackground
 attr actionBarPopupTheme
@@ -741,10 +748,13 @@ color abc_tint_spinner
 color abc_tint_switch_track
 color accent_material_dark
 color accent_material_light
+color androidx_core_ripple_material_light
+color androidx_core_secondary_text_default_material_light
 color background_floating_material_dark
 color background_floating_material_light
 color background_material_dark
 color background_material_light
+color biometric_error_color
 color bright_foreground_disabled_material_dark
 color bright_foreground_disabled_material_light
 color bright_foreground_inverse_material_dark
@@ -1050,6 +1060,7 @@ dimen disabled_alpha_material_light
 dimen fastscroll_default_thickness
 dimen fastscroll_margin
 dimen fastscroll_minimum_range
+dimen fingerprint_icon_size
 dimen highlight_alpha_material_colored
 dimen highlight_alpha_material_dark
 dimen highlight_alpha_material_light
@@ -1336,6 +1347,8 @@ drawable design_ic_visibility
 drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
+drawable fingerprint_dialog_error_to_fp
+drawable fingerprint_dialog_fp_to_error
 drawable ic_calendar_black_24dp
 drawable ic_clear_black_24dp
 drawable ic_edit_black_24dp
@@ -1377,12 +1390,27 @@ id ALT
 id BOTTOM_END
 id BOTTOM_START
 id CTRL
+id ChasingDots
+id Circle
+id CubeGrid
+id DoubleBounce
 id FUNCTION
+id FadingCircle
+id FoldingCube
 id META
+id MultiplePulse
+id MultiplePulseRing
+id Pulse
+id PulseRing
+id RotatingCircle
+id RotatingPlane
 id SHIFT
 id SYM
 id TOP_END
 id TOP_START
+id ThreeBounce
+id WanderingCubes
+id Wave
 id accessibility_action_clickable_span
 id accessibility_actions
 id accessibility_custom_action_0
@@ -1499,6 +1527,10 @@ id fill_horizontal
 id fill_vertical
 id filled
 id filter_chip
+id fingerprint_description
+id fingerprint_error
+id fingerprint_icon
+id fingerprint_subtitle
 id fitBottomStart
 id fitCenter
 id fitEnd
@@ -1765,6 +1797,8 @@ layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
 layout dev_loading_view
+layout device_credential_handler_activity
+layout fingerprint_dialog_layout
 layout fps_view
 layout mtrl_alert_dialog
 layout mtrl_alert_dialog_actions
@@ -1824,6 +1858,8 @@ layout text_view_without_line_height
 mipmap ic_launcher
 mipmap ic_launcher_round
 plurals mtrl_badge_content_description
+string SERVER_IP
+string VALIDATOR_SERVER_IP
 string abc_action_bar_home_description
 string abc_action_bar_up_description
 string abc_action_menu_overflow_description
@@ -1851,6 +1887,7 @@ string abc_searchview_description_voice
 string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
+string accessibility_fingerprint_dialog_help_area
 string alert_description
 string app_name
 string appbar_scrolling_view_behavior
@@ -1891,10 +1928,20 @@ string character_counter_pattern
 string chip_text
 string clear_text_end_icon_content_description
 string combobox_description
+string confirm_device_credential_password
+string default_error_msg
 string error_icon_content_description
 string exposed_dropdown_menu_content_description
 string fab_transformation_scrim_behavior
 string fab_transformation_sheet_behavior
+string fingerprint_dialog_touch_sensor
+string fingerprint_error_hw_not_available
+string fingerprint_error_hw_not_present
+string fingerprint_error_lockout
+string fingerprint_error_no_fingerprints
+string fingerprint_error_user_canceled
+string fingerprint_not_recognized
+string generic_error_user_canceled
 string header_description
 string hide_bottom_view_on_scroll_behavior
 string icon_content_description
@@ -2185,6 +2232,7 @@ style CalendarDatePickerStyle
 style CardView
 style CardView_Dark
 style CardView_Light
+style DeviceCredentialHandlerTheme
 style DialogAnimationFade
 style DialogAnimationSlide
 style EmptyTheme
@@ -2249,6 +2297,54 @@ style ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Year
 style ShapeAppearanceOverlay_MaterialComponents_TextInputLayout_FilledBox
 style ShapeAppearanceOverlay_TopLeftCut
 style ShapeAppearanceOverlay_TopRightDifferentCornerSize
+style SpinKitView
+style SpinKitView_ChasingDots
+style SpinKitView_Circle
+style SpinKitView_CubeGrid
+style SpinKitView_DoubleBounce
+style SpinKitView_FadingCircle
+style SpinKitView_FoldingCube
+style SpinKitView_Large
+style SpinKitView_Large_ChasingDots
+style SpinKitView_Large_Circle
+style SpinKitView_Large_CubeGrid
+style SpinKitView_Large_DoubleBounce
+style SpinKitView_Large_FadingCircle
+style SpinKitView_Large_FoldingCube
+style SpinKitView_Large_MultiplePulse
+style SpinKitView_Large_MultiplePulseRing
+style SpinKitView_Large_Pulse
+style SpinKitView_Large_PulseRing
+style SpinKitView_Large_RotatingCircle
+style SpinKitView_Large_RotatingPlane
+style SpinKitView_Large_ThreeBounce
+style SpinKitView_Large_WanderingCubes
+style SpinKitView_Large_Wave
+style SpinKitView_MultiplePulse
+style SpinKitView_MultiplePulseRing
+style SpinKitView_Pulse
+style SpinKitView_PulseRing
+style SpinKitView_RotatingCircle
+style SpinKitView_RotatingPlane
+style SpinKitView_Small
+style SpinKitView_Small_ChasingDots
+style SpinKitView_Small_Circle
+style SpinKitView_Small_CubeGrid
+style SpinKitView_Small_DoubleBounce
+style SpinKitView_Small_FadingCircle
+style SpinKitView_Small_FoldingCube
+style SpinKitView_Small_MultiplePulse
+style SpinKitView_Small_MultiplePulseRing
+style SpinKitView_Small_Pulse
+style SpinKitView_Small_PulseRing
+style SpinKitView_Small_RotatingCircle
+style SpinKitView_Small_RotatingPlane
+style SpinKitView_Small_ThreeBounce
+style SpinKitView_Small_WanderingCubes
+style SpinKitView_Small_Wave
+style SpinKitView_ThreeBounce
+style SpinKitView_WanderingCubes
+style SpinKitView_Wave
 style SpinnerDatePickerDialog
 style SpinnerDatePickerStyle
 style Test_ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Day
@@ -2471,6 +2567,7 @@ style ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox
 style ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox_Dense
 style ThemeOverlay_MaterialComponents_Toolbar_Primary
 style ThemeOverlay_MaterialComponents_Toolbar_Surface
+style TransparentStyle
 style Widget_AppCompat_ActionBar
 style Widget_AppCompat_ActionBar_Solid
 style Widget_AppCompat_ActionBar_TabBar
@@ -2719,7 +2816,6 @@ styleable MenuView android_windowAnimationStyle android_itemTextAppearance andro
 styleable NavigationView android_background android_fitsSystemWindows android_maxWidth elevation headerLayout itemBackground itemHorizontalPadding itemIconPadding itemIconSize itemIconTint itemMaxLines itemShapeAppearance itemShapeAppearanceOverlay itemShapeFillColor itemShapeInsetBottom itemShapeInsetEnd itemShapeInsetStart itemShapeInsetTop itemTextAppearance itemTextColor menu
 styleable PopupWindow android_popupBackground android_popupAnimationStyle overlapAnchor
 styleable PopupWindowBackgroundState state_above_anchor
-styleable PxBlurringView blurRadius downsampleFactor overlayColor
 styleable RecycleListView paddingBottomNoButtons paddingTopNoTitle
 styleable RecyclerView android_orientation android_clipToPadding android_descendantFocusability fastScrollEnabled fastScrollHorizontalThumbDrawable fastScrollHorizontalTrackDrawable fastScrollVerticalThumbDrawable fastScrollVerticalTrackDrawable layoutManager reverseLayout spanCount stackFromEnd
 styleable ScrimInsetsFrameLayout insetForeground
@@ -2729,6 +2825,7 @@ styleable ShapeAppearance cornerFamily cornerFamilyBottomLeft cornerFamilyBottom
 styleable SimpleDraweeView actualImageResource actualImageScaleType actualImageUri backgroundImage fadeDuration failureImage failureImageScaleType overlayImage placeholderImage placeholderImageScaleType pressedStateOverlayImage progressBarAutoRotateInterval progressBarImage progressBarImageScaleType retryImage retryImageScaleType roundAsCircle roundBottomEnd roundBottomLeft roundBottomRight roundBottomStart roundTopEnd roundTopLeft roundTopRight roundTopStart roundWithOverlayColor roundedCornerRadius roundingBorderColor roundingBorderPadding roundingBorderWidth viewAspectRatio
 styleable Snackbar snackbarButtonStyle snackbarStyle
 styleable SnackbarLayout android_maxWidth actionTextColorAlpha animationMode backgroundOverlayColorAlpha elevation maxActionInlineWidth
+styleable SpinKitView SpinKit_Color SpinKit_Style
 styleable Spinner android_entries android_popupBackground android_prompt android_dropDownWidth popupTheme
 styleable StateListDrawable android_dither android_visible android_variablePadding android_constantSize android_enterFadeDuration android_exitFadeDuration
 styleable StateListDrawableItem android_drawable
@@ -2744,6 +2841,7 @@ styleable View android_theme android_focusable paddingEnd paddingStart theme
 styleable ViewBackgroundHelper android_background backgroundTint backgroundTintMode
 styleable ViewPager2 android_orientation
 styleable ViewStubCompat android_id android_layout android_inflatedId
+xml imagepicker_provider_paths
 xml network_security_config
 xml rn_dev_preferences
 xml standalone_badge

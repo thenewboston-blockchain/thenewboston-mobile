@@ -1,76 +1,77 @@
 import { Colors, Custom, Typography} from "styles";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View, Modal} from "react-native";
-
-// components
-import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
-
-import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
-import InfoModalWidget from "../../components/InfoModalWidgets/InfoModalview"; 
-import BottomDrawer from "react-native-bottom-drawer-view";
-import { BlurView, VibrancyView } from "@react-native-community/blur";
-import { IAppState } from '../../store/store';
 import { useSelector, useDispatch} from 'react-redux';
-import { AccountAction } from '../../actions/accountActions'
-import Style from "./Style";
-import LinearGradient from 'react-native-linear-gradient';
-import CryptoJS from "crypto-js"
-import EncryptedStorage from 'react-native-encrypted-storage';
+import { BlurView, VibrancyView } from "@react-native-community/blur"; 
+import { ScrollView, Text, View, Modal, NativeModules} from "react-native"; 
+import LinearGradient from 'react-native-linear-gradient'; 
+import EncryptedStorage from 'react-native-encrypted-storage';   
+import nacl from 'tweetnacl'
+import naclutil from 'tweetnacl-util' 
 
+import Style from "./Style";
+import CreateAccountWidget from "components/CreateAccountWIdget/CreateAccountWidget"; 
+import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";   
+import { AccountAction } from 'actions/accountActions' 
+import { IAppState } from 'store/store'; 
+
+ 
 interface createAccount {
   navigation: any; // TODO use navigation props type
   route: any;
-}
- 
+} 
 
 const CreateAccountScreen = ({ navigation, route}: createAccount) => { 
-  const {nickname, signingKeyHex, accountNumber, signingKey, accounts, validator_accounts, bank_url, login, pScreen} = route.params;  
-  const dispatch = useDispatch(); 
-  const lAccounts = useSelector((state: IAppState) => state.accountState.account);
-  const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
-  const [modalVisible, setModalVisible] = useState(false);   
-  const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : myAccounts[0].name); 
-  const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : myAccounts[0].account_number);
-  const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : myAccounts[0].sign_key);  
-  const [actBalance, setActBalance] = useState((myAccounts == null || myAccounts.length == 0) ? '0.00' : myAccounts[0].balance); 
-  const [actCap, setActCap] = useState((myAccounts == null || myAccounts.length == 0) ? false : myAccounts[0].isCapsule); 
-  const [doneVisible, setDoneVisible] = useState(login != 'login'); 
-  const [addMode, setAddMode] = useState(true); 
+  const {accounts, validator_accounts, bank_url, login, pScreen} = route.params;  
+  const dispatch = useDispatch();     
+  const lAccounts = useSelector((state: IAppState) => state.accountState.account); 
+  const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts);   
   const [prevScreen, setPrevScreen] = useState(pScreen); 
   const [dlgMessage, setDlgMessage] = useState("");
-  const [dlgVisible, setDlgVisible] = useState(false); 
-  const [removeVisible, setRemoveVisible] = useState(false);
-  const [spinVisible, setSpinVisible] = useState(false); 
-  const [seed, setSeed] = useState(""); 
+  const [dlgVisible, setDlgVisible] = useState(false);  
+  const [seed, setSeed] = useState("");  
+  const [privateKey, setPrivateKey] = useState(null);  
+  const [publicKey, setPublicKey] = useState(null);  
+ 
+  type AccountKeys = [Uint8Array, Uint8Array]; 
 
   useEffect(() => {  
     getSeedESP();
-  }, []); 
 
-  async function setMyAccountsESP(accounts, isCapsule) {
-    try {
-      await EncryptedStorage.setItem(
-          "myAccounts",
-          JSON.stringify({ 
-            isCapsule: isCapsule,
-            myAccounts : accounts, 
-        })
-      ); 
+  }, []);      
+   
+  function hexToUint8Array(arr: string): Uint8Array {
+    return new Uint8Array(Buffer.from(arr, "hex"));
+  } 
+
+  function naclEncrypting(plain_text){
+    const one_time_code = nacl.randomBytes(24);    
+    const cipher_text = nacl.box(
+      naclutil.decodeUTF8(plain_text),
+        one_time_code,
+        hexToUint8Array(publicKey),
+        hexToUint8Array(privateKey)
+        
+    ); 
+     
+    const message_in_transit = {cipher_text, one_time_code}; 
+    return message_in_transit;
+  }; 
+
+  async function getSeedESP() {
+    try {   
+      const session = await EncryptedStorage.getItem("seed");    
+      if (session !== undefined) {
+           setSeed(session);   
+      }
+      const keyPair = await EncryptedStorage.getItem("keyPair");   
+      if (keyPair !== null) {  
+        setPrivateKey(JSON.parse(keyPair).privateKey);   
+        setPublicKey(JSON.parse(keyPair).publicKey);    
+      } 
     } catch (error) {
        console.log(error);
     }
   } 
-
-  async function getSeedESP() {
-    try {   
-      const session = await EncryptedStorage.getItem("seed"); 
-      if (session !== undefined) {
-           setSeed(session); 
-      }
-    } catch (error) {
-       console.log(error);
-    }
-  }
   
   return (
     <View style={Style.container}>
@@ -78,13 +79,9 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
         <CreateAccountWidget title={"Create or Add Account"}
             navigation={navigation}
             route = {route} 
-            addAccount={(account, addMode) => {  
-              setActName(account.name);
-              setActNumber(account.account_number);
-              setActBalance(account.balance); 
-              setAddMode(addMode); 
+            addAccount={(account, addMode) => {   
               var bExist = false;  
-              var bExistName = false;
+              var bExistName = false; 
               myAccounts.map((item)=>{
                 if(item.account_number == account.account_number){
                   bExist = true;
@@ -101,23 +98,29 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
                 setDlgMessage("This account name exists in your accounts");
                 setDlgVisible(true);
               }
-              else{
-                myAccounts.push(account);
-                dispatch(AccountAction(myAccounts));
-                if(seed != "" && seed != null){
-                  var ciphertext = CryptoJS.AES.encrypt(myAccounts, seed); 
-                  setMyAccountsESP(ciphertext, true)
+              else{   
+                 
+                if(publicKey == null || privateKey == null){
+                  account.isEncrypt = false;
                 }
-                else{
-                  setMyAccountsESP(accounts, false)
+                else{  
+                  const encryptedData = naclEncrypting(account.sign_key)  
+                  account.sign_key = encryptedData.cipher_text;
+                  account.one_time_code = encryptedData.one_time_code;
+                  account.isEncrypt = true;
+                 
                 }
-                setMyAccounts(myAccounts);
+                 
+                myAccounts.push(account);     
+                dispatch(AccountAction(myAccounts));  
                 navigation.navigate("loginPassword", { 
-                  accounts: myAccounts,
+                  accounts: accounts,
                   validator_accounts: validator_accounts,
                   bank_url: bank_url, 
                   nickname: route.params.nickname,
-                }); 
+                  paramSeed: seed,
+                });  
+                
               }
               
             }} 
@@ -125,10 +128,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
             handleCancel={() => { 
               if(prevScreen == 'login' || prevScreen == 'password'){ 
                 navigation.goBack(null);  
-              }
-              else{
-                setModalVisible(false); 
-              }
+              } 
             }}
             />
       </ScrollView>
@@ -137,7 +137,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
         transparent={true}
         visible={dlgVisible}  
         onRequestClose={() => {
-          // this.closeButtonFunction()
+           
         }}
         
       >

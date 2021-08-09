@@ -1,40 +1,47 @@
 import { Colors, Custom, Typography } from "styles";
-import React, { useEffect, useState } from "react";
-
-import { ScrollView, Text, TouchableOpacity, View, BackHandler, Modal} from "react-native";
-import Style from "./Style";
-
-
-// components
-import Accounts from "../../components/Accounts/Accounts";
-import CustomButton from "../../components/CustomButton";
-import AccountNumber from "../../components/AccountNumber/AccountNumber";
-import SignKey from "../../components/SignKey/SignKey";
-
-import CreateAccountWidget from "../../components/CreateAccountWIdget/CreateAccountWidget";
-import DoneModalViewWidget from "../../components/CustomWidgets/DoneModalview";
-import BottomDrawer from "react-native-bottom-drawer-view"; 
-import YesNoModalViewScreen from "../../components/InfoModalWidgets/YesNoModalview"; 
-import { BlurView, VibrancyView } from "@react-native-community/blur";
+import React, { useEffect, useState } from "react"; 
+import { ScrollView, Text, View, BackHandler, Modal} from "react-native";
+import Style from "./Style";  
 import LinearGradient from 'react-native-linear-gradient';
-import SettingPanel from "../../components/SettingPanel/SettingPanel";
+import { BlurView, VibrancyView } from "@react-native-community/blur"; 
+import GestureRecognizer from 'react-native-swipe-gestures';
 
-const TAB_BAR_HEIGHT = 20;
-const DOWN_DISPLAY = 50;
+import CustomButton from "components/CustomButton";   
+import YesNoModalViewScreen from "components/InfoModalWidgets/YesNoModalview";  
+import SettingPanel from "components/SettingPanel/SettingPanel"; 
  
 
 const SettingsScreen = ({ route, navigation }) => {
 
     const [viewRef, setViewRef] = useState(null);  
-    const {nickname} = route.params;    
+    const {nickname} = route.params 
+    const [lNickname, setlNickName] = useState(nickname);    
     const [dlgMessage, setDlgMessage] = useState("Are you sure want to exit?");
     const [dlgVisible, setDlgVisible] = useState(false);
     const handleExit = () => { 
         BackHandler.exitApp();
     };
+
+    const onSetNickName = (updateName) =>{
+        setlNickName(updateName)
+    } 
+
+    const config = {
+        velocityThreshold: 0.3,
+        directionalOffsetThreshold: 50
+    };
+
+    const onSwipeRight = (state) =>{
+        navigation.navigate('friends')
+    }
     
     return (
         <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
+        <GestureRecognizer  
+            onSwipeRight={(state) => onSwipeRight(state)} 
+            config={config} 
+            style={Style.container}
+        >
             <View style={{ alignItems: "center"}} >
             <Text style={Style.heading}>{'Settings'}</Text>  
             </View>  
@@ -42,9 +49,9 @@ const SettingsScreen = ({ route, navigation }) => {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={[Custom.row, Custom.mt30]}> 
                     <SettingPanel
-                        nickname={nickname}
+                        nickname={lNickname}  
                         onEditAccount={() => {  
-                            navigation.navigate('editaccount'); 
+                            navigation.navigate('editaccount', {nickname: lNickname, setNickName: onSetNickName}); 
                         }}
                     /> 
                 </View>  
@@ -68,9 +75,8 @@ const SettingsScreen = ({ route, navigation }) => {
                 transparent={true}
                 visible={dlgVisible}  
                 onRequestClose={() => {
-                // this.closeButtonFunction()
-                }}
-                
+        
+                }}  
             >
                 <BlurView
                 style={Style.absolute}
@@ -95,6 +101,7 @@ const SettingsScreen = ({ route, navigation }) => {
                     /> 
                 </LinearGradient>  
             </Modal>
+        </GestureRecognizer>
     </View> 
     );
 };

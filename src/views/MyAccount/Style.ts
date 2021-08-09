@@ -3,8 +3,7 @@ import { Colors, Typography } from "styles";
 import { StyleSheet } from "react-native";
 
 const Styles = StyleSheet.create({
-  container: {
-    // paddingVertical: "10%",
+  container: { 
     flex:1,
   },
   balanceContainer: {
@@ -51,6 +50,13 @@ const Styles = StyleSheet.create({
     backgroundColor:'#1D2731',
     overflow: 'hidden',
     padding:15
+  },
+  pulldonwContainer:{  
+    position:'absolute',
+    width:'100%', 
+    height:'100%',
+    alignSelf:'center',
+    alignItems:'center'
   },
   doModalContainer:{
     height: '60%',

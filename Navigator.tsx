@@ -1,42 +1,38 @@
-import "react-native-gesture-handler";
-
 import * as React from "react";
-import { View, Text, Image } from "react-native";
-
-import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
-
-import ConnectScreen from "./src/views/Connect/Connect";
-import CreateAccountScreen from "./src/views/CreateAccount/CreateAccount";
-import FriendsScreen from "./src/views/Friends/Friends";
+import { View, Text, Image, PermissionsAndroid} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-import LoginPasswordScreen from "./src/views/LoginPassword/LoginPassword";
-import LoginScreen from "./src/views/Login/Login";
-import OverviewScreen from "./src/views/MyAccount/Overview";
-import ScanCode from "./src/assets/svg/ScanCode.svg";
-import SettingsScreen from "./src/views/Settings/Settings";
-import SendCoins1Screen from "./src/views/SendCoins1/SendCoins1";
-import SendCoins2Screen from "./src/views/SendCoins2/SendCoins2";
-import EditAccountScreen from "./src/views/Settings/EditAccount/EditAccount"; 
-
-import TNBLogo from "./src/assets/svg/TNBLogo.svg";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import TransactionsScreen from "./src/views/Transactions/Transactions";
+import * as ImagePicker from 'react-native-image-picker';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Colors, Custom, Typography } from "styles";
-import QRCodeScreen from "./src/views/QRCode/QRcode";;
 
+import ConnectScreen from "views/Connect/Connect";
+import CreateAccountScreen from "views/CreateAccount/CreateAccount";
+import FriendsScreen from "views/Friends/Friends"; 
+import LoginPasswordScreen from "views/LoginPassword/LoginPassword";
+import LoginScreen from "views/Login/Login";
+import OverviewScreen from "views/MyAccount/Overview"; 
+import SettingsScreen from "views/Settings/Settings";
+import SendCoins1Screen from "views/SendCoins1/SendCoins1";
+import SendCoins2Screen from "views/SendCoins2/SendCoins2";
+import EditAccountScreen from "views/Settings/EditAccount/EditAccount";  
+import TransactionsScreen from "views/Transactions/Transactions"; 
 
 // svg
-import Home from "./src/assets/svg/Home.svg";
-import Transactions from "./src/assets/svg/Transactions.svg";
-import Friends from "./src/assets/svg/Friends.svg";
-import Settings from "./src/assets/svg/Settings.svg";
-import ArrowBack from "./src/assets/svg/ArrowBack.svg";
+import Home from "assets/svg/Home.svg";
+import Transactions from "assets/svg/Transactions.svg";
+import Friends from "assets/svg/Friends.svg";
+import Settings from "assets/svg/Settings.svg";
+import ArrowBack from "assets/svg/ArrowBack.svg";
+import ScanCode from "assets/svg/ScanCode.svg";
+import TNBLogo from "assets/svg/TNBLogo.svg";
 
 
-const Navigator = ({route}) => {
+const Navigator = ({route, isLogin}) => {
   const Stack = createStackNavigator(); 
+  
   return (
     <LinearGradient
       colors={["#62737E", "#040505"]}
@@ -46,7 +42,9 @@ const Navigator = ({route}) => {
       locations={[0, 0.35]}
     >
       <NavigationContainer theme={MainTheme}>
-        <Stack.Navigator>
+        <Stack.Navigator
+          initialRouteName={isLogin ? "connec" : "login"}
+        >
           <Stack.Screen
             name="connec"
             component={ConnectScreen}
@@ -56,20 +54,15 @@ const Navigator = ({route}) => {
             
           />
           <Stack.Screen
-            name="createAccount"
-            component={CreateAccountScreen}
-            options={authHeaderOptions}
-          />
-          <Stack.Screen
-            name="qrCodeScreen"
-            component={QRCodeScreen}
-            options={authHeaderOptions}
-          />
-          <Stack.Screen
             name="login"
             component={LoginScreen} 
             options={authHeaderOptions}
           />
+          <Stack.Screen
+            name="createAccount"
+            component={CreateAccountScreen}
+            options={authHeaderOptions}
+          />  
           <Stack.Screen
             name="loginPassword"
             component={LoginPasswordScreen}
@@ -78,7 +71,7 @@ const Navigator = ({route}) => {
           <Stack.Screen
             options={headerOptions}
             name="tab" 
-            component={TabNavigator}
+            component={TabNavigator}  
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -88,13 +81,13 @@ const Navigator = ({route}) => {
 
 const TabIcon = ({ icon, text, focused }) => {
   return (
-    <View style={{ alignItems: "center", justifyContent: "center", top: 10 }}>
+    <View style={{ alignItems: "center", justifyContent: "center", top: -6, borderTopColor:'red', borderTopWidth: focused ? 2 : 0, paddingTop:11}}>
       {icon}
       <Text
         style={{
           color: focused ? "#FFF" : "#62737E",
           fontSize: 10,
-          marginTop: 10,
+          marginTop: 8,
         }}
       >
         {text}
@@ -104,15 +97,15 @@ const TabIcon = ({ icon, text, focused }) => {
 };
 
 const TabNavigator = ({route}) => {
-  const Tab = createBottomTabNavigator();   
+  const Tab = createBottomTabNavigator();    
   return (
     <Tab.Navigator
       tabBarOptions={{ showLabel: false, style: tabStyle, keyboardHidesTabBar: true}}
-      initialRouteName="overview" 
+      initialRouteName="overview"   
     >
       <Tab.Screen
-        name="overview"
-        options={{
+        name="overview" 
+        options={{ 
           tabBarIcon: ({ focused }) => (
             <TabIcon
               text="My Accounts"
@@ -121,7 +114,9 @@ const TabNavigator = ({route}) => {
             />
           ),
         }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts,bank_url: route.params.bank_url, login: route.params.login}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, 
+          accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts,
+          validator_accounts: route.params.validator_accounts,bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
         component={OverviewStackScreen}
       />
       <Tab.Screen
@@ -135,7 +130,9 @@ const TabNavigator = ({route}) => {
             />
           ),
         }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, 
+          accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts,
+          validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
         component={TransactionsScreen}
       />
       <Tab.Screen
@@ -149,7 +146,7 @@ const TabNavigator = ({route}) => {
             />
           ),
         }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
         component={FriendsScreen}
       />
       <Tab.Screen
@@ -185,7 +182,7 @@ const SettingsStackScreen = ({route, navigation}) => {
           stackheaderOptions("Edit nickname", navigation)
         }
         name="editaccount"
-        initialParams={{nickname: route.params.nickname}}
+        initialParams={{nickname: route.params.nickname, setNickName: route.params.setNickName}}
         component={EditAccountScreen}
       /> 
     </SettingStack.Navigator>
@@ -199,12 +196,12 @@ const OverviewStackScreen = ({route}) => {
       <OverviewStack.Screen
         options={{ headerShown: false }}
         name="overview" 
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
         component={OverviewScreen}
       />
       <OverviewStack.Screen
         options={({ navigation }) =>
-          stackheaderOptions("Send Coins", navigation)
+          stackSendCoinheaderOptions("Send Coins", navigation)
         }
         name="sendcoins1"
         initialParams={{validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url}}
@@ -212,7 +209,7 @@ const OverviewStackScreen = ({route}) => {
       />
       <OverviewStack.Screen
         options={({ navigation }) =>
-          stackheaderOptions("Send Coins", navigation)
+          stackSendCoinheaderOptions("Send Coins", navigation)
         }
         name="sendcoins2"
         component={SendCoins2Screen}
@@ -239,6 +236,16 @@ const authHeaderOptions = {
   headerLeft: () => <TNBLogo />,
 }; 
 
+const nonHeaderOptions = {
+  headerStyle: {
+    backgroundColor: "transparent",
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  headerTitle: "", 
+  headerLeft: "", 
+}; 
+
 const qrCodeHeaderOptions = (title, navigation) => {
   return {
     headerStyle: {
@@ -247,14 +254,42 @@ const qrCodeHeaderOptions = (title, navigation) => {
       shadowOpacity: 0,
     }, 
     headerTitle: title,
-      headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate("qrCodeScreen")}>
-          <ScanCode />
-        </TouchableOpacity>
-      ), 
+      // headerRight: () => (
+      //   <TouchableOpacity onPress={openCameraWithPermission}>
+      //     <ScanCode />
+      //   </TouchableOpacity>
+      // ), 
     headerLeft: () => <TNBLogo />, 
   }; 
 };
+
+const openCameraWithPermission = async() =>{
+  const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      {
+        title: 'App Camera Permission',
+        message: 'App needs access to your camera ',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      ImagePicker.launchCamera(
+        {
+          mediaType: 'mixed',
+          includeBase64: false,
+          maxHeight: 200,
+          maxWidth: 200,
+        },
+        (response) => {
+          console.log(response); 
+        },
+      );
+    } else {
+      console.log('Camera permission denied');
+    } 
+}
 
 const headerOptions = {
   headerStyle: {
@@ -263,7 +298,7 @@ const headerOptions = {
     shadowOpacity: 0,
   },
   headerTitle: "",
-  headerLeft: () => null,
+  headerLeft: () => null,   
 };
 
 
@@ -283,6 +318,29 @@ const stackheaderOptions = (title, navigation) => {
   };
 };
 
+const stackSendCoinheaderOptions = (title, navigation) => {
+  return {
+    headerStyle: {
+      elevation: 0,
+      shadowOpacity: 0,
+      backgroundColor: "transparent", 
+    },
+    headerLeft: () => (
+      <TouchableOpacity style={{left:10}} onPress={() => navigation.goBack(null)}>
+        <ArrowBack />
+      </TouchableOpacity>
+    ),
+    headerRight: () => (
+      <TouchableOpacity onPress={openCameraWithPermission}>
+        <ScanCode />
+      </TouchableOpacity>
+    ),
+    headerTitle: () => <Text style={headingStyle}>{title}</Text>,
+  };
+};
+
+     
+
 const tabStyle = {
   position: "absolute",
   bottom: 25,
@@ -291,9 +349,11 @@ const tabStyle = {
   elevation: 0,
   borderRadius: 16,
   height: 65,
-  backgroundColor: "#2B4150",
-  borderWidth: 0,
-  borderColor: "#62737E",
+  backgroundColor: "linear-gradient(20.23deg, rgba(53, 96, 104, 0.6) -4.86%, rgba(29, 39, 49, 0.6) 110.32%)",
+  //borderWidth: 0,
+  borderColor: "#62737E", 
+  // borderTopColor: 'red',
+  // borderTopWidth: 1,
 };
 
 const headingStyle = {

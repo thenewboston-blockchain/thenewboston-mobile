@@ -3,16 +3,12 @@ import React from "react";
 import {
   Text,
   View,
-  TouchableOpacity,
-  TouchableHighlight,
-  Platform,
-} from "react-native"; 
-import { Custom } from "../../styles";
+  TouchableOpacity, 
+} from "react-native";  
 import Style from "./Style";
 
 // svg 
-import Vector from "../../assets/svg/Vector.svg";
-import ManUser from "../../assets/svg/man-user.svg";
+import Vector from "../../assets/svg/Vector.svg"; 
 import Circle from "../../assets/svg/man-circle.svg";
 
 

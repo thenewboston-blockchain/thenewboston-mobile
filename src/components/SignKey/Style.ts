@@ -22,7 +22,7 @@ const Style = StyleSheet.create({
     alignItems: "center",
   }, 
   numberText: {
-    fontSize: 20,
+    fontSize: 16,
     color: "#63737E",
     // fontWeight: "bold",
   }, 
