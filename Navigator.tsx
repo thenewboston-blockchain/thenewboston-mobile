@@ -42,25 +42,27 @@ const Navigator = ({route, isLogin}) => {
       locations={[0, 0.35]}
     >
       <NavigationContainer theme={MainTheme}>
-        <Stack.Navigator>
-          {!isLogin &&<Stack.Screen
+        <Stack.Navigator
+          initialRouteName={isLogin ? "connec" : "login"}
+        >
+          <Stack.Screen
             name="connec"
             component={ConnectScreen}
             options={({ navigation }) =>
             qrCodeHeaderOptions("", navigation)
             }
             
-          />}
-          <Stack.Screen
-            name="createAccount"
-            component={CreateAccountScreen}
-            options={authHeaderOptions}
-          /> 
+          />
           <Stack.Screen
             name="login"
             component={LoginScreen} 
             options={authHeaderOptions}
           />
+          <Stack.Screen
+            name="createAccount"
+            component={CreateAccountScreen}
+            options={authHeaderOptions}
+          />  
           <Stack.Screen
             name="loginPassword"
             component={LoginPasswordScreen}

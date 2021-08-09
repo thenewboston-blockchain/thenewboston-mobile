@@ -96,6 +96,17 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
     }
   }
 
+  async function setConnectVal() {
+    try {
+      await EncryptedStorage.setItem(
+          "connect",
+          "1"
+      );   
+    } catch (error) {
+       console.log(error);
+    } 
+  }
+
   const handleSubmit = async()=>{  
     
     if(lIpAddress == "" || lProtocol == null || !(lProtocol == "http" || 
@@ -129,6 +140,7 @@ const connectScreen = ({navigation: {navigate}}: connects) => {
         validator_accounts = [...validator_accounts, ...part_accounts.results]; 
       }  
 
+      setConnectVal();
       dispatch(ProtocolAction(lProtocol));
       dispatch(IpAddressAction(lIpAddress))
       dispatch(NickNameAction(lNickName))

@@ -29,6 +29,27 @@ All donations will go to thenewboston to help fund the team to continue to devel
 | ![Bitcoin Logo](https://github.com/thenewboston-developers/Website/raw/development/src/assets/images/bitcoin.png)           | 3GZYi3w3BXQfyb868K2phHjrS4i8LooaHh                               |
 | ![Ethereum Logo](https://github.com/thenewboston-developers/Website/raw/development/src/assets/images/ethereum.png)         | 0x0E38e2a838F0B20872E5Ff55c82c2EE7509e6d4A                       |
 
+## For building android version
+
+It runs bellow command 
+ - npm install
+ # --------------must install hack for react-native-crypto---------
+ - npm i --save react-native-crypto 
+ - npm i --save react-native-randombytes 
+ - npm i --save-dev rn-nodeify 
+ - ./node_modules/.bin/rn-nodeify --hack --install
+ # ----------------------------------------------------------------
+ - npm start
+
+And it should change some files in node_modules
+ - should copy from "@freakycoder\react-native-single-select\lib\components\down-arrow-dark.pnt" to "@freakycoder\react-native-single-select\build\dist\components\"
+ - should copy from "@freakycoder\react-native-single-select\lib\components\down-arrow-light.pnt" to "@freakycoder\react-native-single-select\build\dist\components\"
+ - In react-native-elements\dist\buttons\Button.js
+  in line 56 last param should be changed to false in TouchableNativeFeedback.Ripple()
+
+It runs next command
+ - npx react-native run-android
+
 ## License
 
 thenewboston is [MIT licensed](http://opensource.org/licenses/MIT).

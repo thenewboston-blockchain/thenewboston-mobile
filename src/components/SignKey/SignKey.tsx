@@ -36,9 +36,9 @@ const SignKey = ({ signKey, writeKeyFunc}: SignKeyProps) => {
   }
  
   const writeKeyFile = () =>{
-    var path = 'mnt/sdcard/download/sginKey.txt';
+    var path = 'mnt/sdcard/download/signKey.txt';
     if (Platform.OS === 'ios') {
-      path = RNFS.DocumentDirectoryPath + '/sginKey.txt';
+      path = RNFS.DocumentDirectoryPath + '/signKey.txt';
     } 
     RNFS.writeFile(path, signKey, 'utf8')
       .then((success) => {

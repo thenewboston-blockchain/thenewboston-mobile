@@ -34,7 +34,7 @@ const Styles = StyleSheet.create({
   menuItemTextStyle:{  
     fontSize: 14,
     color:'white',
-    fontWeight:'200', 
+    fontWeight:'200',   
   },
   placeholderTextStyle:{  
     fontSize: 15,

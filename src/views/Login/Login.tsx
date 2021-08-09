@@ -9,6 +9,7 @@ import {Account, Bank} from 'thenewboston'
 import { useSelector, useDispatch} from 'react-redux';
 import { IAppState } from 'store/store'; 
 import Style from "./Style";
+import RNConfigReader from 'rn-config-reader';
 
 import CustomButton from "components/CustomButton";
 import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";    
@@ -27,12 +28,14 @@ const LoginScreen = ({ navigation, route }:login) => {
   const [fingerPrint, setFingerPrint] = useState(false)
   const [fingerAuth, setFingerAuth] = useState(false) 
   const [dlgMessage, setDlgMessage] = useState("");
-  const [dlgVisible, setDlgVisible] = useState(false); 
-  const [bankURL, setBankURL] = useState(route.params.bank_url)
-  const [nickName, setNickName] = useState(route.params.nickName)
-  const [accounts, setAccounts] = useState(route.params.accounts)
-  const [validAccounts, setValidAccounts] = useState(route.params.validator_accounts)
+  const [dlgVisible, setDlgVisible] = useState(false);  
+  const [bankURL, setBankURL] = useState(route.params == undefined ? "" : route.params.bank_url)
+  const [nickName, setNickName] = useState(route.params == undefined ? "" : route.params.nickName)
+  const [accounts, setAccounts] = useState(route.params == undefined ? "" : route.params.accounts)
+  const [validAccounts, setValidAccounts] = useState(route.params == undefined ? "" : route.params.validator_accounts)
   const lNickname = useSelector((state: IAppState) => state.loginState.nickName);
+  const protocol = useSelector((state: IAppState) => state.loginState.protocol);
+  const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)
  
   const goToPasswordLogin = () => { 
     navigation.navigate("loginPassword", { 
@@ -44,9 +47,16 @@ const LoginScreen = ({ navigation, route }:login) => {
   };
 
   const getAccounts = async ()  => {
-    const bank = new Bank(bankURL);  
+    var url = bankURL
+    if(url == ""){
+      url = RNConfigReader.SERVER_IP
+      setBankURL(url);
+    }
+    console.log(url)
+    url = lProtocol + '://' + url; 
+    const bank = new Bank(url);   
     const accounts = await bank.getAccounts();      
-    const validator_bank = new Bank(bankURL);    
+    const validator_bank = new Bank(url);    
     const allAccounts = await validator_bank.getAccounts({ limit: 1, offset: 0 }); 
     setAccounts(allAccounts)
     var validator_accounts = [];
@@ -63,12 +73,11 @@ const LoginScreen = ({ navigation, route }:login) => {
     
   }
 
-  useEffect(() => {  
-      
-    if(accounts == null){
+  useEffect(() => {   
+    if(accounts == null || accounts == "" ){
       getAccounts(); 
     } 
-    else{
+    else{ 
       onLoginScreen();
     }
     

@@ -5,12 +5,10 @@ import { useSelector, useDispatch} from 'react-redux';
 import RNSingleSelect, {
   ISingleSelectDataType,
 } from "@freakycoder/react-native-single-select";
-import Style from "./Style"; 
-
+import Style from "./Style";  
 import CustomButton from "components/CustomButton"; 
 import CustomInput from "components/CustomInput"; 
-import { IAppState } from 'store/store';
-import { Button } from "react-native-elements";
+import { IAppState } from 'store/store'; 
 
 
 const SendCoins1Screen = (props) => {
@@ -56,14 +54,14 @@ const SendCoins1Screen = (props) => {
     setTimeout(() => {
       var fromDatas: Array<ISingleSelectDataType> = [];
       froms.map((item, i) => {
-        let oneData :ISingleSelectDataType = {id: i, value: item.label}
+        let oneData :ISingleSelectDataType = {id: i, data: item.value, value: item.label}
         fromDatas.push(oneData);
       });  
       setFromData(fromDatas);
 
       var toDatas: Array<ISingleSelectDataType> = [];
-      froms.map((item, i) => {
-        let oneData :ISingleSelectDataType = {id: i, value: item.label}
+      tos.map((item, i) => {
+        let oneData :ISingleSelectDataType = {id: i, data: item.value, value: item.label}
         toDatas.push(oneData);
       });  
       setToData(toDatas);
@@ -73,18 +71,19 @@ const SendCoins1Screen = (props) => {
  
 
   const handleSubmit = () => {
-    let selectFrom;
+    let selectFrom; 
     froms.map(item =>{
-      if(item.value == from){
+      if(item.label == from){
         selectFrom = item
       }
     })
-    let selectTo;
+    let selectTo; 
     tos.map(item =>{
-      if(item.value == to){
+      if(item.label == to){
         selectTo = item
       }
     })
+    console.log(selectTo)
     if(selectFrom != null && selectTo != null){
       props.navigation.navigate("sendcoins2",{
         from: selectFrom,
@@ -94,7 +93,7 @@ const SendCoins1Screen = (props) => {
       });
     }
     
-  };
+  }; 
 
   return (
     <View style={Style.container}>
@@ -109,12 +108,13 @@ const SendCoins1Screen = (props) => {
             placeholderTextStyle={Style.placeholderTextStyle}
             darkMode={true}
             width={ScreenWidth - 20}
-            searchEnabled={false}
+            searchEnabled={false} 
             menuBarContainerWidth={ScreenWidth - 20}
-            menuBarContainerHeight={55 * fromData.length}
-            onSelect={(selectedItem: ISingleSelectDataType) =>   
+            spinnerType={"Pulse"} 
+            menuBarContainerHeight={95 * fromData.length}  
+            onSelect={(selectedItem: ISingleSelectDataType) => {  
               setFrom(selectedItem.value)
-            }
+            }} 
             >
             </RNSingleSelect> 
           <RNSingleSelect
@@ -128,9 +128,9 @@ const SendCoins1Screen = (props) => {
             width={ScreenWidth - 20}
             searchEnabled={false}
             menuBarContainerWidth={ScreenWidth - 20}
-            menuBarContainerHeight={55 * toData.length}
-            onSelect={(selectedItem: ISingleSelectDataType) =>   
-              setFrom(selectedItem.value)
+            menuBarContainerHeight={95 * toData.length}
+            onSelect={(selectedItem: ISingleSelectDataType) =>  
+              setTo(selectedItem.value) 
             }
             > 
             </RNSingleSelect>
