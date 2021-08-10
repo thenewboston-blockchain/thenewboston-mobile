@@ -10,6 +10,7 @@ import { useSelector, useDispatch} from 'react-redux';
 import { IAppState } from 'store/store'; 
 import Style from "./Style";
 import RNConfigReader from 'rn-config-reader';
+import EncryptedStorage from 'react-native-encrypted-storage'; 
 
 import CustomButton from "components/CustomButton";
 import InfoModalWidget from "components/InfoModalWidgets/InfoModalview";    
@@ -35,7 +36,7 @@ const LoginScreen = ({ navigation, route }:login) => {
   const [validAccounts, setValidAccounts] = useState(route.params == undefined ? "" : route.params.validator_accounts)
   const lNickname = useSelector((state: IAppState) => state.loginState.nickName);
   const protocol = useSelector((state: IAppState) => state.loginState.protocol);
-  const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)
+  const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)  
  
   const goToPasswordLogin = () => { 
     navigation.navigate("loginPassword", { 
@@ -73,12 +74,17 @@ const LoginScreen = ({ navigation, route }:login) => {
     
   }
 
-  useEffect(() => {   
+  useEffect(() => {     
+    if(lNickname == "" || lNickname == undefined){
+      navigation.navigate("connec", {  
+      });
+      return;
+    } 
     if(accounts == null || accounts == "" ){
-      getAccounts(); 
+      getAccounts();  
     } 
     else{ 
-      onLoginScreen();
+      onLoginScreen(); 
     }
     
   }, []);

@@ -39,16 +39,25 @@ It runs bellow command
  - npm i --save-dev rn-nodeify 
  - ./node_modules/.bin/rn-nodeify --hack --install
  # ----------------------------------------------------------------
- - npm start
-
-And it should change some files in node_modules
- - should copy from "@freakycoder\react-native-single-select\lib\components\down-arrow-dark.pnt" to "@freakycoder\react-native-single-select\build\dist\components\"
- - should copy from "@freakycoder\react-native-single-select\lib\components\down-arrow-light.pnt" to "@freakycoder\react-native-single-select\build\dist\components\"
- - In react-native-elements\dist\buttons\Button.js
-  in line 56 last param should be changed to false in TouchableNativeFeedback.Ripple()
+ - npm start 
 
 It runs next command
  - npx react-native run-android
+
+## For building iOS version
+
+It runs bellow command 
+ - npm install
+ # --------------must install hack for react-native-crypto---------
+ - npm i --save react-native-crypto 
+ - npm i --save react-native-randombytes 
+ - npm i --save-dev rn-nodeify 
+ - ./node_modules/.bin/rn-nodeify --hack --install
+ # ----------------------------------------------------------------
+ - npm start 
+
+It runs next command
+ - npx react-native run-ios
 
 ## License
 

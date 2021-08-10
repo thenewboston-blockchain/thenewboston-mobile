@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, PermissionsAndroid} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
@@ -6,8 +6,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import * as ImagePicker from 'react-native-image-picker';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Colors, Custom, Typography } from "styles";
-
+import { Colors, Custom, Typography } from "styles"; 
 import ConnectScreen from "views/Connect/Connect";
 import CreateAccountScreen from "views/CreateAccount/CreateAccount";
 import FriendsScreen from "views/Friends/Friends"; 
@@ -31,8 +30,8 @@ import TNBLogo from "assets/svg/TNBLogo.svg";
 
 
 const Navigator = ({route, isLogin}) => {
-  const Stack = createStackNavigator(); 
-  
+  const Stack = createStackNavigator();  
+
   return (
     <LinearGradient
       colors={["#62737E", "#040505"]}
@@ -43,7 +42,7 @@ const Navigator = ({route, isLogin}) => {
     >
       <NavigationContainer theme={MainTheme}>
         <Stack.Navigator
-          initialRouteName={isLogin ? "connec" : "login"}
+          initialRouteName={"login"}
         >
           <Stack.Screen
             name="connec"
@@ -349,7 +348,7 @@ const tabStyle = {
   elevation: 0,
   borderRadius: 16,
   height: 65,
-  backgroundColor: "linear-gradient(20.23deg, rgba(53, 96, 104, 0.6) -4.86%, rgba(29, 39, 49, 0.6) 110.32%)",
+  backgroundColor: "linear-gradient(20.23deg, rgba(53, 96, 104, 1.0) -4.86%, rgba(29, 39, 49, 0.8) 110.32%)",
   //borderWidth: 0,
   borderColor: "#62737E", 
   // borderTopColor: 'red',
