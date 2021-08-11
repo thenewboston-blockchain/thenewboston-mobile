@@ -99,7 +99,7 @@ const CreateAccountScreen = ({ navigation, route}: createAccount) => {
                 setDlgVisible(true);
               }
               else{   
-                 
+                account.isEncrypt = false; 
                 if(publicKey == null || privateKey == null){
                   account.isEncrypt = false;
                 }

@@ -40,6 +40,8 @@ const OverviewScreen = ({ route, navigation }) => {
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [modalVisible, setModalVisible] = useState(false);   
   const [viewRef, setViewRef] = useState(null);  
+  const [privateKey, setPrivateKey] = useState(null);  
+  const [publicKey, setPublicKey] = useState(null); 
   const [actName, setActName] = useState((myAccounts == null || myAccounts.length == 0) ? 'No Accounts' : myAccounts[0].name); 
   const [actNumber, setActNumber] = useState((myAccounts == null || myAccounts.length == 0) ? '' : (myAccounts[0].account_number)); 
   const [actSignKey, setActSignKey] = useState((myAccounts == null || myAccounts.length == 0) ? '' : toDecryptSignKey(myAccounts[0]));  
@@ -49,9 +51,7 @@ const OverviewScreen = ({ route, navigation }) => {
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false); 
   const [removeVisible, setRemoveVisible] = useState(false);
-  const [spinVisible, setSpinVisible] = useState(false) 
-  const [privateKey, setPrivateKey] = useState(null);  
-  const [publicKey, setPublicKey] = useState(null); 
+  const [spinVisible, setSpinVisible] = useState(false)  
     
   type AccountKeys = [Uint8Array, Uint8Array];
   const handleSendCoins = () => { 
@@ -72,10 +72,10 @@ const OverviewScreen = ({ route, navigation }) => {
   };
 
   function toDecryptSignKey(account){   
-    if(account.isEncrypt == false || account.one_time_code == null){ 
+    if(account.isEncrypt == null || !account.isEncrypt || account.one_time_code == null){ 
       return account.sign_key
     }
-    else{ 
+    else{   
       const message = {cipher_text: account.sign_key, one_time_code: account.one_time_code}
       return naclDecrypting(message)
     } 
@@ -83,7 +83,7 @@ const OverviewScreen = ({ route, navigation }) => {
 
   function naclDecrypting(message){ 
      
-    let decoded_message = nacl.box.open(message.cipher_text, message.one_time_code, hexToUint8Array(publicKey), hexToUint8Array(privateKey));   
+    let decoded_message = nacl.box.open(message.cipher_text, message.one_time_code, hexToUint8Array(publicKey), hexToUint8Array(privateKey));  
     let plain_text = naclutil.encodeUTF8(decoded_message)  
     return plain_text;
   };
@@ -128,21 +128,22 @@ const OverviewScreen = ({ route, navigation }) => {
         setPrivateKey(JSON.parse(keyPair).privateKey);   
         setPublicKey(JSON.parse(keyPair).publicKey);     
       }
+      console.log(keyPair)
     } catch (error) {
        console.log(error);
-    }
+    } 
   } 
 
   const deleteAccount = () => {   
-    let _myAccounts = myAccounts.filter(item => item.account_number !== actNumber);
+    let _myAccounts = myAccounts.filter(item => item.account_number !== actNumber); 
     setMyAccounts(_myAccounts);  
     dispatch(AccountAction(_myAccounts)); 
     
     if(_myAccounts != [] && _myAccounts.length > 0){
-      setActName(_myAccounts[0].name);
-      setActNumber((_myAccounts[0].account_number));
-      setActSignKey( toDecryptSignKey(_myAccounts[0]));
-      setActBalance(_myAccounts[0].balance);
+      setActName(_myAccounts[_myAccounts.length - 1].name);
+      setActNumber((_myAccounts[_myAccounts.length - 1].account_number));
+      setActSignKey( toDecryptSignKey(_myAccounts[_myAccounts.length - 1]));
+      setActBalance(_myAccounts[_myAccounts.length - 1].balance);
     }
     else{
       setActName('No Accounts');
@@ -171,8 +172,7 @@ const OverviewScreen = ({ route, navigation }) => {
    }  
   }
 
-  const handleTransIndex = (index) => { 
-     
+  const handleTransIndex = (index) => {  
     if(myAccounts.length > 0){
       if(myAccounts[index].name == null){
         setActName(index);
@@ -180,7 +180,7 @@ const OverviewScreen = ({ route, navigation }) => {
       else{
         setActName(myAccounts[index].name);
       } 
-      setActNumber((myAccounts[index].account_number));   
+      setActNumber((myAccounts[index].account_number));    
       setActSignKey(toDecryptSignKey(myAccounts[index]));
       setActBalance(myAccounts[index].balance);  
     } 
@@ -300,7 +300,7 @@ const OverviewScreen = ({ route, navigation }) => {
               setActBalance(account.balance);
               setAddMode(addMode);
               var bExist = false;  
-              var bExistName = false;
+              var bExistName = false; 
               myAccounts.map((item)=>{
                 if(item.account_number == account.account_number){
                   bExist = true;
@@ -308,18 +308,19 @@ const OverviewScreen = ({ route, navigation }) => {
                 if(item.name == account.name){
                   bExistName = true;
                 }
-              })
-              if(bExist != false){ 
+              }) 
+              if(bExist){ 
                 setDlgMessage("This signing key exists in your accounts");
                 setDlgVisible(true);
               }
-              else if(bExistName != false){ 
+              else if(bExistName){ 
                 setDlgMessage("This account name exists in your accounts");
                 setDlgVisible(true);
               }
-              else{   
+              else{     
+                account.isEncrypt = false; 
                 if(publicKey != null && privateKey != null){
-                  const encryptedData = naclEncrypting(account.sign_key) 
+                  const encryptedData = naclEncrypting(account.sign_key)  
                   account.sign_key = encryptedData.cipher_text;
                   account.one_time_code = encryptedData.one_time_code;
                   account.isEncrypt = true; 
@@ -328,6 +329,9 @@ const OverviewScreen = ({ route, navigation }) => {
                   setMyAccounts(myAccounts); 
                   setModalVisible(false);
                   setDoneVisible(true); 
+                  setActNumber((account.account_number));    
+                  setActSignKey(toDecryptSignKey(account));
+                  setActBalance(account.balance);  
                 }
                
               }
