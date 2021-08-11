@@ -72,10 +72,10 @@ const OverviewScreen = ({ route, navigation }) => {
   };
 
   function toDecryptSignKey(account){   
-    if(account.isEncrypt == null || !account.isEncrypt || account.one_time_code == null){ 
+    if(account.isEncrypt == null || !account.isEncrypt || account.one_time_code == null || privateKey == null){ 
       return account.sign_key
     }
-    else{   
+    else{    
       const message = {cipher_text: account.sign_key, one_time_code: account.one_time_code}
       return naclDecrypting(message)
     } 

@@ -98,8 +98,8 @@ const LoginPasswordScreen = ({ navigation, route}) => {
       if (session !== undefined) { 
            setSeed(session);    
       }   
-
-      const keyPair = await EncryptedStorage.getItem("keyPair"); 
+      
+      const keyPair = await EncryptedStorage.getItem("keyPair");  
       if (keyPair !== null) {   
         setPrivateKey(JSON.parse(keyPair).privateKey);   
         setPublicKey(JSON.parse(keyPair).publicKey);    

@@ -26,7 +26,7 @@ const SendCoins1Screen = (props) => {
   const [loading, setLoading] = useState(false);
   const [isValid, setValid] = useState(false);
 
-  const _from = myAccounts.map(item => ( 
+  const _from = friends.map(item => ( 
     {  
       label: item.name,
       value: item.account_number,
