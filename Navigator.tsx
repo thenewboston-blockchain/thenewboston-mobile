@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, PermissionsAndroid} from "react-native";
+import { View, Text, Image, PermissionsAndroid, Platform} from "react-native";
 import { PERMISSIONS, check, RESULTS } from 'react-native-permissions'
 import LinearGradient from "react-native-linear-gradient";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";

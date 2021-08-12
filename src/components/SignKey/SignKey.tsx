@@ -56,7 +56,7 @@ const SignKey = ({ signKey, writeKeyFunc}: SignKeyProps) => {
   return (
     <View style={Style.container}>
       <View style={[Custom.row, Style.actionContainer]}>
-        <Text style={Style.subHeading}>MY SIGN KEY</Text>
+        <Text style={Platform.OS == 'android' ? Style.subHeading : Style.subHeadingIOS}>MY SIGN KEY</Text>
         <View style={[Custom.row, Style.actions]}>
           <TouchableOpacity style={{ marginRight: 10 }} onPress={writeKeyFile}>
             <Download />
@@ -71,8 +71,8 @@ const SignKey = ({ signKey, writeKeyFunc}: SignKeyProps) => {
         </View>
       </View>
       <View>
-        {!secVisible && <Text style={[Custom.mt10, Style.numberText]}>{signKey}</Text>}
-        {secVisible && <Text style={[Custom.mt10, Style.setcureText]}>{secKey}</Text>}
+        {!secVisible && <Text style={[Custom.mt10,  Platform.OS == 'android' ? Style.numberText : Style.numberTextIOS]}>{signKey}</Text>}
+        {secVisible && <Text style={[Custom.mt10,  Platform.OS == 'android' ? Style.secureText : Style.secureTextIOS]}>{secKey}</Text>}
       </View>
      
     </View>

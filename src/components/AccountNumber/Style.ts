@@ -13,6 +13,13 @@ const Style = StyleSheet.create({
     fontSize: 12,
     color: "#62737E",
     fontWeight: "bold",
+    fontFamily: "monospace"
+  },
+  subHeadingIOS: {
+    fontSize: 12,
+    color: "#62737E",
+    fontWeight: "bold",
+    fontFamily: "monospace"
   },
   actions: {
     right: 0,
@@ -24,7 +31,12 @@ const Style = StyleSheet.create({
   numberText: {
     fontSize: 16,
     color: "#63737E",
-    // fontWeight: "bold",
+    fontFamily: "monospace"
+  },
+  numberTextIOS: {
+    fontSize: 16,
+    color: "#63737E", 
+    fontFamily: "monospace"
   },
 });
 
