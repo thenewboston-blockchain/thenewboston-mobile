@@ -66,6 +66,7 @@
     "react-native-tweetnacl": "^1.0.5",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^8.1.0",
+    "react-navigation": "^4.4.4",
     "react-redux": "^7.2.4",
     "readable-stream": "^1.0.33",
     "redux": "^4.1.0",

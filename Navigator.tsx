@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, PermissionsAndroid} from "react-native";
+import { View, Text, Image, PermissionsAndroid, Platform, Easing, Animated} from "react-native";
 import { PERMISSIONS, check, RESULTS } from 'react-native-permissions'
 import LinearGradient from "react-native-linear-gradient";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
@@ -101,7 +101,7 @@ const TabNavigator = ({route}) => {
   return (
     <Tab.Navigator
       tabBarOptions={{ showLabel: false, style: tabStyle, keyboardHidesTabBar: true}}
-      initialRouteName="overview"   
+      initialRouteName="overview"    
     >
       <Tab.Screen
         name="overview" 
@@ -190,7 +190,7 @@ const SettingsStackScreen = ({route, navigation}) => {
 };
 
 const OverviewStackScreen = ({route}) => {
-  const OverviewStack = createStackNavigator();  
+  const OverviewStack = createStackNavigator();   
   return (
     <OverviewStack.Navigator>
       <OverviewStack.Screen
@@ -263,8 +263,7 @@ const qrCodeHeaderOptions = (title, navigation) => {
   }; 
 };
 
-const openCameraWithPermission = async() =>{
-  //Platform
+const openCameraWithPermission = async() =>{ 
   if(Platform.OS === 'android'){
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -386,5 +385,32 @@ const headingStyle = {
   fontWeight: Typography.FONT_WEIGHT_BOLD,
   color: Colors.WHITE, 
 };
+ 
+const transitionConfig = () => {
+  return {
+    transitionSpec: {
+      duration: 500,
+      easing: Easing.out(Easing.poly(4)),
+      timing: Animated.timing,
+      useNativeDriver: true,
+    },
+    screenInterpolator: sceneProps => {
+      const { layout, position, scene } = sceneProps;
+ 
+      const thisSceneIndex = scene.index;
+      const width = layout.initWidth;
+ 
+      const translateX = position.interpolate({
+        inputRange: [thisSceneIndex - 1, thisSceneIndex],
+        outputRange: [-width, 0],
+        extrapolate: 'clamp'
+      });
+ 
+      return {
+        transform: [{ translateX }]
+      }
+    }
+  }
+}
 
 export default Navigator;
