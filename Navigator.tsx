@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, PermissionsAndroid} from "react-native";
+import { PERMISSIONS, check, RESULTS } from 'react-native-permissions'
 import LinearGradient from "react-native-linear-gradient";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -263,7 +264,9 @@ const qrCodeHeaderOptions = (title, navigation) => {
 };
 
 const openCameraWithPermission = async() =>{
-  const granted = await PermissionsAndroid.request(
+  //Platform
+  if(Platform.OS === 'android'){
+    const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.CAMERA,
       {
         title: 'App Camera Permission',
@@ -273,6 +276,7 @@ const openCameraWithPermission = async() =>{
         buttonPositive: 'OK',
       },
     );
+    
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       ImagePicker.launchCamera(
         {
@@ -287,8 +291,30 @@ const openCameraWithPermission = async() =>{
       );
     } else {
       console.log('Camera permission denied');
+    }  
+  }
+  else {  //iOS
+    const res = await check(PERMISSIONS.IOS.CAMERA); 
+    if (res === RESULTS.GRANTED) {
+      ImagePicker.launchCamera(
+        {
+          mediaType: 'mixed',
+          includeBase64: false,
+          maxHeight: 200,
+          maxWidth: 200,
+        },
+        (response) => {
+          console.log(response); 
+        },
+      );
     } 
+    else {
+      console.log('Camera permission denied');
+    }
+  }
+    
 }
+
 
 const headerOptions = {
   headerStyle: {

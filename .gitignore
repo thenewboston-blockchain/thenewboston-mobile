@@ -40,6 +40,8 @@ build/Release
 
 # Dependency directories
 node_modules/
+android/
+ios/
 jspm_packages/
 
 # TypeScript v1 declaration files
@@ -124,3 +126,4 @@ android/.gradle/buildOutputCleanup/buildOutputCleanup.lock
 android/.gradle/checksums/checksums.lock
 android/.gradle/
 android/.gradle
+android/app/build/

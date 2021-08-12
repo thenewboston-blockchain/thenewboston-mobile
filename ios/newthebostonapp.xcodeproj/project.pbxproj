@@ -9,12 +9,11 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* newthebostonappTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* newthebostonappTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		5DA68DDF253BE4B03C4B611F /* Pods_newthebostonapp_newthebostonappTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CAD3195C65C0064578DCDA8 /* Pods_newthebostonapp_newthebostonappTests.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		88FD8E451B2007464569663E /* libPods-newthebostonapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD98A868589EED9F4A6F341E /* libPods-newthebostonapp.a */; };
-		C046DF5A26C3A825008B2C8E /* D-DINExp.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C046DF5926C3A825008B2C8E /* D-DINExp.ttf */; };
+		98B963409F1D79E8221BF42F /* libPods-newthebostonapp-newthebostonappTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CD6541D7AB7F604C8FF4199 /* libPods-newthebostonapp-newthebostonappTests.a */; };
+		C012691926C47115000B70B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C012691826C47115000B70B8 /* Assets.xcassets */; };
 		C0CE15A926C2B07F00FEDD31 /* Inter-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D7C9B3D80F1A47DE97AFE1D6 /* Inter-Black.ttf */; };
 		C0CE15AA26C2B07F00FEDD31 /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 147966DF061E413C8E65C43B /* Inter-Bold.ttf */; };
 		C0CE15AB26C2B07F00FEDD31 /* Inter-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 21BD38404F5E4CF2A369570B /* Inter-ExtraBold.ttf */; };
@@ -24,6 +23,7 @@
 		C0CE15AF26C2B07F00FEDD31 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E65848C2EBEE4D268B3F6453 /* Inter-Regular.ttf */; };
 		C0CE15B026C2B07F00FEDD31 /* Inter-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 51DB00F30670489F920C3F63 /* Inter-SemiBold.ttf */; };
 		C0CE15B126C2B07F00FEDD31 /* Inter-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 556A29AD524A4B3D8B674FB6 /* Inter-Thin.ttf */; };
+		C0D42AE326C50702007442A4 /* D-DINExp.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0D42AE226C50701007442A4 /* D-DINExp.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,14 +43,12 @@
 		13B07F961A680F5B00A75B9A /* newthebostonapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = newthebostonapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = newthebostonapp/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = newthebostonapp/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = newthebostonapp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = newthebostonapp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = newthebostonapp/main.m; sourceTree = "<group>"; };
 		147966DF061E413C8E65C43B /* Inter-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Bold.ttf"; path = "../src/assets/fonts/Inter-Bold.ttf"; sourceTree = "<group>"; };
 		1A2A904EC22843AEAEE3853D /* Inter-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-ExtraLight.ttf"; path = "../src/assets/fonts/Inter-ExtraLight.ttf"; sourceTree = "<group>"; };
 		21BD38404F5E4CF2A369570B /* Inter-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-ExtraBold.ttf"; path = "../src/assets/fonts/Inter-ExtraBold.ttf"; sourceTree = "<group>"; };
 		265D8BB25AB74EB2AAAC1B03 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
-		2CAD3195C65C0064578DCDA8 /* Pods_newthebostonapp_newthebostonappTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_newthebostonapp_newthebostonappTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		329C597A60E4EFEC62A5C64D /* Pods-newthebostonapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-newthebostonapp.debug.xcconfig"; path = "Target Support Files/Pods-newthebostonapp/Pods-newthebostonapp.debug.xcconfig"; sourceTree = "<group>"; };
 		35ABF9ED927E46208AFEBB0D /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		45C841076AD94032824BF10E /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
@@ -64,13 +62,25 @@
 		757398783E2B4DF2AD662878 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		796D1B4AE65F48E78A13890D /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = newthebostonapp/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8CD6541D7AB7F604C8FF4199 /* libPods-newthebostonapp-newthebostonappTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-newthebostonapp-newthebostonappTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		960A6FCE056045A4B63987CD /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		9CBA345073F345B9AA635B0F /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		A9016F3E76114A2A9A201614 /* Inter-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Light.ttf"; path = "../src/assets/fonts/Inter-Light.ttf"; sourceTree = "<group>"; };
 		B737B763FB2D4332BD78A68F /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		B91A515992194CC59E27B03D /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		BAE58B3E290EBA4A78BD6C27 /* Pods-newthebostonapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-newthebostonapp.release.xcconfig"; path = "Target Support Files/Pods-newthebostonapp/Pods-newthebostonapp.release.xcconfig"; sourceTree = "<group>"; };
-		C046DF5926C3A825008B2C8E /* D-DINExp.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "D-DINExp.ttf"; sourceTree = "<group>"; };
+		C012691826C47115000B70B8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C0D427B826C4D3E0007442A4 /* libPermission-PhotoLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPermission-PhotoLibrary.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0D427BC26C4D432007442A4 /* libRNPermissions-library.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libRNPermissions-library.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0D4283226C4D5BC007442A4 /* libPermission-Camera.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPermission-Camera.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0D4283426C4D5BC007442A4 /* libPermission-PhotoLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPermission-PhotoLibrary.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0D4283626C4D5BC007442A4 /* libRNPermissions-library.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libRNPermissions-library.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0D4283826C4D5BC007442A4 /* RNPermissions.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNPermissions.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0D42AE226C50701007442A4 /* D-DINExp.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "D-DINExp.ttf"; path = "../src/assets/fonts/D-DINExp.ttf"; sourceTree = "<group>"; };
+		C0DAB2D626C4C5D600197428 /* RNPermissions.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNPermissions.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0DAB2DA26C4C63E00197428 /* Permission_PhotoLibrary.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Permission_PhotoLibrary.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0DAB2DC26C4C64600197428 /* Permission_MediaLibrary.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Permission_MediaLibrary.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0DAB2E226C4C78900197428 /* libRNPermissions-library.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libRNPermissions-library.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C14AA9ABFBE94090BBF92DA3 /* Inter-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Medium.ttf"; path = "../src/assets/fonts/Inter-Medium.ttf"; sourceTree = "<group>"; };
 		C727E4D3D2FFA4F16BF2A25A /* Pods-newthebostonapp-newthebostonappTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-newthebostonapp-newthebostonappTests.debug.xcconfig"; path = "Target Support Files/Pods-newthebostonapp-newthebostonappTests/Pods-newthebostonapp-newthebostonappTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CD98A868589EED9F4A6F341E /* libPods-newthebostonapp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-newthebostonapp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,7 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5DA68DDF253BE4B03C4B611F /* Pods_newthebostonapp_newthebostonappTests.framework in Frameworks */,
+				98B963409F1D79E8221BF42F /* libPods-newthebostonapp-newthebostonappTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,8 +134,8 @@
 			children = (
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
-				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				C012691826C47115000B70B8 /* Assets.xcassets */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -135,9 +145,19 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C0D4283226C4D5BC007442A4 /* libPermission-Camera.a */,
+				C0D4283426C4D5BC007442A4 /* libPermission-PhotoLibrary.a */,
+				C0D4283626C4D5BC007442A4 /* libRNPermissions-library.a */,
+				C0D4283826C4D5BC007442A4 /* RNPermissions.framework */,
+				C0D427BC26C4D432007442A4 /* libRNPermissions-library.a */,
+				C0D427B826C4D3E0007442A4 /* libPermission-PhotoLibrary.a */,
+				C0DAB2E226C4C78900197428 /* libRNPermissions-library.a */,
+				C0DAB2DC26C4C64600197428 /* Permission_MediaLibrary.framework */,
+				C0DAB2DA26C4C63E00197428 /* Permission_PhotoLibrary.framework */,
+				C0DAB2D626C4C5D600197428 /* RNPermissions.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				CD98A868589EED9F4A6F341E /* libPods-newthebostonapp.a */,
-				2CAD3195C65C0064578DCDA8 /* Pods_newthebostonapp_newthebostonappTests.framework */,
+				8CD6541D7AB7F604C8FF4199 /* libPods-newthebostonapp-newthebostonappTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -191,8 +211,8 @@
 				D7C9B3D80F1A47DE97AFE1D6 /* Inter-Black.ttf */,
 				147966DF061E413C8E65C43B /* Inter-Bold.ttf */,
 				21BD38404F5E4CF2A369570B /* Inter-ExtraBold.ttf */,
-				C046DF5926C3A825008B2C8E /* D-DINExp.ttf */,
 				1A2A904EC22843AEAEE3853D /* Inter-ExtraLight.ttf */,
+				C0D42AE226C50701007442A4 /* D-DINExp.ttf */,
 				A9016F3E76114A2A9A201614 /* Inter-Light.ttf */,
 				C14AA9ABFBE94090BBF92DA3 /* Inter-Medium.ttf */,
 				E65848C2EBEE4D268B3F6453 /* Inter-Regular.ttf */,
@@ -230,6 +250,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				6FA54CB161306218B77F8765 /* [CP] Embed Pods Frameworks */,
+				A47E05EAF723FC8E6F8651A2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -252,6 +273,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				2C66D1BA395B37B809222C24 /* [CP] Copy Pods Resources */,
+				4736ACE873392D839A4B790B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -310,18 +332,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C046DF5A26C3A825008B2C8E /* D-DINExp.ttf in Resources */,
 				C0CE15A926C2B07F00FEDD31 /* Inter-Black.ttf in Resources */,
 				C0CE15AA26C2B07F00FEDD31 /* Inter-Bold.ttf in Resources */,
 				C0CE15AB26C2B07F00FEDD31 /* Inter-ExtraBold.ttf in Resources */,
 				C0CE15AC26C2B07F00FEDD31 /* Inter-ExtraLight.ttf in Resources */,
 				C0CE15AD26C2B07F00FEDD31 /* Inter-Light.ttf in Resources */,
+				C0D42AE326C50702007442A4 /* D-DINExp.ttf in Resources */,
 				C0CE15AE26C2B07F00FEDD31 /* Inter-Medium.ttf in Resources */,
 				C0CE15AF26C2B07F00FEDD31 /* Inter-Regular.ttf in Resources */,
 				C0CE15B026C2B07F00FEDD31 /* Inter-SemiBold.ttf in Resources */,
 				C0CE15B126C2B07F00FEDD31 /* Inter-Thin.ttf in Resources */,
+				C012691926C47115000B70B8 /* Assets.xcassets in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,6 +379,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-newthebostonapp/Pods-newthebostonapp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4736ACE873392D839A4B790B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-newthebostonapp/Pods-newthebostonapp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-newthebostonapp/Pods-newthebostonapp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-newthebostonapp/Pods-newthebostonapp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6FA54CB161306218B77F8765 /* [CP] Embed Pods Frameworks */ = {
@@ -396,6 +435,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A47E05EAF723FC8E6F8651A2 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-newthebostonapp-newthebostonappTests/Pods-newthebostonapp-newthebostonappTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-newthebostonapp-newthebostonappTests/Pods-newthebostonapp-newthebostonappTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-newthebostonapp-newthebostonappTests/Pods-newthebostonapp-newthebostonappTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A64D7325B6EE23C150C97DBE /* [CP] Check Pods Manifest.lock */ = {
@@ -590,7 +646,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.snibbe.Gravilux;
+				PRODUCT_BUNDLE_IDENTIFIER = com.thenewboston.wallet;
 				PRODUCT_NAME = newthebostonapp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -667,7 +723,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.snibbe.Gravilux;
+				PRODUCT_BUNDLE_IDENTIFIER = com.thenewboston.wallet;
 				PRODUCT_NAME = newthebostonapp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

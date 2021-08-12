@@ -33,12 +33,12 @@ All donations will go to thenewboston to help fund the team to continue to devel
 
 It runs bellow command 
  - npm install
- # --------------must install hack for react-native-crypto---------
+ # ---------must install hack for react-native-crypto---------
  - npm i --save react-native-crypto 
  - npm i --save react-native-randombytes 
  - npm i --save-dev rn-nodeify 
  - ./node_modules/.bin/rn-nodeify --hack --install
- # ----------------------------------------------------------------
+ # -----------------------------------------------------------
  - npm start 
 
 It runs next command
@@ -48,13 +48,13 @@ It runs next command
 
 It runs bellow command 
  - npm install
- # --------------must install hack for react-native-crypto---------
+ # ---------must install hack for react-native-crypto---------
  - npm i --save react-native-crypto 
  - npm i --save react-native-randombytes 
  - npm i --save-dev rn-nodeify 
  - ./node_modules/.bin/rn-nodeify --hack --install
- # ----------------------------------------------------------------
- - npm start 
+ # -----------------------------------------------------------
+ - cd ios && pod install 
 
 It runs next command
  - npx react-native run-ios

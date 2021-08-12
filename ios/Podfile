@@ -1,7 +1,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '13.0'
+platform :ios, '12.0'
 
 target 'newthebostonapp' do
   config = use_native_modules!
@@ -10,56 +10,23 @@ target 'newthebostonapp' do
     :path => config[:reactNativePath],
     # to enable hermes on iOS, change `false` to `true` and then install pods
     :hermes_enabled => false
-  ) 
+  )
+
 
   target 'newthebostonappTests' do
     inherit! :complete
     # Pods for testing
-    use_frameworks!   
-     $static_framework = ['FlipperKit', 'Flipper', 'Flipper-Folly',
-     'CocoaAsyncSocket', 'ComponentKit', 'DoubleConversion',
-     'glog', 'Flipper-PeerTalk', 'Flipper-RSocket', 'Yoga', 'YogaKit',
-     'CocoaLibEvent', 'OpenSSL-Universal', 'boost-for-react-native']
-
-     permissions_path = '../node_modules/react-native-permissions/ios'  
-   
-      pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary.podspec"   
-      pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec" 
-      pre_install do |installer|
-      Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
-      end
-
-      pre_install do |installer|
-        installer.pod_targets.each do |pod|
-          if pod.name.eql?('RNPermissions') || pod.name.start_with?('Permission-')
-            def pod.build_type;        
-            Pod::BuildType.static_library # I assume you use CocoaPods >= 1.9
-            end    
-          end
-        end
-      end
-   
-    use_flipper!({ 'Flipper' => '0.74.0' })
-    post_install do |installer|
-      flipper_post_install(installer)
-
-      installer.pods_project.targets.each do |target|
-      if target.name == "React-Core-AccessibilityResources"
-        target.remove_from_project
-          target.build_configurations.each do |config|
-            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
-          end
-        end
-      end
-    end  
   end
+
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # # you should disable the next line.
-  # use_flipper!()
+  # you should disable the next line.
+  use_flipper!({ 'Flipper-Folly' => '2.5.1' })
 
-  # post_install do |installer|
-  #   react_native_post_install(installer) 
-  #   end 
-end
+  post_install do |installer|
+    react_native_post_install(installer)
+  end
+end 
