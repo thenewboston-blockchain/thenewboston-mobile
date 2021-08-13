@@ -49,7 +49,7 @@ const AccountNumber = ({ navigator, accountNumber }: AccountNumberProps) => {
   return (
     <View style={Style.container}>
       <View style={[Custom.row,Style.actionContainer]}>
-        <Text style={Style.subHeading}>MY ACCOUNT NUMBER</Text>
+        <Text style={Platform.OS == 'android' ? Style.subHeading : Style.subHeadingIOS}>MY ACCOUNT NUMBER</Text>
         <View style={[Custom.row, Style.actions]}>
           <TouchableOpacity style={{ marginRight: 10 }} onPress={onShare}>
             <Shares />
@@ -59,7 +59,7 @@ const AccountNumber = ({ navigator, accountNumber }: AccountNumberProps) => {
           </TouchableOpacity>
         </View>
       </View>
-      <Text style={[Custom.mt10,Style.numberText]}>{accountNumber}</Text>
+      <Text style={[Custom.mt10, Platform.OS == 'android' ? Style.numberText : Style.numberTextIOS]}>{accountNumber}</Text>
     </View>
   );
 };
