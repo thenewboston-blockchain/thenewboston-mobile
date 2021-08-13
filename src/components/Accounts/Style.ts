@@ -20,7 +20,7 @@ const Style = StyleSheet.create({
     },
     stickyItem: {
       position: "absolute",
-      zIndex: 1,
+      zIndex: 0,
       right: 10,
       paddingRight: 8,
       backgroundColor: "transparent",

@@ -4,6 +4,7 @@ import { StyleSheet } from "react-native";
 
 const Styles = StyleSheet.create({
   container: { 
+    paddingVertical: "8%",
     flex:1,
   },
   balanceContainer: {
@@ -43,13 +44,20 @@ const Styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   modalContainer:{
-    height: '70%',
+    height: '100%',
     marginTop: 'auto',
-    borderTopRightRadius:50,
-    borderTopLeftRadius:50,
+    borderTopRightRadius:20,
+    borderTopLeftRadius:20,
     backgroundColor:'#1D2731',
     overflow: 'hidden',
-    padding:15
+    padding:15,
+  },
+  modalStyle:{
+    height: '100%', 
+    zIndex: 2,
+    borderTopRightRadius:40,
+    borderTopLeftRadius:40,
+    backgroundColor:'transparent', 
   },
   pulldonwContainer:{  
     position:'absolute',

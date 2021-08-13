@@ -24,7 +24,7 @@ const SendCoins1Screen = (props) => {
   const { width: ScreenWidth } = Dimensions.get("window");
 
   const [loading, setLoading] = useState(false);
-  const [isValid, setValid] = useState(false);
+  const [isValid, setValid] = useState(false); 
 
   const _from = friends.map(item => ( 
     {  

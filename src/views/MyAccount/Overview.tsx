@@ -1,23 +1,25 @@
 import { Colors, Custom, Typography } from "styles";
-import React, { useEffect, useState,} from "react"; 
+import React, { useEffect, useState, useRef} from "react"; 
 import nacl from 'tweetnacl'
 import naclutil from 'tweetnacl-util' 
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { useSelector, useDispatch} from 'react-redux';
 import { IAppState } from 'store/store'; 
 import LinearGradient from 'react-native-linear-gradient'; 
-import EncryptedStorage from 'react-native-encrypted-storage';  
-import { 
-  ScrollView, 
+import EncryptedStorage from 'react-native-encrypted-storage';   
+import {  
   Text, 
   TouchableOpacity, 
   View, 
   Modal, 
   ActivityIndicator, 
-  NativeModules
+  ScrollView,
+  Dimensions
 } from "react-native";
 import Style from "./Style"; 
 import GestureRecognizer from 'react-native-swipe-gestures';
+import { Modalize } from 'react-native-modalize';
+import { Host, Portal } from 'react-native-portalize';
 
 import Accounts from "components/Accounts/Accounts";
 import CustomButton from "components/CustomButton";
@@ -36,7 +38,7 @@ const OverviewScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch(); 
   const lAccounts = useSelector((state: IAppState) => state.accountState.account); 
-  const {validator_accounts, bank_url, login} = route.params;  
+  const {validator_accounts, bank_url, login, tabBottom} = route.params;  
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [modalVisible, setModalVisible] = useState(false);   
   const [viewRef, setViewRef] = useState(null);  
@@ -51,13 +53,12 @@ const OverviewScreen = ({ route, navigation }) => {
   const [dlgMessage, setDlgMessage] = useState("");
   const [dlgVisible, setDlgVisible] = useState(false); 
   const [removeVisible, setRemoveVisible] = useState(false);
-  const [spinVisible, setSpinVisible] = useState(false)  
-    
+  const [spinVisible, setSpinVisible] = useState(false);  
+  const SCREEN_HEIGHT = Dimensions.get("screen").height; 
   type AccountKeys = [Uint8Array, Uint8Array];
   const handleSendCoins = () => { 
      
-  };
-
+  };   
   function naclEncrypting(plain_text){
     const one_time_code = nacl.randomBytes(24);    
     const cipher_text = nacl.box(
@@ -142,12 +143,14 @@ const OverviewScreen = ({ route, navigation }) => {
     if(_myAccounts != [] && _myAccounts.length > 0){
       setActName(_myAccounts[_myAccounts.length - 1].name);
       setActNumber((_myAccounts[_myAccounts.length - 1].account_number));
+      global.actNumber = _myAccounts[_myAccounts.length - 1].account_number;
       setActSignKey( toDecryptSignKey(_myAccounts[_myAccounts.length - 1]));
       setActBalance(_myAccounts[_myAccounts.length - 1].balance);
     }
     else{
       setActName('No Accounts');
       setActNumber('');
+      global.actNumber = ''
       setActSignKey('');
       setActBalance('0.00');
     }
@@ -181,37 +184,32 @@ const OverviewScreen = ({ route, navigation }) => {
         setActName(myAccounts[index].name);
       } 
       setActNumber((myAccounts[index].account_number));    
+      global.actNumber = myAccounts[index].account_number
       setActSignKey(toDecryptSignKey(myAccounts[index]));
       setActBalance(myAccounts[index].balance);  
     } 
-  }
+  } 
 
-  const config = {
-    velocityThreshold: 0.3,
-    directionalOffsetThreshold: 50
+  const modalizeRef = useRef<Modalize>(null); 
+  const onCreateOpen = () => {
+    tabBottom.tabBarVisible = false;   
+    setModalVisible(true);
+    modalizeRef.current?.open(); 
+  };
+ 
+
+  const onCreateClose = () => {
+    setModalVisible(false);
+    modalizeRef.current?.close();
   };
 
-  const onSwipeLeft = (state) =>{
-      navigation.navigate('transactions')
-  }
-
-  const onSwipeDown = (state) =>{
-    setModalVisible(false);
-  }
-
-  return (
-    <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}> 
-      <GestureRecognizer  
-            onSwipeLeft={(state) => onSwipeLeft(state)} 
-            onSwipeDown={(state) => onSwipeDown(state)} 
-            config={config} 
-            style={Style.container}
-        >
+  return ( 
+    <View style={Style.container}  ref={(viewRef) => { setViewRef(viewRef); }}>  
       <View style={{ alignItems: "center"}} >
         <Text style={Style.heading}>{actName}</Text> 
         <Accounts
           accounts={myAccounts}
-          addAccount={() => setModalVisible(true)}
+          addAccount={onCreateOpen}
           handleTransIndex = {(index) => handleTransIndex(index)}
         />
 
@@ -270,33 +268,35 @@ const OverviewScreen = ({ route, navigation }) => {
           loading={loading}
           customStyle={Style.bottomArea}
         />
-      </ScrollView>}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-           
-        }}
-      >
-        <BlurView
+      </ScrollView>} 
+      
+      {modalVisible && <BlurView
           style={Style.absolute}
           blurType="dark"
-          blurAmount={5}
+          blurAmount={2}
           reducedTransparencyFallbackColor="white"
-        />
-        <View style={Style.modalContainer}>
-          <View style= {Style.pulldonwContainer}>
-            <DoneSvg width="15%" height="5%" />
-          </View>
-        
-          <ScrollView showsVerticalScrollIndicator={false}>
-          <CreateAccountWidget title={"Create or Add Account"}
+        />}
+      <Host style={{backgroundColor:'#000'}}> 
+      <Portal>
+      <Modalize    
+        modalStyle = {Style.modalStyle}
+        handleStyle = {{backgroundColor: '#395863'}} 
+        overlayStyle = {{ backgroundColor:'transparent'}}
+        modalHeight = {SCREEN_HEIGHT * 0.6}
+        ref={modalizeRef} 
+        onClose = {()=>{setModalVisible(false)}}
+      > 
+        <View style={Style.modalContainer}>             
+            <ScrollView 
+              showsVerticalScrollIndicator={false} 
+              >
+            <CreateAccountWidget title={"Create or Add Account"}
             navigation={navigation}
             route = {route} 
             addAccount={(account, addMode) => { 
               setActName(account.name);
               setActNumber(account.account_number);
+              global.actNumber = account.account_number
               setActBalance(account.balance);
               setAddMode(addMode);
               var bExist = false;  
@@ -327,9 +327,10 @@ const OverviewScreen = ({ route, navigation }) => {
                   myAccounts.push(account); 
                   dispatch(AccountAction(myAccounts));
                   setMyAccounts(myAccounts); 
-                  setModalVisible(false);
+                  onCreateClose();
                   setDoneVisible(true); 
                   setActNumber((account.account_number));    
+                  global.actNumber = account.account_number;
                   setActSignKey(toDecryptSignKey(account));
                   setActBalance(account.balance);  
                 }
@@ -339,13 +340,16 @@ const OverviewScreen = ({ route, navigation }) => {
             }} 
             validator_accounts = {validator_accounts}
             handleCancel={() => {
-              setModalVisible(false);
+              onCreateClose();
+
             }}
             />
-            </ScrollView>
+            </ScrollView> 
+           
         </View>
-      </Modal>
-
+      </Modalize> 
+      </Portal>
+      </Host>
       <Modal
         animationType="slide"
         transparent={true}
@@ -433,9 +437,9 @@ const OverviewScreen = ({ route, navigation }) => {
                   }}
               /> 
           </LinearGradient>  
-      </Modal>
-      </GestureRecognizer>
+      </Modal> 
     </View>
+    
   );
 };
 

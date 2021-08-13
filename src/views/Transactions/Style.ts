@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 
 const Styles = StyleSheet.create({
   container: {
-    // paddingVertical: "10%",
+    paddingVertical: "9%",
     flex:1
 
   },
@@ -15,6 +15,12 @@ const Styles = StyleSheet.create({
     fontSize: Typography.FONT_SIZE_28,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
     color: Colors.WHITE,
+  },
+  NoTransaction: {
+    fontSize: Typography.FONT_SIZE_24,
+    fontWeight: Typography.FONT_WEIGHT_BOLD,
+    color: Colors.WHITE, 
+
   },
   subHeading: {
     fontSize: 12,

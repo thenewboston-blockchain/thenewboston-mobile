@@ -38,7 +38,7 @@ const LoginScreen = ({ navigation, route }:login) => {
   const protocol = useSelector((state: IAppState) => state.loginState.protocol);
   const [lProtocol, setlProtocol] = useState<string>(protocol == null ? "http" : protocol)  
  
-  const goToPasswordLogin = () => { 
+  const goToPasswordLogin = () => {  
     navigation.navigate("loginPassword", { 
       accounts: accounts,
       validator_accounts: validAccounts,
