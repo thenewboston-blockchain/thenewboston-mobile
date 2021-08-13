@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 
 const Styles = StyleSheet.create({
   container: {
-    // paddingVertical: "10%",
+    paddingVertical: "9%",
     flex:1
 
   },

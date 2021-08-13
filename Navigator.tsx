@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Image, PermissionsAndroid, Platform, Easing, Animated} from "react-native";
+import React, { useEffect, useState, memo, useRef} from "react";
+import { View, Text, Image, PermissionsAndroid, Platform, Dimensions, Animated } from "react-native";
 import { PERMISSIONS, check, RESULTS } from 'react-native-permissions'
 import LinearGradient from "react-native-linear-gradient";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
@@ -18,7 +18,10 @@ import SettingsScreen from "views/Settings/Settings";
 import SendCoins1Screen from "views/SendCoins1/SendCoins1";
 import SendCoins2Screen from "views/SendCoins2/SendCoins2";
 import EditAccountScreen from "views/Settings/EditAccount/EditAccount";  
-import TransactionsScreen from "views/Transactions/Transactions"; 
+import TransactionsScreen from "views/Transactions/Transactions";  
+import { Modalize } from 'react-native-modalize';
+import { Host, Portal } from 'react-native-portalize';
+import { useCombinedRefs } from './use-combined-refs';
 
 // svg
 import Home from "assets/svg/Home.svg";
@@ -29,6 +32,10 @@ import ArrowBack from "assets/svg/ArrowBack.svg";
 import ScanCode from "assets/svg/ScanCode.svg";
 import TNBLogo from "assets/svg/TNBLogo.svg";
 
+const { width } = Dimensions.get('window');
+const HEADER_COLLAPSE = 32;
+const HEADER_LIST = 60;
+const HEADER_HEIGHT = HEADER_LIST + HEADER_COLLAPSE;
 
 const Navigator = ({route, isLogin}) => {
   const Stack = createStackNavigator();  
@@ -69,7 +76,7 @@ const Navigator = ({route, isLogin}) => {
             options={authHeaderOptions}
           />
           <Stack.Screen
-            options={headerOptions}
+            options={nonHeaderOptions}
             name="tab" 
             component={TabNavigator}  
           />
@@ -98,73 +105,114 @@ const TabIcon = ({ icon, text, focused }) => {
 
 const TabNavigator = ({route}) => {
   const Tab = createBottomTabNavigator();    
+  const modalizeRef = useRef(null);
+  const contentRef = useRef(null);
+  const ref = useRef<Modalize>(null); 
+  const combinedRef = useCombinedRefs(ref, modalizeRef);
+  const [index, setIndex] = useState(0);
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const Tabs = memo(({ active, onIndexChange }) => {
+     
+    return (
+     <View></View>
+    );
+  });
+
+  const handleIndexChange = i => {
+    const w = 55; // item width
+    const m = 25; // item margin
+    const x = (w + m) * i;
+ 
+
+    if (contentRef.current) {
+      contentRef.current.getScrollResponder().scrollTo({ y: 0, animated: true });
+    }
+ 
+  };
+
   return (
+    // <Modalize
+    //   ref={combinedRef}
+    //   contentRef={contentRef}
+    //   HeaderComponent={Tab}
+    //   modalStyle={{ backgroundColor: '#1a1d21' }}
+    //   handleStyle={{ width: 35, backgroundColor: '#75777a' }}
+    //   childrenStyle={{ borderTopLeftRadius: 12, borderTopRightRadius: 12, overflow: 'hidden' }}
+    //   scrollViewProps={{
+    //     onScroll: Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+    //       useNativeDriver: true,
+    //     }),
+    //     scrollEventThrottle: 16,
+    //   }}
+    // >
+    //   <Tabs active={index} onIndexChange={handleIndexChange} />
+    // </Modalize>
     <Tab.Navigator
       tabBarOptions={{ showLabel: false, style: tabStyle, keyboardHidesTabBar: true}}
-      initialRouteName="overview"    
+      initialRouteName="overview"   
     >
-      <Tab.Screen
-        name="overview" 
-        options={{ 
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              text="My Accounts"
-              focused={focused}
-              icon={<Home fill={focused ? "#FFF" : "#62737E"} />}
-            />
-          ),
-        }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, 
-          accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts,
-          validator_accounts: route.params.validator_accounts,bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
-        component={OverviewStackScreen}
-      />
-      <Tab.Screen
-        name="transactions"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              text="Transactions"
-              focused={focused}
-              icon={<Transactions fill={focused ? "#FFF" : "#62737E"} />}
-            />
-          ),
-        }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, 
-          accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts,
-          validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
-        component={TransactionsScreen}
-      />
-      <Tab.Screen
-        name="friends"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              text="Friends"
-              focused={focused}
-              icon={<Friends fill={focused ? "#FFF" : "#62737E"} />}
-            />
-          ),
-        }}
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
-        component={FriendsScreen}
-      />
-      <Tab.Screen
-        name="settings" 
-        options={{ 
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              text="Settings"
-              focused={focused}
-              icon={<Settings fill={focused ? "#FFF" : "#62737E"} />}
-            />
-          ),
-        }}
-        initialParams={{nickname: route.params.nickname}}
-        component={SettingsStackScreen}
-      />
-    </Tab.Navigator>
-  );
+    <Tab.Screen
+      name="overview" 
+      options={{ 
+        tabBarIcon: ({ focused }) => (
+          <TabIcon
+            text="My Accounts"
+            focused={focused}
+            icon={<Home fill={focused ? "#FFF" : "#62737E"} />}
+          />
+        ),
+      }}
+      initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, tabBottom: Tab,
+        accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts,
+        validator_accounts: route.params.validator_accounts,bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
+      component={OverviewStackScreen}
+    />
+    <Tab.Screen
+      name="transactions"
+      options={{
+        tabBarIcon: ({ focused }) => (
+          <TabIcon
+            text="Transactions"
+            focused={focused}
+            icon={<Transactions fill={focused ? "#FFF" : "#62737E"} />}
+          />
+        ),
+      }}
+      initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, 
+        accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts,
+        validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
+      component={TransactionsScreen}
+    />
+    <Tab.Screen
+      name="friends"
+      options={{
+        tabBarIcon: ({ focused }) => (
+          <TabIcon
+            text="Friends"
+            focused={focused}
+            icon={<Friends fill={focused ? "#FFF" : "#62737E"} />}
+          />
+        ),
+      }}
+      initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
+      component={FriendsScreen}
+    />
+    <Tab.Screen
+      name="settings" 
+      options={{ 
+        tabBarIcon: ({ focused }) => (
+          <TabIcon
+            text="Settings"
+            focused={focused}
+            icon={<Settings fill={focused ? "#FFF" : "#62737E"} />}
+          />
+        ),
+      }}
+      initialParams={{nickname: route.params.nickname}}
+      component={SettingsStackScreen}
+    />
+  </Tab.Navigator>
+  ); 
 };
 
 const SettingsStackScreen = ({route, navigation}) => {
@@ -190,13 +238,13 @@ const SettingsStackScreen = ({route, navigation}) => {
 };
 
 const OverviewStackScreen = ({route}) => {
-  const OverviewStack = createStackNavigator();   
+  const OverviewStack = createStackNavigator();  
   return (
     <OverviewStack.Navigator>
       <OverviewStack.Screen
         options={{ headerShown: false }}
         name="overview" 
-        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey}}
+        initialParams={{nickname: route.params.nickname, signingKeyHex: route.params.signingKeyHex, accountNumber: route.params.accountNumber, signingKey: route.params.signingKey, accounts: route.params.accounts, validator_accounts: route.params.validator_accounts, bank_url: route.params.bank_url, login: route.params.login, genKey: route.params.genKey,  tabBottom: route.params.tabBottom,}}
         component={OverviewScreen}
       />
       <OverviewStack.Screen
@@ -241,6 +289,7 @@ const nonHeaderOptions = {
     backgroundColor: "transparent",
     elevation: 0,
     shadowOpacity: 0,
+    height: 0
   },
   headerTitle: "", 
   headerLeft: "", 
@@ -263,7 +312,8 @@ const qrCodeHeaderOptions = (title, navigation) => {
   }; 
 };
 
-const openCameraWithPermission = async() =>{ 
+const openCameraWithPermission = async() =>{
+  //Platform
   if(Platform.OS === 'android'){
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -385,32 +435,5 @@ const headingStyle = {
   fontWeight: Typography.FONT_WEIGHT_BOLD,
   color: Colors.WHITE, 
 };
- 
-const transitionConfig = () => {
-  return {
-    transitionSpec: {
-      duration: 500,
-      easing: Easing.out(Easing.poly(4)),
-      timing: Animated.timing,
-      useNativeDriver: true,
-    },
-    screenInterpolator: sceneProps => {
-      const { layout, position, scene } = sceneProps;
- 
-      const thisSceneIndex = scene.index;
-      const width = layout.initWidth;
- 
-      const translateX = position.interpolate({
-        inputRange: [thisSceneIndex - 1, thisSceneIndex],
-        outputRange: [-width, 0],
-        extrapolate: 'clamp'
-      });
- 
-      return {
-        transform: [{ translateX }]
-      }
-    }
-  }
-}
 
 export default Navigator;
