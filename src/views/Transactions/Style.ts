@@ -16,6 +16,12 @@ const Styles = StyleSheet.create({
     fontWeight: Typography.FONT_WEIGHT_BOLD,
     color: Colors.WHITE,
   },
+  NoTransaction: {
+    fontSize: Typography.FONT_SIZE_24,
+    fontWeight: Typography.FONT_WEIGHT_BOLD,
+    color: Colors.WHITE, 
+
+  },
   subHeading: {
     fontSize: 12,
     color: "#62737E",

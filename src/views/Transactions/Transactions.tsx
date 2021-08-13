@@ -10,6 +10,7 @@ import {Account, Bank, Transaction} from 'thenewboston/dist/index.js';
 import Style from "./Style";
 import { useSelector, useDispatch} from 'react-redux';
 import GestureRecognizer from 'react-native-swipe-gestures';
+import RNConfigReader from 'rn-config-reader';
 
 import { IAppState } from 'store/store'; 
 import CustomButton from "components/CustomButton";  
@@ -22,19 +23,33 @@ const TransactionsScreen = ({route, navigation}) => {
   const [myAccounts, setMyAccounts] = useState(lAccounts == null ? [] : lAccounts); 
   const [spinVisible, setSpinVisible] = useState(true);
 
-  async function gettingTransactions() {
-    const bank = new Bank(bank_url);
+  const validURL = (url) =>{
+    const PROTOCOL = "HTTP";
+    const PORT = "80";
+    if(url.substr("http") > 0 || url.substr("HTTP") > 0){
+      return url;
+    }
+    if(url == ""){
+      url = RNConfigReader.SERVER_IP;
+    }
+    return PROTOCOL + '://' + url + ':' + PORT;
+  }
+
+  const gettingTransactions = async() => {  
+    console.log(global.actNumber)
+    const bank = new Bank(validURL(bank_url));
     var trans = [];
     setSpinVisible(true);
     const Atrans = await bank.getTransactions({ limit: 1, offset: 0 }); 
     let trans_size = 100;//Atrans.count; 
     for(let i = 0; i < trans_size; i+=100){
-      const part_trans = await bank.getTransactions({ limit: 100, offset: i });  
-      trans = [...trans, ...part_trans.results]; 
-    } 
-    console.log(trans.length)
+      const part_trans = await bank.getTransactions({ limit: 100, offset: i });   
+      const actTrans = part_trans.results.filter(item => item.sender === global.actNumber);
+      trans = [...trans, ...actTrans]; 
+    }  
+    
     setTransactions(trans);  
-    setSpinVisible(false); 
+    setSpinVisible(false);  
   } 
 
   useEffect(() => { 
@@ -66,7 +81,7 @@ const TransactionsScreen = ({route, navigation}) => {
         >  
       <View style={{ alignItems: "center" }}>
         <Text style={[Custom.mb10, { color: "#62737E" }]}>{nickname}</Text>
-        <Text style={Style.heading}>Transactions</Text>
+        <Text style={Style.heading}>Transactions</Text>  
       </View> 
       {spinVisible && <ActivityIndicator size="large" color="white" style={{justifyContent:'center', marginTop:'35%'}}></ActivityIndicator>}
       {!spinVisible && <FlatList 
@@ -84,6 +99,7 @@ const TransactionsScreen = ({route, navigation}) => {
         )}
         keyExtractor={(item, index) => "key" + index}
       />}
+      
      <CustomButton
           title=""
           onPress={()=>{}} 

@@ -58,8 +58,7 @@ const OverviewScreen = ({ route, navigation }) => {
   type AccountKeys = [Uint8Array, Uint8Array];
   const handleSendCoins = () => { 
      
-  };  
-
+  };   
   function naclEncrypting(plain_text){
     const one_time_code = nacl.randomBytes(24);    
     const cipher_text = nacl.box(
@@ -144,12 +143,14 @@ const OverviewScreen = ({ route, navigation }) => {
     if(_myAccounts != [] && _myAccounts.length > 0){
       setActName(_myAccounts[_myAccounts.length - 1].name);
       setActNumber((_myAccounts[_myAccounts.length - 1].account_number));
+      global.actNumber = _myAccounts[_myAccounts.length - 1].account_number;
       setActSignKey( toDecryptSignKey(_myAccounts[_myAccounts.length - 1]));
       setActBalance(_myAccounts[_myAccounts.length - 1].balance);
     }
     else{
       setActName('No Accounts');
       setActNumber('');
+      global.actNumber = ''
       setActSignKey('');
       setActBalance('0.00');
     }
@@ -183,6 +184,7 @@ const OverviewScreen = ({ route, navigation }) => {
         setActName(myAccounts[index].name);
       } 
       setActNumber((myAccounts[index].account_number));    
+      global.actNumber = myAccounts[index].account_number
       setActSignKey(toDecryptSignKey(myAccounts[index]));
       setActBalance(myAccounts[index].balance);  
     } 
@@ -294,6 +296,7 @@ const OverviewScreen = ({ route, navigation }) => {
             addAccount={(account, addMode) => { 
               setActName(account.name);
               setActNumber(account.account_number);
+              global.actNumber = account.account_number
               setActBalance(account.balance);
               setAddMode(addMode);
               var bExist = false;  
@@ -327,6 +330,7 @@ const OverviewScreen = ({ route, navigation }) => {
                   onCreateClose();
                   setDoneVisible(true); 
                   setActNumber((account.account_number));    
+                  global.actNumber = account.account_number;
                   setActSignKey(toDecryptSignKey(account));
                   setActBalance(account.balance);  
                 }

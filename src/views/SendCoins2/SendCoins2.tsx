@@ -5,6 +5,7 @@ import {Account, Bank, AccountPaymentHandler} from 'thenewboston/dist/index.js';
 import Style from "./Style";
 import { BlurView } from "@react-native-community/blur";
 import LinearGradient from 'react-native-linear-gradient';
+import RNConfigReader from 'rn-config-reader';
 
 import CustomButton from "components/CustomButton"; 
 import CustomInput from "components/CustomInput"; 
@@ -28,8 +29,20 @@ const SendCoins1Screen = (props) => {
     
   }, []);
 
+  const validURL = (url) =>{
+    const PROTOCOL = "HTTP";
+    const PORT = "80";
+    if(url.substr("http") > 0 || url.substr("HTTP") > 0){
+      return url;
+    }
+    if(url == ""){
+      url = RNConfigReader.SERVER_IP;
+    }
+    return PROTOCOL + '://' + url + ':' + PORT;
+  }
+
   async function getConfig() {
-    const bank = new Bank(bank_url)
+    const bank = new Bank(validURL(bank_url))
     const config = await bank.getConfig();
     setBankFee(config.default_transaction_fee);
     setValidaterFee(config.primary_validator.default_transaction_fee)

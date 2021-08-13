@@ -34,8 +34,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
   const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
   const [privateKey, setPrivateKey] = useState(null);  
   const [publicKey, setPublicKey] = useState(null);  
-  
-
+   
   useEffect(() => {   
     getSeedESP() 
   }, []);
@@ -143,8 +142,7 @@ const LoginPasswordScreen = ({ navigation, route}) => {
         const exportPriKey = (uint8arrayToHex(genKeyPair[1]));   
         setPrivateKey(exportPriKey);   
         setPublicKey(exportPubKey);  
-        setKeyPair(exportPubKey, exportPriKey);
-
+        setKeyPair(exportPubKey, exportPriKey);  
         navigation.navigate('tab', {
           nickname: lnickName,
           signingKeyHex: "",
